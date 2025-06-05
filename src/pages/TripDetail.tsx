@@ -1,15 +1,18 @@
-
 import { useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Calendar, Clock, MapPin, Users, Star, Check, X, Phone, Mail } from "lucide-react";
+import BookingForm from "@/components/BookingForm";
 
 const TripDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   // Sample trip data - in a real app, this would come from an API
   const tripData = {
@@ -22,11 +25,11 @@ const TripDetail = () => {
       rating: 4.8,
       pilgrims: 245,
       highlights: [
-        "🛏️ Deluxe 3★ accommodation",
-        "🍛 Pure Veg Meals",
-        "🚍 AC Volvo transport",
-        "📿 Guided Darshan & Pooja",
-        "🔱 Special Rudrabhishek"
+        "Deluxe 3★ accommodation",
+        "Pure Veg Meals",
+        "AC Volvo transport",
+        "Guided Darshan & Pooja",
+        "Special Rudrabhishek"
       ],
       description: "Experience the divine energy of Kashi, one of the seven Moksha-sthalas. This sacred journey includes VIP darshans, Ganga Aarti participation, and spiritual rituals guided by expert priests.",
       itinerary: [
@@ -159,7 +162,7 @@ const TripDetail = () => {
 
   if (!trip) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-amber-50">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Trip not found</h1>
           <Button onClick={() => navigate("/")}>Return to Home</Button>
@@ -213,7 +216,7 @@ const TripDetail = () => {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
       {/* Hero Section */}
       <section className="relative h-[60vh] overflow-hidden">
         <img 
@@ -238,11 +241,14 @@ const TripDetail = () => {
                   <Calendar className="w-5 h-5" />
                   <span>Next Departure: {trip.nextDeparture}</span>
                 </div>
-                <div className="text-2xl font-bold text-temple-gold">
+                <div className="text-2xl font-bold text-orange-300">
                   {trip.price} per pilgrim
                 </div>
               </div>
-              <Button className="btn-temple text-lg px-8 py-4 h-auto">
+              <Button 
+                className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg px-8 py-4 h-auto transition-all duration-300 transform hover:scale-105"
+                onClick={() => setIsBookingOpen(true)}
+              >
                 Book Now
               </Button>
             </div>
@@ -251,11 +257,12 @@ const TripDetail = () => {
       </section>
 
       {/* Quick Highlights Bar */}
-      <section className="bg-gradient-to-r from-saffron-100 to-temple-cream py-4 border-b">
+      <section className="bg-gradient-to-r from-orange-100 to-amber-100 py-4 border-b">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-6">
             {trip.highlights.map((highlight, index) => (
               <div key={index} className="flex items-center space-x-2 text-temple-maroon font-medium">
+                <Check className="w-4 h-4 text-orange-600" />
                 <span>{highlight}</span>
               </div>
             ))}
@@ -268,7 +275,7 @@ const TripDetail = () => {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Overview */}
-            <Card className="card-temple">
+            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
               <CardHeader>
                 <CardTitle className="text-2xl font-temple text-temple-maroon">Trip Overview</CardTitle>
               </CardHeader>
@@ -280,7 +287,7 @@ const TripDetail = () => {
                     <span>{trip.pilgrims} pilgrims joined</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <Star className="w-4 h-4 text-temple-gold fill-current" />
+                    <Star className="w-4 h-4 text-orange-400 fill-current" />
                     <span>{trip.rating} rating</span>
                   </div>
                 </div>
@@ -288,7 +295,7 @@ const TripDetail = () => {
             </Card>
 
             {/* Detailed Itinerary */}
-            <Card className="card-temple">
+            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
               <CardHeader>
                 <CardTitle className="text-2xl font-temple text-temple-maroon">Day-by-Day Itinerary</CardTitle>
               </CardHeader>
@@ -298,7 +305,7 @@ const TripDetail = () => {
                     <AccordionItem key={day.day} value={`day-${day.day}`}>
                       <AccordionTrigger className="text-left">
                         <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-gradient-to-br from-saffron-500 to-temple-maroon rounded-full flex items-center justify-center text-white font-bold text-sm">
+                          <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
                             {day.day}
                           </div>
                           <span className="font-temple font-semibold text-temple-maroon">
@@ -310,7 +317,7 @@ const TripDetail = () => {
                         <ul className="space-y-2 ml-11">
                           {day.activities.map((activity, index) => (
                             <li key={index} className="flex items-start space-x-2">
-                              <div className="w-1.5 h-1.5 bg-saffron-500 rounded-full mt-2 flex-shrink-0"></div>
+                              <div className="w-1.5 h-1.5 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
                               <span className="text-gray-600">{activity}</span>
                             </li>
                           ))}
@@ -324,7 +331,7 @@ const TripDetail = () => {
 
             {/* Accommodation & Meals */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="card-temple">
+              <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
                 <CardHeader>
                   <CardTitle className="text-xl font-temple text-temple-maroon">Accommodation</CardTitle>
                 </CardHeader>
@@ -343,7 +350,7 @@ const TripDetail = () => {
                 </CardContent>
               </Card>
 
-              <Card className="card-temple">
+              <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
                 <CardHeader>
                   <CardTitle className="text-xl font-temple text-temple-maroon">Meals</CardTitle>
                 </CardHeader>
@@ -356,7 +363,7 @@ const TripDetail = () => {
             </div>
 
             {/* Spiritual Arrangements */}
-            <Card className="card-temple">
+            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
               <CardHeader>
                 <CardTitle className="text-2xl font-temple text-temple-maroon">Spiritual Experiences & Poojas</CardTitle>
               </CardHeader>
@@ -374,7 +381,7 @@ const TripDetail = () => {
 
             {/* Inclusions & Exclusions */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="card-temple border-green-200">
+              <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl border-green-200">
                 <CardHeader>
                   <CardTitle className="text-xl font-temple text-green-700 flex items-center space-x-2">
                     <Check className="w-5 h-5" />
@@ -393,7 +400,7 @@ const TripDetail = () => {
                 </CardContent>
               </Card>
 
-              <Card className="card-temple border-red-200">
+              <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl border-red-200">
                 <CardHeader>
                   <CardTitle className="text-xl font-temple text-red-700 flex items-center space-x-2">
                     <X className="w-5 h-5" />
@@ -414,7 +421,7 @@ const TripDetail = () => {
             </div>
 
             {/* FAQs */}
-            <Card className="card-temple">
+            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
               <CardHeader>
                 <CardTitle className="text-2xl font-temple text-temple-maroon">Frequently Asked Questions</CardTitle>
               </CardHeader>
@@ -435,7 +442,7 @@ const TripDetail = () => {
             </Card>
 
             {/* Testimonials */}
-            <Card className="card-temple">
+            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
               <CardHeader>
                 <CardTitle className="text-2xl font-temple text-temple-maroon">What Our Pilgrims Say</CardTitle>
               </CardHeader>
@@ -468,7 +475,7 @@ const TripDetail = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Booking Card */}
-            <Card className="card-temple sticky top-24">
+            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl sticky top-24">
               <CardHeader>
                 <CardTitle className="text-xl font-temple text-temple-maroon">Price & Booking</CardTitle>
               </CardHeader>
@@ -476,7 +483,7 @@ const TripDetail = () => {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Per Person (Double Sharing)</span>
-                    <span className="font-bold text-saffron-600">{trip.pricing.doubleSharing}</span>
+                    <span className="font-bold text-orange-600">{trip.pricing.doubleSharing}</span>
                   </div>
                   <div className="flex justify-between text-sm text-gray-600">
                     <span>Single Occupancy</span>
@@ -499,7 +506,10 @@ const TripDetail = () => {
                   </div>
                 </div>
 
-                <Button className="w-full btn-temple text-lg py-6">
+                <Button 
+                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg py-6 transition-all duration-300 transform hover:scale-105"
+                  onClick={() => setIsBookingOpen(true)}
+                >
                   Book This Yatra
                 </Button>
 
@@ -517,18 +527,18 @@ const TripDetail = () => {
             </Card>
 
             {/* Contact Support */}
-            <Card className="card-temple">
+            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
               <CardHeader>
                 <CardTitle className="text-lg font-temple text-temple-maroon">Need Help?</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start">
+                <Button variant="outline" className="w-full justify-start border-orange-200 text-orange-600 hover:bg-orange-50">
                   <Phone className="w-4 h-4 mr-2" />
-                  Call +91 98765 43210
+                  Call +91 73488 69099
                 </Button>
-                <Button variant="outline" className="w-full justify-start">
+                <Button variant="outline" className="w-full justify-start border-orange-200 text-orange-600 hover:bg-orange-50">
                   <Mail className="w-4 h-4 mr-2" />
-                  support@omytravels.in
+                  connect@omytravels.com
                 </Button>
                 <p className="text-xs text-gray-600 text-center">
                   24/7 Yatra Support Available
@@ -537,10 +547,10 @@ const TripDetail = () => {
             </Card>
 
             {/* Trust Indicators */}
-            <Card className="card-temple">
+            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
               <CardContent className="pt-6 text-center space-y-3">
                 <div className="flex items-center justify-center space-x-1">
-                  <Star className="w-4 h-4 text-temple-gold fill-current" />
+                  <Star className="w-4 h-4 text-orange-400 fill-current" />
                   <span className="text-sm font-medium">2,000+ Happy Pilgrims</span>
                 </div>
                 <div className="flex items-center justify-center space-x-1">
@@ -556,6 +566,22 @@ const TripDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Booking Dialog */}
+      <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-temple text-temple-maroon">
+              Book Your Pilgrimage
+            </DialogTitle>
+          </DialogHeader>
+          <BookingForm
+            tourId={id || ""}
+            tourName={trip.name}
+            onClose={() => setIsBookingOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
