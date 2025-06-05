@@ -25,6 +25,12 @@ const Header = () => {
             >
               Home
             </Link>
+            <Link 
+              to="/about" 
+              className="text-gray-700 hover:text-temple-maroon transition-colors font-medium"
+            >
+              About Us
+            </Link>
             <a 
               href="tel:+919876543210" 
               className="text-gray-700 hover:text-temple-maroon transition-colors font-medium"

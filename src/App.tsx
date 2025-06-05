@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
+import About from "./pages/About";
 import TripDetail from "./pages/TripDetail";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./components/AdminLogin";
@@ -28,6 +29,7 @@ const App = () => (
             <main className="flex-1">
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/about" element={<About />} />
                 <Route path="/trip/:id" element={<TripDetail />} />
                 <Route path="/admin-login" element={<AdminLogin />} />
                 <Route 
