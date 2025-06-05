@@ -9,7 +9,116 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      admin_users: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          password_hash: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          password_hash: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          password_hash?: string
+        }
+        Relationships: []
+      }
+      bookings: {
+        Row: {
+          booking_date: string
+          customer_name: string
+          email: string
+          id: string
+          mobile_number: string
+          notes: string | null
+          number_of_people: number
+          status: string
+          tour_id: string
+        }
+        Insert: {
+          booking_date?: string
+          customer_name: string
+          email: string
+          id?: string
+          mobile_number: string
+          notes?: string | null
+          number_of_people?: number
+          status?: string
+          tour_id: string
+        }
+        Update: {
+          booking_date?: string
+          customer_name?: string
+          email?: string
+          id?: string
+          mobile_number?: string
+          notes?: string | null
+          number_of_people?: number
+          status?: string
+          tour_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tours: {
+        Row: {
+          cost: number
+          cost_details: string | null
+          created_at: string
+          departure_date: string
+          description: string | null
+          destinations: string
+          duration: string
+          id: string
+          name: string
+          transport_mode: string
+          updated_at: string
+        }
+        Insert: {
+          cost: number
+          cost_details?: string | null
+          created_at?: string
+          departure_date: string
+          description?: string | null
+          destinations: string
+          duration: string
+          id?: string
+          name: string
+          transport_mode: string
+          updated_at?: string
+        }
+        Update: {
+          cost?: number
+          cost_details?: string | null
+          created_at?: string
+          departure_date?: string
+          description?: string | null
+          destinations?: string
+          duration?: string
+          id?: string
+          name?: string
+          transport_mode?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

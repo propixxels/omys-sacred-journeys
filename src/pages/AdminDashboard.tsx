@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,105 +9,104 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2, Users, Calendar, MapPin, Star, Eye } from "lucide-react";
+import { Plus, Edit, Trash2, Users, Calendar, MapPin, Star, Eye, LogOut, Plane, Bus } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+
+interface Tour {
+  id: string;
+  name: string;
+  duration: string;
+  transport_mode: string;
+  destinations: string;
+  departure_date: string;
+  cost: number;
+  cost_details: string;
+  description?: string;
+}
+
+interface Booking {
+  id: string;
+  tour_id: string;
+  customer_name: string;
+  email: string;
+  mobile_number: string;
+  number_of_people: number;
+  booking_date: string;
+  status: string;
+  notes?: string;
+  tours: {
+    name: string;
+  };
+}
 
 const AdminDashboard = () => {
   const { toast } = useToast();
-  const [tours, setTours] = useState([
-    {
-      id: 1,
-      name: "Kashi Yatra",
-      duration: "5 Days / 4 Nights",
-      price: 12499,
-      image: "https://images.unsplash.com/photo-1466442929976-97f336a657be",
-      description: "Experience Ganga Aarti & VIP Darshan at the sacred city of Varanasi",
-      status: "Active",
-      bookings: 245,
-      rating: 4.8,
-      nextDeparture: "2025-06-10"
-    },
-    {
-      id: 2,
-      name: "Ujjain Mahakaleshwar",
-      duration: "3 Days / 2 Nights",
-      price: 8999,
-      image: "https://images.unsplash.com/photo-1473177104440-ffee2f376098",
-      description: "Witness the divine Bhasma Aarti at one of the 12 Jyotirlingas",
-      status: "Active",
-      bookings: 189,
-      rating: 4.9,
-      nextDeparture: "2025-06-15"
-    },
-    {
-      id: 3,
-      name: "Dwarka Darshan",
-      duration: "4 Days / 3 Nights",
-      price: 15999,
-      image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05",
-      description: "Visit Krishna's divine city and experience spiritual bliss",
-      status: "Active",
-      bookings: 167,
-      rating: 4.7,
-      nextDeparture: "2025-06-20"
-    }
-  ]);
-
-  const [bookings, setBookings] = useState([
-    {
-      id: 1,
-      tourName: "Kashi Yatra",
-      customerName: "Ritu Sharma",
-      email: "ritu.sharma@email.com",
-      phone: "+91 98765 43210",
-      pilgrims: 2,
-      totalAmount: 24998,
-      bookingDate: "2024-05-15",
-      departure: "2025-06-10",
-      status: "Confirmed",
-      paymentStatus: "Paid"
-    },
-    {
-      id: 2,
-      tourName: "Ujjain Mahakaleshwar",
-      customerName: "Rajesh Kumar",
-      email: "rajesh.kumar@email.com",
-      phone: "+91 87654 32109",
-      pilgrims: 4,
-      totalAmount: 35996,
-      bookingDate: "2024-05-18",
-      departure: "2025-06-15",
-      status: "Pending",
-      paymentStatus: "Partial"
-    },
-    {
-      id: 3,
-      tourName: "Dwarka Darshan",
-      customerName: "Meera Patel",
-      email: "meera.patel@email.com",
-      phone: "+91 76543 21098",
-      pilgrims: 1,
-      totalAmount: 15999,
-      bookingDate: "2024-05-20",
-      departure: "2025-06-20",
-      status: "Confirmed",
-      paymentStatus: "Paid"
-    }
-  ]);
-
+  const { signOut } = useAuth();
+  const [tours, setTours] = useState<Tour[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [isAddTourOpen, setIsAddTourOpen] = useState(false);
-  const [selectedTour, setSelectedTour] = useState(null);
+  const [loading, setLoading] = useState(true);
   
   const [newTour, setNewTour] = useState({
     name: "",
     duration: "",
-    price: "",
-    description: "",
-    image: "",
-    nextDeparture: ""
+    transport_mode: "bus",
+    destinations: "",
+    departure_date: "",
+    cost: "",
+    cost_details: "",
+    description: ""
   });
 
-  const handleAddTour = () => {
-    if (!newTour.name || !newTour.duration || !newTour.price) {
+  useEffect(() => {
+    fetchTours();
+    fetchBookings();
+  }, []);
+
+  const fetchTours = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('tours')
+        .select('*')
+        .order('departure_date', { ascending: true });
+
+      if (error) throw error;
+      setTours(data || []);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load tours",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const fetchBookings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('bookings')
+        .select(`
+          *,
+          tours (name)
+        `)
+        .order('booking_date', { ascending: false });
+
+      if (error) throw error;
+      setBookings(data || []);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load bookings",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddTour = async () => {
+    if (!newTour.name || !newTour.duration || !newTour.cost) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
@@ -116,63 +115,111 @@ const AdminDashboard = () => {
       return;
     }
 
-    const tour = {
-      id: tours.length + 1,
-      name: newTour.name,
-      duration: newTour.duration,
-      price: parseInt(newTour.price),
-      description: newTour.description,
-      image: newTour.image || "https://images.unsplash.com/photo-1466442929976-97f336a657be",
-      status: "Active",
-      bookings: 0,
-      rating: 0,
-      nextDeparture: newTour.nextDeparture
-    };
+    try {
+      const { error } = await supabase
+        .from('tours')
+        .insert({
+          name: newTour.name,
+          duration: newTour.duration,
+          transport_mode: newTour.transport_mode,
+          destinations: newTour.destinations,
+          departure_date: newTour.departure_date,
+          cost: parseInt(newTour.cost),
+          cost_details: newTour.cost_details,
+          description: newTour.description
+        });
 
-    setTours([...tours, tour]);
-    setNewTour({
-      name: "",
-      duration: "",
-      price: "",
-      description: "",
-      image: "",
-      nextDeparture: ""
-    });
-    setIsAddTourOpen(false);
+      if (error) throw error;
 
-    toast({
-      title: "Success",
-      description: "Tour added successfully!"
-    });
+      setNewTour({
+        name: "",
+        duration: "",
+        transport_mode: "bus",
+        destinations: "",
+        departure_date: "",
+        cost: "",
+        cost_details: "",
+        description: ""
+      });
+      setIsAddTourOpen(false);
+      fetchTours();
+
+      toast({
+        title: "Success",
+        description: "Tour added successfully!"
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add tour",
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleDeleteTour = (id: number) => {
-    setTours(tours.filter(tour => tour.id !== id));
-    toast({
-      title: "Success",
-      description: "Tour deleted successfully!"
-    });
+  const handleDeleteTour = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('tours')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      fetchTours();
+      toast({
+        title: "Success",
+        description: "Tour deleted successfully!"
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete tour",
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleUpdateBookingStatus = (bookingId: number, newStatus: string) => {
-    setBookings(bookings.map(booking => 
-      booking.id === bookingId 
-        ? { ...booking, status: newStatus }
-        : booking
-    ));
-    
-    toast({
-      title: "Success",
-      description: `Booking status updated to ${newStatus}`
-    });
+  const handleUpdateBookingStatus = async (bookingId: string, newStatus: string) => {
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: newStatus })
+        .eq('id', bookingId);
+
+      if (error) throw error;
+      
+      fetchBookings();
+      toast({
+        title: "Success",
+        description: `Booking status updated to ${newStatus}`
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update booking status",
+        variant: "destructive"
+      });
+    }
   };
 
   const totalRevenue = bookings
-    .filter(booking => booking.paymentStatus === "Paid")
-    .reduce((sum, booking) => sum + booking.totalAmount, 0);
+    .filter(booking => booking.status === 'confirmed')
+    .reduce((sum, booking) => {
+      const tour = tours.find(t => t.id === booking.tour_id);
+      return sum + (tour ? tour.cost * booking.number_of_people : 0);
+    }, 0);
 
   const totalBookings = bookings.length;
-  const activeTours = tours.filter(tour => tour.status === "Active").length;
+  const activeTours = tours.length;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-xl">Loading dashboard...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-temple-cream">
@@ -188,105 +235,134 @@ const AdminDashboard = () => {
             </p>
           </div>
           
-          <Dialog open={isAddTourOpen} onOpenChange={setIsAddTourOpen}>
-            <DialogTrigger asChild>
-              <Button className="btn-temple">
-                <Plus className="w-4 h-4 mr-2" />
-                Add New Tour
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle className="font-temple text-temple-maroon">Add New Tour</DialogTitle>
-                <DialogDescription>
-                  Create a new pilgrimage tour package
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="name">Tour Name *</Label>
-                  <Input
-                    id="name"
-                    value={newTour.name}
-                    onChange={(e) => setNewTour({...newTour, name: e.target.value})}
-                    placeholder="e.g., Kedarnath Yatra"
-                  />
+          <div className="flex space-x-4">
+            <Dialog open={isAddTourOpen} onOpenChange={setIsAddTourOpen}>
+              <DialogTrigger asChild>
+                <Button className="btn-temple">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add New Tour
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md max-h-[80vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle className="font-temple text-temple-maroon">Add New Tour</DialogTitle>
+                  <DialogDescription>
+                    Create a new pilgrimage tour package
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="name">Tour Name *</Label>
+                    <Input
+                      id="name"
+                      value={newTour.name}
+                      onChange={(e) => setNewTour({...newTour, name: e.target.value})}
+                      placeholder="e.g., Kedarnath Yatra"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="duration">Duration *</Label>
+                    <Input
+                      id="duration"
+                      value={newTour.duration}
+                      onChange={(e) => setNewTour({...newTour, duration: e.target.value})}
+                      placeholder="e.g., 7 Days / 6 Nights"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="transport_mode">Transport Mode *</Label>
+                    <select
+                      id="transport_mode"
+                      value={newTour.transport_mode}
+                      onChange={(e) => setNewTour({...newTour, transport_mode: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    >
+                      <option value="bus">Bus</option>
+                      <option value="flight">Flight</option>
+                    </select>
+                  </div>
+                  <div>
+                    <Label htmlFor="destinations">Destinations *</Label>
+                    <Textarea
+                      id="destinations"
+                      value={newTour.destinations}
+                      onChange={(e) => setNewTour({...newTour, destinations: e.target.value})}
+                      placeholder="List of destinations separated by commas"
+                      rows={3}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="departure_date">Departure Date *</Label>
+                    <Input
+                      id="departure_date"
+                      type="date"
+                      value={newTour.departure_date}
+                      onChange={(e) => setNewTour({...newTour, departure_date: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="cost">Cost (₹) *</Label>
+                    <Input
+                      id="cost"
+                      type="number"
+                      value={newTour.cost}
+                      onChange={(e) => setNewTour({...newTour, cost: e.target.value})}
+                      placeholder="e.g., 25999"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="cost_details">Cost Details</Label>
+                    <Input
+                      id="cost_details"
+                      value={newTour.cost_details}
+                      onChange={(e) => setNewTour({...newTour, cost_details: e.target.value})}
+                      placeholder="e.g., GST inclusive + Airfare separately"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="description">Description</Label>
+                    <Textarea
+                      id="description"
+                      value={newTour.description}
+                      onChange={(e) => setNewTour({...newTour, description: e.target.value})}
+                      placeholder="Brief description of the tour"
+                      rows={3}
+                    />
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button onClick={handleAddTour} className="btn-temple flex-1">
+                      Add Tour
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setIsAddTourOpen(false)}
+                      className="flex-1"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="duration">Duration *</Label>
-                  <Input
-                    id="duration"
-                    value={newTour.duration}
-                    onChange={(e) => setNewTour({...newTour, duration: e.target.value})}
-                    placeholder="e.g., 7 Days / 6 Nights"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="price">Price (₹) *</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    value={newTour.price}
-                    onChange={(e) => setNewTour({...newTour, price: e.target.value})}
-                    placeholder="e.g., 25999"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    value={newTour.description}
-                    onChange={(e) => setNewTour({...newTour, description: e.target.value})}
-                    placeholder="Brief description of the tour"
-                    rows={3}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="image">Image URL</Label>
-                  <Input
-                    id="image"
-                    value={newTour.image}
-                    onChange={(e) => setNewTour({...newTour, image: e.target.value})}
-                    placeholder="https://example.com/image.jpg"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="departure">Next Departure</Label>
-                  <Input
-                    id="departure"
-                    type="date"
-                    value={newTour.nextDeparture}
-                    onChange={(e) => setNewTour({...newTour, nextDeparture: e.target.value})}
-                  />
-                </div>
-                <div className="flex space-x-2">
-                  <Button onClick={handleAddTour} className="btn-temple flex-1">
-                    Add Tour
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setIsAddTourOpen(false)}
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
+              </DialogContent>
+            </Dialog>
+            
+            <Button variant="outline" onClick={signOut}>
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="card-temple">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Total Revenue</CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">Confirmed Revenue</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-temple-maroon">
                 ₹{totalRevenue.toLocaleString()}
               </div>
-              <p className="text-sm text-green-600 mt-1">+12% from last month</p>
+              <p className="text-sm text-gray-600 mt-1">From confirmed bookings</p>
             </CardContent>
           </Card>
 
@@ -296,7 +372,7 @@ const AdminDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-temple-maroon">{totalBookings}</div>
-              <p className="text-sm text-green-600 mt-1">+8% from last month</p>
+              <p className="text-sm text-gray-600 mt-1">All booking requests</p>
             </CardContent>
           </Card>
 
@@ -312,14 +388,13 @@ const AdminDashboard = () => {
 
           <Card className="card-temple">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">Average Rating</CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">Pending Bookings</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-temple-maroon">4.8</div>
-              <div className="flex items-center mt-1">
-                <Star className="w-4 h-4 text-temple-gold fill-current" />
-                <span className="text-sm text-gray-600 ml-1">Excellent</span>
+              <div className="text-2xl font-bold text-temple-maroon">
+                {bookings.filter(b => b.status === 'pending').length}
               </div>
+              <p className="text-sm text-gray-600 mt-1">Awaiting confirmation</p>
             </CardContent>
           </Card>
         </div>
@@ -336,69 +411,54 @@ const AdminDashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {tours.map((tour) => (
                 <Card key={tour.id} className="card-temple">
-                  <div className="relative">
-                    <img 
-                      src={tour.image} 
-                      alt={tour.name}
-                      className="w-full h-48 object-cover rounded-t-xl"
-                    />
-                    <Badge 
-                      className={`absolute top-4 right-4 ${
-                        tour.status === 'Active' 
-                          ? 'bg-green-500 hover:bg-green-600' 
-                          : 'bg-red-500 hover:bg-red-600'
-                      }`}
-                    >
-                      {tour.status}
-                    </Badge>
-                  </div>
-
                   <CardHeader>
                     <div className="flex justify-between items-start">
                       <CardTitle className="text-lg font-temple text-temple-maroon">
                         {tour.name}
                       </CardTitle>
-                      <span className="text-lg font-bold text-saffron-600">
-                        ₹{tour.price.toLocaleString()}
-                      </span>
+                      <Badge variant="outline" className="border-saffron-600 text-saffron-600">
+                        {tour.transport_mode === 'bus' ? (
+                          <><Bus className="w-3 h-3 mr-1" /> Bus</>
+                        ) : (
+                          <><Plane className="w-3 h-3 mr-1" /> Flight</>
+                        )}
+                      </Badge>
                     </div>
-                    <CardDescription>{tour.description}</CardDescription>
+                    <CardDescription>{tour.duration}</CardDescription>
                   </CardHeader>
 
                   <CardContent className="space-y-4">
-                    <div className="flex justify-between text-sm text-gray-600">
-                      <span>{tour.duration}</span>
-                      <span>{tour.bookings} bookings</span>
-                    </div>
-
-                    <div className="flex items-center space-x-4 text-sm">
-                      <div className="flex items-center space-x-1">
-                        <Star className="w-4 h-4 text-temple-gold fill-current" />
-                        <span>{tour.rating}</span>
+                    <div className="text-sm text-gray-600">
+                      <div className="flex items-center space-x-1 mb-2">
+                        <MapPin className="w-4 h-4 text-saffron-600" />
+                        <span className="line-clamp-2">{tour.destinations}</span>
                       </div>
                       <div className="flex items-center space-x-1">
-                        <Calendar className="w-4 h-4 text-gray-500" />
-                        <span>{new Date(tour.nextDeparture).toLocaleDateString()}</span>
+                        <Calendar className="w-4 h-4 text-temple-gold" />
+                        <span>{new Date(tour.departure_date).toLocaleDateString()}</span>
                       </div>
                     </div>
 
-                    <div className="flex space-x-2">
-                      <Button size="sm" variant="outline" className="flex-1">
-                        <Eye className="w-4 h-4 mr-1" />
-                        View
-                      </Button>
-                      <Button size="sm" variant="outline" className="flex-1">
-                        <Edit className="w-4 h-4 mr-1" />
-                        Edit
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        className="text-red-600 hover:bg-red-50"
-                        onClick={() => handleDeleteTour(tour.id)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                    <div className="border-t pt-4">
+                      <div className="text-lg font-bold text-saffron-600 mb-2">
+                        ₹{tour.cost.toLocaleString()}
+                      </div>
+                      <p className="text-xs text-gray-500 mb-4">{tour.cost_details}</p>
+                      
+                      <div className="flex space-x-2">
+                        <Button size="sm" variant="outline" className="flex-1">
+                          <Edit className="w-4 h-4 mr-1" />
+                          Edit
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="text-red-600 hover:bg-red-50"
+                          onClick={() => handleDeleteTour(tour.id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -415,46 +475,34 @@ const AdminDashboard = () => {
                     <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-center">
                       <div>
                         <h3 className="font-temple font-semibold text-temple-maroon">
-                          {booking.customerName}
+                          {booking.customer_name}
                         </h3>
                         <p className="text-sm text-gray-600">{booking.email}</p>
-                        <p className="text-sm text-gray-600">{booking.phone}</p>
+                        <p className="text-sm text-gray-600">{booking.mobile_number}</p>
                       </div>
 
                       <div>
-                        <p className="font-medium">{booking.tourName}</p>
+                        <p className="font-medium">{booking.tours.name}</p>
                         <p className="text-sm text-gray-600">
-                          {booking.pilgrims} pilgrim{booking.pilgrims > 1 ? 's' : ''}
+                          {booking.number_of_people} person{booking.number_of_people > 1 ? 's' : ''}
                         </p>
                       </div>
 
                       <div>
-                        <p className="font-medium">₹{booking.totalAmount.toLocaleString()}</p>
-                        <Badge 
-                          variant={booking.paymentStatus === 'Paid' ? 'default' : 'secondary'}
-                          className={
-                            booking.paymentStatus === 'Paid' 
-                              ? 'bg-green-500 hover:bg-green-600' 
-                              : 'bg-orange-500 hover:bg-orange-600 text-white'
-                          }
-                        >
-                          {booking.paymentStatus}
-                        </Badge>
-                      </div>
-
-                      <div>
-                        <p className="text-sm text-gray-600">Departure</p>
+                        <p className="text-sm text-gray-600">Booking Date</p>
                         <p className="font-medium">
-                          {new Date(booking.departure).toLocaleDateString()}
+                          {new Date(booking.booking_date).toLocaleDateString()}
                         </p>
                       </div>
 
                       <div>
                         <Badge 
-                          variant={booking.status === 'Confirmed' ? 'default' : 'secondary'}
+                          variant={booking.status === 'confirmed' ? 'default' : booking.status === 'cancelled' ? 'destructive' : 'secondary'}
                           className={
-                            booking.status === 'Confirmed' 
+                            booking.status === 'confirmed' 
                               ? 'bg-green-500 hover:bg-green-600' 
+                              : booking.status === 'cancelled'
+                              ? 'bg-red-500 hover:bg-red-600'
                               : 'bg-yellow-500 hover:bg-yellow-600 text-white'
                           }
                         >
@@ -462,15 +510,25 @@ const AdminDashboard = () => {
                         </Badge>
                       </div>
 
-                      <div className="flex space-x-2">
-                        {booking.status === 'Pending' && (
-                          <Button 
-                            size="sm" 
-                            className="btn-temple"
-                            onClick={() => handleUpdateBookingStatus(booking.id, 'Confirmed')}
-                          >
-                            Confirm
-                          </Button>
+                      <div className="col-span-2 flex space-x-2">
+                        {booking.status === 'pending' && (
+                          <>
+                            <Button 
+                              size="sm" 
+                              className="btn-temple"
+                              onClick={() => handleUpdateBookingStatus(booking.id, 'confirmed')}
+                            >
+                              Confirm
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              className="text-red-600 hover:bg-red-50"
+                              onClick={() => handleUpdateBookingStatus(booking.id, 'cancelled')}
+                            >
+                              Cancel
+                            </Button>
+                          </>
                         )}
                         <Button size="sm" variant="outline">
                           <Eye className="w-4 h-4" />
