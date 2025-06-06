@@ -9,11 +9,10 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface BookingFormProps {
   tourId: string;
-  tourName: string;
-  onClose: () => void;
+  onSuccess: () => void;
 }
 
-const BookingForm = ({ tourId, tourName, onClose }: BookingFormProps) => {
+const BookingForm = ({ tourId, onSuccess }: BookingFormProps) => {
   const [formData, setFormData] = useState({
     customerName: "",
     email: "",
@@ -45,7 +44,7 @@ const BookingForm = ({ tourId, tourName, onClose }: BookingFormProps) => {
         description: "We will call you shortly to confirm your booking and collect payment.",
       });
 
-      onClose();
+      onSuccess();
     } catch (error) {
       toast({
         title: "Error",
@@ -61,7 +60,7 @@ const BookingForm = ({ tourId, tourName, onClose }: BookingFormProps) => {
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle className="font-temple text-temple-maroon">Book Your Journey</CardTitle>
-        <CardDescription>{tourName}</CardDescription>
+        <CardDescription>Secure your pilgrimage booking</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -112,12 +111,9 @@ const BookingForm = ({ tourId, tourName, onClose }: BookingFormProps) => {
             />
           </div>
           
-          <div className="flex space-x-2 pt-4">
-            <Button type="submit" className="btn-temple flex-1" disabled={loading}>
+          <div className="pt-4">
+            <Button type="submit" className="btn-temple w-full" disabled={loading}>
               {loading ? 'Submitting...' : 'Submit Booking Request'}
-            </Button>
-            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
-              Cancel
             </Button>
           </div>
         </form>
