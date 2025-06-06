@@ -1,676 +1,267 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
+import { useParams, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Separator } from "@/components/ui/separator";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Calendar, Clock, MapPin, Users, Star, Check, X, Phone, Mail } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Calendar, MapPin, Users, Clock, Phone, Mail, ArrowLeft, Star } from "lucide-react";
 import BookingForm from "@/components/BookingForm";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Tour {
+  id: string;
+  name: string;
+  duration: string;
+  transport_mode: string;
+  destinations: string;
+  departure_date: string;
+  cost: number;
+  cost_details: string;
+  description?: string;
+}
 
 const TripDetail = () => {
   const { slug } = useParams();
-  const navigate = useNavigate();
-  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [tour, setTour] = useState<Tour | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const { toast } = useToast();
 
-  // Sample trip data with human-friendly slugs
-  const tripData = {
-    "kashi-yatra": {
-      name: "Kashi Yatra – 5 Days Spiritual Journey",
-      duration: "5 Nights / 6 Days",
-      price: "₹12,499",
-      nextDeparture: "10 June 2025",
-      image: "https://images.unsplash.com/photo-1466442929976-97f336a657be?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
-      rating: 4.8,
-      pilgrims: 245,
-      highlights: [
-        "Deluxe 3★ accommodation",
-        "Pure Veg Meals",
-        "AC Volvo transport",
-        "Guided Darshan & Pooja",
-        "Special Rudrabhishek"
-      ],
-      description: "Experience the divine energy of Kashi, one of the seven Moksha-sthalas. This sacred journey includes VIP darshans, Ganga Aarti participation, and spiritual rituals guided by expert priests.",
-      itinerary: [
-        {
-          day: 1,
-          title: "Arrival & Ganga Aarti",
-          activities: [
-            "Morning: Arrive Varanasi Railway Station/Airport",
-            "Check-in at Hotel Ganpati Inn (3★)",
-            "Afternoon: Rest and freshen up",
-            "Evening: Attend Ganga Aarti at Dashashwamedh Ghat",
-            "Dinner at hotel (8 PM)"
-          ]
-        },
-        {
-          day: 2,
-          title: "Kashi Vishwanath & Temple Tour",
-          activities: [
-            "Early Morning: Ganga Snan at 5 AM",
-            "Breakfast at hotel",
-            "Visit Kashi Vishwanath – VIP Darshan slot at 10 AM",
-            "Rudrabhishek ceremony at 11 AM",
-            "Lunch: Pure vegetarian meal",
-            "Afternoon: Annapurna Temple, Sankat Mochan Hanuman Temple",
-            "Evening: Free time for personal prayers"
-          ]
-        },
-        {
-          day: 3,
-          title: "Sarnath Excursion",
-          activities: [
-            "Morning: Travel to Sarnath (2 hrs by AC van)",
-            "Visit Dhamek Stupa and Sarnath Museum",
-            "Meditation session at Deer Park",
-            "Lunch at local restaurant",
-            "Return to Varanasi",
-            "Evening: Boat ride on Ganga with Aarti viewing"
-          ]
-        },
-        {
-          day: 4,
-          title: "Prayagraj (Allahabad) Journey",
-          activities: [
-            "Morning: Check-out and travel to Prayagraj (3 hrs by AC bus)",
-            "Check-in at hotel",
-            "Afternoon: Triveni Sangam boat ride",
-            "Ganga Snan at confluence point",
-            "Visit Hanuman Temple (lying Hanuman)",
-            "Evening: Aarti at Triveni Sangam"
-          ]
-        },
-        {
-          day: 5,
-          title: "Chitrakoot Darshan & Return",
-          activities: [
-            "Early morning: Travel to Chitrakoot (2 hrs)",
-            "Visit Ram Ghat, Bharat Milap Temple",
-            "Hanuman Dhara and Sphatik Shila",
-            "Lunch at Chitrakoot",
-            "Return journey to Varanasi",
-            "Farewell dinner"
-          ]
-        },
-        {
-          day: 6,
-          title: "Departure",
-          activities: [
-            "Morning: Final darshan at local temple",
-            "Check-out and transfer to railway station/airport",
-            "Journey concludes with divine blessings"
-          ]
-        }
-      ],
-      accommodation: {
-        hotels: [
-          "Hotel Ganpati Inn, Varanasi – 3★ Deluxe",
-          "Ganga View Hotel, Prayagraj – 3★"
-        ],
-        roomType: "Double sharing / Triple sharing available",
-        amenities: ["Wi-Fi", "Attached bathroom", "Hot water", "AC rooms", "Room service"]
-      },
-      meals: {
-        included: "All meals: Breakfast, Lunch, Dinner (Pure vegetarian)",
-        special: "Jain meals available on request",
-        note: "Local specialties and prasadam included"
-      },
-      transport: {
-        pickup: "Varanasi Railway Station / Airport - 10 AM onward",
-        drop: "Varanasi Railway Station / Airport on last day",
-        vehicle: "AC Volvo bus for intercity, Tempo Traveller for local",
-        luggage: "One suitcase + one small bag per person"
-      },
-      spiritualArrangements: [
-        "Rudrabhishek at Kashi Vishwanath",
-        "Ganga Snan & Aarti at Triveni Sangam",
-        "VIP darshan passes included",
-        "Local pandit for temple guidance",
-        "All pooja samagri provided",
-        "Guided meditation sessions"
-      ],
-      inclusions: [
-        "Accommodation as specified",
-        "All meals (vegetarian)",
-        "AC transport throughout",
-        "Temple darshan fees & VIP passes",
-        "Guided poojas and priest charges",
-        "Government GST & service taxes",
-        "Experienced tour manager",
-        "24/7 support during yatra"
-      ],
-      exclusions: [
-        "Personal expenses (laundry, phone calls)",
-        "Tips & donations (optional)",
-        "Travel insurance",
-        "Airfare/train fare to Varanasi",
-        "Helicopter services (if opted)",
-        "Anything not mentioned in inclusions"
-      ],
-      pricing: {
-        doubleSharing: "₹12,499",
-        singleSupplement: "+ ₹2,000",
-        child5to12: "₹9,999",
-        groupDiscount: "5% off for groups of 5+",
-        earlyBird: "₹500 discount if booked 30 days advance"
+  useEffect(() => {
+    if (slug) {
+      fetchTourBySlug(slug);
+    }
+  }, [slug]);
+
+  const fetchTourBySlug = async (tourSlug: string) => {
+    try {
+      // Since we don't store slugs in the database, we need to match by converting names to slugs
+      const { data: tours, error } = await supabase
+        .from('tours')
+        .select('*')
+        .gte('departure_date', new Date().toISOString().split('T')[0]);
+
+      if (error) throw error;
+
+      // Find tour by matching slug with converted name
+      const foundTour = tours?.find(tour => {
+        const tourSlug = tour.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        return tourSlug === slug;
+      });
+
+      if (foundTour) {
+        setTour(foundTour);
+      } else {
+        toast({
+          title: "Tour not found",
+          description: "The requested tour could not be found.",
+          variant: "destructive"
+        });
       }
-    },
-    "ujjain-darshan": {
-      name: "Ujjain Mahakaleshwar Yatra - 3 Days",
-      duration: "2 Nights / 3 Days",
-      price: "₹8,999",
-      nextDeparture: "15 June 2025",
-      image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
-      rating: 4.9,
-      pilgrims: 180,
-      highlights: [
-        "Bhasma Aarti at 4 AM",
-        "VIP Darshan",
-        "Kshipra River Snan",
-        "Local Temple Tour",
-        "Heritage Walk"
-      ],
-      description: "Visit the sacred Mahakaleshwar Jyotirlinga in Ujjain, experience the divine Bhasma Aarti, and explore ancient temples in this holy city.",
-      itinerary: [
-        {
-          day: 1,
-          title: "Arrival & Temple Darshan",
-          activities: [
-            "Morning: Arrive Ujjain Railway Station",
-            "Check-in at Hotel",
-            "Afternoon: Mahakaleshwar Temple Darshan",
-            "Evening: Kshipra River Aarti"
-          ]
-        },
-        {
-          day: 2,
-          title: "Bhasma Aarti & Temple Tour",
-          activities: [
-            "Early Morning: Bhasma Aarti at 4 AM",
-            "Morning: Local temple tour",
-            "Afternoon: Heritage walk in Ujjain",
-            "Evening: Free time"
-          ]
-        },
-        {
-          day: 3,
-          title: "Departure",
-          activities: [
-            "Morning: Final darshan",
-            "Check-out and departure"
-          ]
-        }
-      ],
-      accommodation: {
-        hotels: ["Hotel Rudra Palace, Ujjain – 3★"],
-        roomType: "Double sharing / Triple sharing available",
-        amenities: ["Wi-Fi", "Attached bathroom", "Hot water", "AC rooms"]
-      },
-      meals: {
-        included: "All meals: Breakfast, Lunch, Dinner (Pure vegetarian)",
-        special: "Jain meals available on request",
-        note: "Local specialties included"
-      },
-      transport: {
-        pickup: "Ujjain Railway Station",
-        drop: "Ujjain Railway Station",
-        vehicle: "AC Tempo Traveller for local sightseeing",
-        luggage: "One suitcase + one small bag per person"
-      },
-      spiritualArrangements: [
-        "Bhasma Aarti participation",
-        "VIP darshan passes",
-        "Local pandit guidance",
-        "Pooja samagri provided"
-      ],
-      inclusions: [
-        "Accommodation as specified",
-        "All meals (vegetarian)",
-        "Local transport",
-        "Temple darshan fees",
-        "Guided tours"
-      ],
-      exclusions: [
-        "Train/flight to Ujjain",
-        "Personal expenses",
-        "Travel insurance"
-      ],
-      pricing: {
-        doubleSharing: "₹8,999",
-        singleSupplement: "+ ₹1,500",
-        child5to12: "₹6,999",
-        groupDiscount: "5% off for groups of 5+",
-        earlyBird: "₹300 discount if booked 20 days advance"
-      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load tour details",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  const trip = tripData[slug as keyof typeof tripData];
-
-  if (!trip) {
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-amber-50">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Trip not found</h1>
-          <Button onClick={() => navigate("/")}>Return to Home</Button>
-        </div>
+      <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-temple-cream flex items-center justify-center">
+        <div className="text-xl font-temple text-temple-maroon">Loading tour details...</div>
       </div>
     );
   }
 
-  // Sample trip data - in a real app, this would come from an API
-  const faqs = [
-    {
-      question: "Is this trip suitable for senior citizens?",
-      answer: "Yes, we arrange minimal walking and wheelchair assistance on request. All vehicles are AC and comfortable."
-    },
-    {
-      question: "Can I request Jain or special dietary meals?",
-      answer: "Yes—inform us 7 days before departure. Jain meals and other dietary requirements can be arranged."
-    },
-    {
-      question: "What is the cancellation policy?",
-      answer: "50% refund if canceled 15–10 days prior; 25% refund 10-7 days prior; no refund within 7 days of departure."
-    },
-    {
-      question: "Do you arrange VIP passes at temples?",
-      answer: "Yes, VIP darshan passes are included in the package. Special arrangements can be made for additional fees."
-    },
-    {
-      question: "Is travel insurance included?",
-      answer: "No, travel insurance is not included. We strongly recommend purchasing travel insurance separately."
-    }
-  ];
+  if (!tour) {
+    return <Navigate to="/trips" replace />;
+  }
 
-  const testimonials = [
-    {
-      name: "Ritu S.",
-      city: "Mumbai",
-      rating: 5,
-      comment: "Absolutely life-changing experience! The guide made every ritual so special."
-    },
-    {
-      name: "Mohan K.",
-      city: "Chennai",
-      rating: 5,
-      comment: "Perfect organization from start to finish. Felt blessed throughout the journey."
-    },
-    {
-      name: "Priya M.",
-      city: "Pune",
-      rating: 5,
-      comment: "The spiritual arrangements were authentic and deeply moving. Highly recommended!"
-    }
-  ];
+  const handleBookingSuccess = () => {
+    setShowBookingForm(false);
+    toast({
+      title: "Booking Submitted!",
+      description: "We'll contact you soon to confirm your pilgrimage booking.",
+    });
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
-      {/* Hero Section */}
-      <section className="relative h-[60vh] overflow-hidden">
-        <img 
-          src={trip.image} 
-          alt={trip.name}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30"></div>
-        
-        <div className="absolute inset-0 flex items-center">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl text-white space-y-4">
-              <h1 className="text-4xl md:text-5xl font-temple font-bold">
-                {trip.name}
-              </h1>
-              <div className="flex flex-wrap items-center gap-4 text-lg">
-                <div className="flex items-center space-x-2">
-                  <Clock className="w-5 h-5" />
-                  <span>{trip.duration}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Calendar className="w-5 h-5" />
-                  <span>Next Departure: {trip.nextDeparture}</span>
-                </div>
-                <div className="text-2xl font-bold text-orange-300">
-                  {trip.price} per pilgrim
-                </div>
-              </div>
-              <Button 
-                className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg px-8 py-4 h-auto transition-all duration-300 transform hover:scale-105"
-                onClick={() => setIsBookingOpen(true)}
-              >
-                Book Now
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Quick Highlights Bar */}
-      <section className="bg-gradient-to-r from-orange-100 to-amber-100 py-4 border-b">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-6">
-            {trip.highlights.map((highlight, index) => (
-              <div key={index} className="flex items-center space-x-2 text-temple-maroon font-medium">
-                <Check className="w-4 h-4 text-orange-600" />
-                <span>{highlight}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
+    <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-temple-cream">
       <div className="container mx-auto px-4 py-8">
+        {/* Back Button */}
+        <div className="mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => window.history.back()}
+            className="text-temple-maroon hover:bg-temple-maroon/10"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to All Trips
+          </Button>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Overview */}
-            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-2xl font-temple text-temple-maroon">Trip Overview</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 leading-relaxed mb-4">{trip.description}</p>
-                <div className="flex items-center space-x-6 text-sm text-gray-500">
-                  <div className="flex items-center space-x-1">
-                    <Users className="w-4 h-4" />
-                    <span>{trip.pilgrims} pilgrims joined</span>
+          <div className="lg:col-span-2 space-y-6">
+            {/* Hero Card */}
+            <Card className="overflow-hidden border-0 shadow-xl">
+              <div className="relative h-64 bg-gradient-to-br from-saffron-400 to-orange-500">
+                <div className="absolute inset-0 mandala-bg opacity-20"></div>
+                <div className="absolute inset-0 bg-black/20"></div>
+                <div className="relative z-10 p-8 text-white h-full flex flex-col justify-end">
+                  <Badge 
+                    variant="secondary" 
+                    className="mb-4 bg-white/20 text-white border-white/30 w-fit"
+                  >
+                    {tour.transport_mode === 'bus' ? 'Bus Travel' : 'Flight + Bus'}
+                  </Badge>
+                  <h1 className="text-3xl md:text-4xl font-temple font-bold mb-2">
+                    {tour.name}
+                  </h1>
+                  <p className="text-lg opacity-90">{tour.duration}</p>
+                </div>
+              </div>
+
+              <CardContent className="p-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                  <div className="flex items-center space-x-3">
+                    <Calendar className="w-6 h-6 text-temple-gold" />
+                    <div>
+                      <p className="text-sm text-gray-600">Departure</p>
+                      <p className="font-semibold">
+                        {new Date(tour.departure_date).toLocaleDateString('en-IN', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric'
+                        })}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <Star className="w-4 h-4 text-orange-400 fill-current" />
-                    <span>{trip.rating} rating</span>
+
+                  <div className="flex items-center space-x-3">
+                    <Clock className="w-6 h-6 text-temple-bronze" />
+                    <div>
+                      <p className="text-sm text-gray-600">Duration</p>
+                      <p className="font-semibold">{tour.duration}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-3">
+                    <Users className="w-6 h-6 text-saffron-600" />
+                    <div>
+                      <p className="text-sm text-gray-600">Group Size</p>
+                      <p className="font-semibold">Small Groups</p>
+                    </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
 
-            {/* Detailed Itinerary */}
-            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-2xl font-temple text-temple-maroon">Day-by-Day Itinerary</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Accordion type="multiple" className="w-full">
-                  {trip.itinerary.map((day) => (
-                    <AccordionItem key={day.day} value={`day-${day.day}`}>
-                      <AccordionTrigger className="text-left">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                            {day.day}
-                          </div>
-                          <span className="font-temple font-semibold text-temple-maroon">
-                            Day {day.day}: {day.title}
-                          </span>
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <ul className="space-y-2 ml-11">
-                          {day.activities.map((activity, index) => (
-                            <li key={index} className="flex items-start space-x-2">
-                              <div className="w-1.5 h-1.5 bg-orange-500 rounded-full mt-2 flex-shrink-0"></div>
-                              <span className="text-gray-600">{activity}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </CardContent>
-            </Card>
-
-            {/* Accommodation & Meals */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
-                <CardHeader>
-                  <CardTitle className="text-xl font-temple text-temple-maroon">Accommodation</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {trip.accommodation.hotels.map((hotel, index) => (
-                    <div key={index} className="font-medium text-gray-700">{hotel}</div>
-                  ))}
-                  <p className="text-sm text-gray-600">{trip.accommodation.roomType}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {trip.accommodation.amenities.map((amenity, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs">
-                        {amenity}
-                      </Badge>
-                    ))}
+                <div className="border-t pt-6">
+                  <h2 className="text-xl font-temple font-semibold text-temple-maroon mb-4">
+                    Sacred Destinations
+                  </h2>
+                  <div className="flex items-start space-x-3 mb-6">
+                    <MapPin className="w-6 h-6 text-saffron-600 mt-1 flex-shrink-0" />
+                    <p className="text-gray-700 leading-relaxed">{tour.destinations}</p>
                   </div>
-                </CardContent>
-              </Card>
 
-              <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
-                <CardHeader>
-                  <CardTitle className="text-xl font-temple text-temple-maroon">Meals</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <p className="font-medium text-gray-700">{trip.meals.included}</p>
-                  <p className="text-sm text-gray-600">{trip.meals.special}</p>
-                  <p className="text-sm text-gray-600">{trip.meals.note}</p>
-                </CardContent>
-              </Card>
-            </div>
+                  {tour.description && (
+                    <>
+                      <h2 className="text-xl font-temple font-semibold text-temple-maroon mb-4">
+                        About This Pilgrimage
+                      </h2>
+                      <p className="text-gray-700 leading-relaxed mb-6">{tour.description}</p>
+                    </>
+                  )}
 
-            {/* Spiritual Arrangements */}
-            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-2xl font-temple text-temple-maroon">Spiritual Experiences & Poojas</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {trip.spiritualArrangements.map((arrangement, index) => (
-                    <div key={index} className="flex items-start space-x-2">
-                      <Check className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
-                      <span className="text-gray-700">{arrangement}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Inclusions & Exclusions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl border-green-200">
-                <CardHeader>
-                  <CardTitle className="text-xl font-temple text-green-700 flex items-center space-x-2">
-                    <Check className="w-5 h-5" />
-                    <span>Inclusions</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {trip.inclusions.map((item, index) => (
-                      <li key={index} className="flex items-start space-x-2">
-                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-gray-700">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl border-red-200">
-                <CardHeader>
-                  <CardTitle className="text-xl font-temple text-red-700 flex items-center space-x-2">
-                    <X className="w-5 h-5" />
-                    <span>Exclusions</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {trip.exclusions.map((item, index) => (
-                      <li key={index} className="flex items-start space-x-2">
-                        <X className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-gray-700">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* FAQs */}
-            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-2xl font-temple text-temple-maroon">Frequently Asked Questions</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Accordion type="single" collapsible className="w-full">
-                  {faqs.map((faq, index) => (
-                    <AccordionItem key={index} value={`faq-${index}`}>
-                      <AccordionTrigger className="text-left font-medium">
-                        {faq.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-gray-600">
-                        {faq.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </CardContent>
-            </Card>
-
-            {/* Testimonials */}
-            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-2xl font-temple text-temple-maroon">What Our Pilgrims Say</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {testimonials.map((testimonial, index) => (
-                    <div key={index} className="bg-orange-50 p-4 rounded-lg">
-                      <div className="flex items-center space-x-1 mb-2">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 text-orange-500 fill-current" />
-                        ))}
-                      </div>
-                      <p className="text-sm text-gray-600 italic mb-3">"{testimonial.comment}"</p>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-6 h-6 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center text-white text-xs font-semibold">
-                          {testimonial.name.charAt(0)}
-                        </div>
-                        <div>
-                          <p className="text-xs font-medium text-temple-maroon">{testimonial.name}</p>
-                          <p className="text-xs text-gray-500">{testimonial.city}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                  <div className="bg-saffron-50 rounded-lg p-6">
+                    <h3 className="text-lg font-semibold text-temple-maroon mb-3 flex items-center">
+                      <Star className="w-5 h-5 mr-2 text-saffron-600" />
+                      What's Included
+                    </h3>
+                    <ul className="space-y-2 text-gray-700">
+                      <li>• Comfortable accommodation</li>
+                      <li>• All transportation as per itinerary</li>
+                      <li>• Experienced spiritual guide</li>
+                      <li>• Entry fees to temples and sites</li>
+                      <li>• Daily breakfast and dinner</li>
+                      <li>• Group prayers and spiritual discussions</li>
+                    </ul>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Sidebar */}
+          {/* Booking Sidebar */}
           <div className="space-y-6">
-            {/* Booking Card */}
-            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl sticky top-24">
-              <CardHeader>
-                <CardTitle className="text-xl font-temple text-temple-maroon">Price & Booking</CardTitle>
+            {/* Price Card */}
+            <Card className="border-0 shadow-xl sticky top-6">
+              <CardHeader className="bg-gradient-to-r from-temple-maroon to-saffron-600 text-white">
+                <CardTitle className="text-2xl font-temple">Book Your Journey</CardTitle>
+                <CardDescription className="text-white/90">
+                  Secure your spot on this sacred pilgrimage
+                </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Per Person (Double Sharing)</span>
-                    <span className="font-bold text-orange-600">{trip.pricing.doubleSharing}</span>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-600">
-                    <span>Single Occupancy</span>
-                    <span>{trip.pricing.singleSupplement}</span>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-600">
-                    <span>Child (5-12 yrs)</span>
-                    <span>{trip.pricing.child5to12}</span>
-                  </div>
+              <CardContent className="p-6">
+                <div className="text-center mb-6">
+                  <span className="text-3xl font-bold text-saffron-600">
+                    ₹{tour.cost.toLocaleString()}
+                  </span>
+                  <p className="text-sm text-gray-600 mt-1">{tour.cost_details}</p>
                 </div>
 
-                <Separator />
-
-                <div className="space-y-2">
-                  <div className="bg-green-100 p-3 rounded-lg">
-                    <p className="text-sm text-green-800 font-medium">{trip.pricing.groupDiscount}</p>
+                {!showBookingForm ? (
+                  <Button 
+                    onClick={() => setShowBookingForm(true)}
+                    className="w-full btn-temple text-lg py-3"
+                  >
+                    Book Now
+                  </Button>
+                ) : (
+                  <div className="space-y-4">
+                    <BookingForm 
+                      tourId={tour.id}
+                      onSuccess={handleBookingSuccess}
+                    />
+                    <Button 
+                      variant="ghost" 
+                      onClick={() => setShowBookingForm(false)}
+                      className="w-full"
+                    >
+                      Cancel
+                    </Button>
                   </div>
-                  <div className="bg-blue-100 p-3 rounded-lg">
-                    <p className="text-sm text-blue-800 font-medium">{trip.pricing.earlyBird}</p>
+                )}
+
+                <div className="mt-6 pt-6 border-t space-y-3">
+                  <h4 className="font-semibold text-temple-maroon">Need Help?</h4>
+                  <div className="space-y-2">
+                    <a 
+                      href="tel:+919876543210" 
+                      className="flex items-center space-x-2 text-gray-600 hover:text-temple-maroon transition-colors"
+                    >
+                      <Phone className="w-4 h-4" />
+                      <span>+91 98765 43210</span>
+                    </a>
+                    <a 
+                      href="mailto:info@omytours.com" 
+                      className="flex items-center space-x-2 text-gray-600 hover:text-temple-maroon transition-colors"
+                    >
+                      <Mail className="w-4 h-4" />
+                      <span>info@omytours.com</span>
+                    </a>
                   </div>
-                </div>
-
-                <Button 
-                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg py-6 transition-all duration-300 transform hover:scale-105"
-                  onClick={() => setIsBookingOpen(true)}
-                >
-                  Book This Yatra
-                </Button>
-
-                <div className="text-center space-y-2">
-                  <p className="text-sm text-gray-600">Secure payment • 50% advance</p>
-                  <div className="flex justify-center space-x-2">
-                    {["Razorpay", "UPI", "Cards"].map((method) => (
-                      <Badge key={method} variant="outline" className="text-xs">
-                        {method}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Contact Support */}
-            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
-              <CardHeader>
-                <CardTitle className="text-lg font-temple text-temple-maroon">Need Help?</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full justify-start border-orange-200 text-orange-600 hover:bg-orange-50">
-                  <Phone className="w-4 h-4 mr-2" />
-                  Call +91 73488 69099
-                </Button>
-                <Button variant="outline" className="w-full justify-start border-orange-200 text-orange-600 hover:bg-orange-50">
-                  <Mail className="w-4 h-4 mr-2" />
-                  connect@omytravels.com
-                </Button>
-                <p className="text-xs text-gray-600 text-center">
-                  24/7 Yatra Support Available
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Trust Indicators */}
-            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
-              <CardContent className="pt-6 text-center space-y-3">
-                <div className="flex items-center justify-center space-x-1">
-                  <Star className="w-4 h-4 text-orange-400 fill-current" />
-                  <span className="text-sm font-medium">2,000+ Happy Pilgrims</span>
-                </div>
-                <div className="flex items-center justify-center space-x-1">
-                  <Check className="w-4 h-4 text-green-600" />
-                  <span className="text-sm">Secure & Trusted</span>
-                </div>
-                <div className="flex items-center justify-center space-x-1">
-                  <Clock className="w-4 h-4 text-blue-600" />
-                  <span className="text-sm">9+ Years Experience</span>
                 </div>
               </CardContent>
             </Card>
           </div>
         </div>
       </div>
-
-      {/* Booking Dialog */}
-      <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="font-temple text-temple-maroon">
-              Book Your Pilgrimage
-            </DialogTitle>
-          </DialogHeader>
-          <BookingForm
-            tourId={slug || ""}
-            tourName={trip.name}
-            onClose={() => setIsBookingOpen(false)}
-          />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
