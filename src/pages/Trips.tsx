@@ -45,12 +45,18 @@ const Trips = () => {
       const { data, error } = await supabase
         .from('tours')
         .select('*')
-        .gte('departure_date', new Date().toISOString().split('T')[0]) // Only upcoming tours
+        .gte('departure_date', new Date().toISOString().split('T')[0])
         .order('departure_date', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching tours:', error);
+        throw error;
+      }
+      
+      console.log('Fetched tours:', data);
       setTours(data || []);
     } catch (error) {
+      console.error('Error in fetchTours:', error);
       toast({
         title: "Error",
         description: "Failed to load tours",
