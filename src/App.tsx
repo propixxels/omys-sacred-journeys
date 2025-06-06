@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import About from "./pages/About";
+import Trips from "./pages/Trips";
 import TripDetail from "./pages/TripDetail";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminLogin from "./components/AdminLogin";
@@ -30,6 +31,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/trips" element={<Trips />} />
                 <Route path="/trip/:slug" element={<TripDetail />} />
                 <Route path="/admin-login" element={<AdminLogin />} />
                 <Route 

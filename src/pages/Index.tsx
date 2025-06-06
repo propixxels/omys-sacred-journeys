@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -146,9 +145,9 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-temple-cream">
       {/* Hero Section */}
-      <section className="relative h-screen overflow-hidden">
+      <section className="relative min-h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0">
           {heroSlides.map((slide, index) => (
             <div
@@ -169,35 +168,29 @@ const Index = () => {
         
         <div className="relative z-10 h-full flex items-center">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl text-white space-y-6 animate-fade-in">
-              <div className="space-y-4">
-                <h1 className="text-5xl md:text-6xl font-temple font-bold leading-tight">
-                  Omy Travels
-                </h1>
-                <h2 className="text-3xl md:text-4xl font-temple text-orange-300">
-                  Sacred Journeys Begin Here
-                </h2>
-                <p className="text-xl md:text-2xl font-light leading-relaxed">
-                  Authentic Spiritual Experiences • Historic Temples • Divine Blessings
-                </p>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <div className="max-w-4xl">
+              <h1 className="text-5xl md:text-7xl font-temple font-bold text-left mb-6 text-white drop-shadow-2xl">
+                Sacred Journeys
+                <span className="block text-temple-gold">Await You</span>
+              </h1>
+              <p className="text-xl md:text-2xl text-left mb-8 text-white/90 max-w-2xl leading-relaxed drop-shadow-lg">
+                Experience divine darshan across India's most sacred temples with comfortable stays and expert guidance
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
+                  size="lg" 
+                  className="btn-temple text-lg px-8 py-4 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
                   asChild
-                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg px-8 py-4 h-auto transition-all duration-300 transform hover:scale-105"
                 >
-                  <Link to="#upcoming-yatras">
-                    <MapPin className="w-5 h-5 mr-2" />
-                    Explore Yatras
-                  </Link>
+                  <Link to="/trips">Explore All Tours</Link>
                 </Button>
                 <Button 
-                  variant="outline"
-                  className="border-2 border-white text-white hover:bg-white hover:text-orange-600 text-lg px-8 py-4 h-auto transition-all duration-300"
+                  size="lg" 
+                  variant="outline" 
+                  className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30 text-lg px-8 py-4 shadow-xl"
+                  asChild
                 >
-                  <Users className="w-5 h-5 mr-2" />
-                  Contact Us
+                  <Link to="/about">Learn More</Link>
                 </Button>
               </div>
             </div>
@@ -317,6 +310,26 @@ const Index = () => {
               </Card>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Add a "View All Trips" section before the testimonials */}
+      <section className="py-20 bg-gradient-to-r from-saffron-500 to-orange-500 relative overflow-hidden">
+        <div className="absolute inset-0 mandala-bg opacity-10"></div>
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <h2 className="text-4xl font-temple font-bold text-white mb-6">
+            Discover More Sacred Destinations
+          </h2>
+          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+            Explore our complete collection of pilgrimage tours across India
+          </p>
+          <Button 
+            size="lg" 
+            className="bg-white text-saffron-600 hover:bg-saffron-50 font-semibold px-8 py-4 text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+            asChild
+          >
+            <Link to="/trips">View All Trips</Link>
+          </Button>
         </div>
       </section>
 

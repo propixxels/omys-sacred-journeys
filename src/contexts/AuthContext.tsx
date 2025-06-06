@@ -24,17 +24,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('Auth state changed:', event, session);
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user?.email) {
           // Check if user is admin
-          const { data } = await supabase
+          const { data, error } = await supabase
             .from('admin_users')
             .select('id')
             .eq('email', session.user.email)
             .single();
           
+          console.log('Admin check result:', data, error);
           setIsAdmin(!!data);
         } else {
           setIsAdmin(false);
@@ -46,9 +48,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session:', session);
       setSession(session);
       setUser(session?.user ?? null);
-      setLoading(false);
+      
+      if (session?.user?.email) {
+        // Check if user is admin
+        supabase
+          .from('admin_users')
+          .select('id')
+          .eq('email', session.user.email)
+          .single()
+          .then(({ data }) => {
+            setIsAdmin(!!data);
+            setLoading(false);
+          });
+      } else {
+        setLoading(false);
+      }
     });
 
     return () => subscription.unsubscribe();
