@@ -29,20 +29,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(session?.user ?? null);
         
         if (session?.user?.email) {
-          // Check if user is admin using admin_users table
-          try {
-            const { data, error } = await supabase
-              .from('admin_users')
-              .select('id')
-              .eq('email', session.user.email)
-              .single();
-            
-            console.log('Admin check result:', data, error);
-            setIsAdmin(!!data && !error);
-          } catch (error) {
-            console.log('Admin check error:', error);
-            setIsAdmin(false);
-          }
+          // Check if user is admin
+          const { data, error } = await supabase
+            .from('admin_users')
+            .select('id')
+            .eq('email', session.user.email)
+            .single();
+          
+          console.log('Admin check result:', data, error);
+          setIsAdmin(!!data);
         } else {
           setIsAdmin(false);
         }
@@ -52,29 +47,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     );
 
     // Check for existing session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       console.log('Initial session:', session);
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user?.email) {
-        // Check if user is admin using admin_users table
-        try {
-          const { data, error } = await supabase
-            .from('admin_users')
-            .select('id')
-            .eq('email', session.user.email)
-            .single();
-          
-          console.log('Initial admin check result:', data, error);
-          setIsAdmin(!!data && !error);
-        } catch (error) {
-          console.log('Initial admin check error:', error);
-          setIsAdmin(false);
-        }
+        // Check if user is admin
+        supabase
+          .from('admin_users')
+          .select('id')
+          .eq('email', session.user.email)
+          .single()
+          .then(({ data }) => {
+            setIsAdmin(!!data);
+            setLoading(false);
+          });
+      } else {
+        setLoading(false);
       }
-      
-      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
