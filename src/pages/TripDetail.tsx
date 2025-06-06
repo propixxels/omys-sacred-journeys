@@ -10,11 +10,11 @@ import { Calendar, Clock, MapPin, Users, Star, Check, X, Phone, Mail } from "luc
 import BookingForm from "@/components/BookingForm";
 
 const TripDetail = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
-  // Sample trip data - in a real app, this would come from an API
+  // Sample trip data with human-friendly slugs
   const tripData = {
     "kashi-yatra": {
       name: "Kashi Yatra – 5 Days Spiritual Journey",
@@ -155,10 +155,98 @@ const TripDetail = () => {
         groupDiscount: "5% off for groups of 5+",
         earlyBird: "₹500 discount if booked 30 days advance"
       }
+    },
+    "ujjain-darshan": {
+      name: "Ujjain Mahakaleshwar Yatra - 3 Days",
+      duration: "2 Nights / 3 Days",
+      price: "₹8,999",
+      nextDeparture: "15 June 2025",
+      image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-1.2.1&auto=format&fit=crop&w=1200&q=80",
+      rating: 4.9,
+      pilgrims: 180,
+      highlights: [
+        "Bhasma Aarti at 4 AM",
+        "VIP Darshan",
+        "Kshipra River Snan",
+        "Local Temple Tour",
+        "Heritage Walk"
+      ],
+      description: "Visit the sacred Mahakaleshwar Jyotirlinga in Ujjain, experience the divine Bhasma Aarti, and explore ancient temples in this holy city.",
+      itinerary: [
+        {
+          day: 1,
+          title: "Arrival & Temple Darshan",
+          activities: [
+            "Morning: Arrive Ujjain Railway Station",
+            "Check-in at Hotel",
+            "Afternoon: Mahakaleshwar Temple Darshan",
+            "Evening: Kshipra River Aarti"
+          ]
+        },
+        {
+          day: 2,
+          title: "Bhasma Aarti & Temple Tour",
+          activities: [
+            "Early Morning: Bhasma Aarti at 4 AM",
+            "Morning: Local temple tour",
+            "Afternoon: Heritage walk in Ujjain",
+            "Evening: Free time"
+          ]
+        },
+        {
+          day: 3,
+          title: "Departure",
+          activities: [
+            "Morning: Final darshan",
+            "Check-out and departure"
+          ]
+        }
+      ],
+      accommodation: {
+        hotels: ["Hotel Rudra Palace, Ujjain – 3★"],
+        roomType: "Double sharing / Triple sharing available",
+        amenities: ["Wi-Fi", "Attached bathroom", "Hot water", "AC rooms"]
+      },
+      meals: {
+        included: "All meals: Breakfast, Lunch, Dinner (Pure vegetarian)",
+        special: "Jain meals available on request",
+        note: "Local specialties included"
+      },
+      transport: {
+        pickup: "Ujjain Railway Station",
+        drop: "Ujjain Railway Station",
+        vehicle: "AC Tempo Traveller for local sightseeing",
+        luggage: "One suitcase + one small bag per person"
+      },
+      spiritualArrangements: [
+        "Bhasma Aarti participation",
+        "VIP darshan passes",
+        "Local pandit guidance",
+        "Pooja samagri provided"
+      ],
+      inclusions: [
+        "Accommodation as specified",
+        "All meals (vegetarian)",
+        "Local transport",
+        "Temple darshan fees",
+        "Guided tours"
+      ],
+      exclusions: [
+        "Train/flight to Ujjain",
+        "Personal expenses",
+        "Travel insurance"
+      ],
+      pricing: {
+        doubleSharing: "₹8,999",
+        singleSupplement: "+ ₹1,500",
+        child5to12: "₹6,999",
+        groupDiscount: "5% off for groups of 5+",
+        earlyBird: "₹300 discount if booked 20 days advance"
+      }
     }
   };
 
-  const trip = tripData[id as keyof typeof tripData];
+  const trip = tripData[slug as keyof typeof tripData];
 
   if (!trip) {
     return (
@@ -171,6 +259,7 @@ const TripDetail = () => {
     );
   }
 
+  // Sample trip data - in a real app, this would come from an API
   const faqs = [
     {
       question: "Is this trip suitable for senior citizens?",
@@ -371,7 +460,7 @@ const TripDetail = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {trip.spiritualArrangements.map((arrangement, index) => (
                     <div key={index} className="flex items-start space-x-2">
-                      <Check className="w-5 h-5 text-saffron-600 mt-0.5 flex-shrink-0" />
+                      <Check className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
                       <span className="text-gray-700">{arrangement}</span>
                     </div>
                   ))}
@@ -449,15 +538,15 @@ const TripDetail = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {testimonials.map((testimonial, index) => (
-                    <div key={index} className="bg-saffron-50 p-4 rounded-lg">
+                    <div key={index} className="bg-orange-50 p-4 rounded-lg">
                       <div className="flex items-center space-x-1 mb-2">
                         {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 text-temple-gold fill-current" />
+                          <Star key={i} className="w-4 h-4 text-orange-500 fill-current" />
                         ))}
                       </div>
                       <p className="text-sm text-gray-600 italic mb-3">"{testimonial.comment}"</p>
                       <div className="flex items-center space-x-2">
-                        <div className="w-6 h-6 bg-gradient-to-br from-saffron-500 to-temple-maroon rounded-full flex items-center justify-center text-white text-xs font-semibold">
+                        <div className="w-6 h-6 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center text-white text-xs font-semibold">
                           {testimonial.name.charAt(0)}
                         </div>
                         <div>
@@ -576,7 +665,7 @@ const TripDetail = () => {
             </DialogTitle>
           </DialogHeader>
           <BookingForm
-            tourId={id || ""}
+            tourId={slug || ""}
             tourName={trip.name}
             onClose={() => setIsBookingOpen(false)}
           />

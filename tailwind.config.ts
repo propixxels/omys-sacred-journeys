@@ -88,7 +88,7 @@ export default {
 					900: '#78350f',
 				},
 				temple: {
-					gold: '#fbbf24',
+					gold: '#f59e0b',
 					bronze: '#cd7f32',
 					maroon: '#7c2d12',
 					cream: '#fef3c7',

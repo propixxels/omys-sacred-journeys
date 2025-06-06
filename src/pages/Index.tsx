@@ -3,197 +3,200 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { 
-  Calendar, MapPin, Users, Plane, Bus, Shield, Utensils, 
-  Star, CheckCircle, Phone, Mail, ArrowRight, Heart,
-  Navigation, CreditCard, ChevronLeft, ChevronRight, 
-  MessageCircle, Clock, Award, Globe
-} from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import BookingForm from "@/components/BookingForm";
-import { useToast } from "@/hooks/use-toast";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { useNavigate } from "react-router-dom";
-
-interface Tour {
-  id: string;
-  name: string;
-  duration: string;
-  transport_mode: string;
-  destinations: string;
-  departure_date: string;
-  cost: number;
-  cost_details: string;
-  description?: string;
-}
+import { Input } from "@/components/ui/input";
+import { Clock, Calendar, MapPin, Star, ArrowUp, Users, Heart, Shield, Check } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Index = () => {
-  const [tours, setTours] = useState<Tour[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedTour, setSelectedTour] = useState<Tour | null>(null);
-  const [isBookingOpen, setIsBookingOpen] = useState(false);
-  const [email, setEmail] = useState("");
   const [currentSlide, setCurrentSlide] = useState(0);
-  const { toast } = useToast();
-  const navigate = useNavigate();
+  const [currentTourSlide, setCurrentTourSlide] = useState(0);
 
-  const heroImages = [
-    "https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=1920&h=1080&fit=crop",
-    "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=1920&h=1080&fit=crop",
-    "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1920&h=1080&fit=crop",
-    "https://images.unsplash.com/photo-1548013146-72479768bada?w=1920&h=1080&fit=crop"
+  const heroSlides = [
+    {
+      image: "https://images.unsplash.com/photo-1466442929976-97f336a657be?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80",
+      title: "Sacred Journey to Kashi",
+      subtitle: "Experience the divine energy of Varanasi"
+    },
+    {
+      image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80",
+      title: "Mahakaleshwar Darshan",
+      subtitle: "Witness the divine Bhasma Aarti in Ujjain"
+    },
+    {
+      image: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80",
+      title: "Char Dham Yatra",
+      subtitle: "Complete your spiritual journey"
+    }
   ];
 
-  const tourImages = [
-    "https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1548013146-72479768bada?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=600&h=400&fit=crop"
+  const upcomingTours = [
+    {
+      id: "kashi-yatra",
+      slug: "kashi-yatra",
+      title: "Kashi Yatra",
+      duration: "5 Days",
+      date: "26 July 2025",
+      destinations: "Varanasi • Sarnath • Prayagraj",
+      price: "₹12,499",
+      image: "https://images.unsplash.com/photo-1466442929976-97f336a657be?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+      isPopular: true
+    },
+    {
+      id: "ujjain-darshan",
+      slug: "ujjain-darshan",
+      title: "Ujjain Mahakaleshwar",
+      duration: "3 Days",
+      date: "15 June 2025",
+      destinations: "Ujjain • Omkareshwar",
+      price: "₹8,999",
+      image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+      isNew: true
+    },
+    {
+      id: "dwarka-somnath",
+      slug: "dwarka-somnath",
+      title: "Dwarka Somnath Yatra",
+      duration: "6 Days",
+      date: "10 August 2025",
+      destinations: "Dwarka • Somnath • Bet Dwarka",
+      price: "₹15,999",
+      image: "https://images.unsplash.com/photo-1472396961693-142e6e269027?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+    },
+    {
+      id: "badrinath-kedarnath",
+      slug: "badrinath-kedarnath",
+      title: "Do Dham Yatra",
+      duration: "8 Days",
+      date: "20 September 2025",
+      destinations: "Badrinath • Kedarnath",
+      price: "₹22,999",
+      image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+    }
   ];
 
   useEffect(() => {
-    fetchTours();
-    
-    const heroInterval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
     }, 5000);
+    return () => clearInterval(interval);
+  }, [heroSlides.length]);
 
-    return () => {
-      clearInterval(heroInterval);
-    };
-  }, []);
-
-  const fetchTours = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('tours')
-        .select('*')
-        .order('departure_date', { ascending: true });
-
-      if (error) throw error;
-      setTours(data || []);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to load tours",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleViewDetails = (tourId: string) => {
-    navigate(`/trip/${tourId}`);
-  };
-
-  const handleNewsletterSignup = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast({
-      title: "Thank you!",
-      description: "You've been subscribed to our newsletter for spiritual updates.",
-    });
-    setEmail("");
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTourSlide((prev) => (prev + 4) % upcomingTours.length);
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [upcomingTours.length]);
 
   const testimonials = [
     {
-      quote: "Omy Travels made our Kashi Yatra unforgettable. Perfect arrangements and spiritual guidance throughout the journey.",
-      name: "Rajesh Kumar",
+      name: "Priya Sharma",
       city: "Mumbai",
       rating: 5,
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face"
+      comment: "Absolutely divine experience! Every detail was perfectly arranged.",
+      image: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80"
     },
     {
-      quote: "Excellent service and authentic experience. The priests were knowledgeable and the arrangements were flawless.",
-      name: "Priya Sharma",
+      name: "Rajesh Kumar",
       city: "Delhi",
       rating: 5,
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face"
+      comment: "The spiritual guidance and comfortable journey made it unforgettable.",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80"
     },
     {
-      quote: "Best pilgrimage tour we've ever taken. Everything was perfectly organized with deep spiritual focus.",
-      name: "Suresh Patel",
+      name: "Meera Patel",
       city: "Ahmedabad",
       rating: 5,
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
+      comment: "Professional service with deep respect for traditions. Highly recommended!",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80"
     }
   ];
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-amber-50">
-        <div className="text-xl font-temple text-temple-maroon animate-pulse">Loading sacred journeys...</div>
-      </div>
-    );
-  }
+  const whyChooseUs = [
+    {
+      icon: Heart,
+      title: "Spiritually Guided Tours",
+      description: "Expert priests and spiritual guides accompany every journey"
+    },
+    {
+      icon: Shield,
+      title: "Comfortable & Safe Travel",
+      description: "AC transport, quality accommodation, and 24/7 support"
+    },
+    {
+      icon: MapPin,
+      title: "Handpicked Sacred Sites",
+      description: "Authentic pilgrimage destinations with VIP darshan arrangements"
+    },
+    {
+      icon: Calendar,
+      title: "Scheduled Departures",
+      description: "Regular group departures with fixed dates and transparent pricing"
+    },
+    {
+      icon: Users,
+      title: "Easy Booking Process",
+      description: "Simple online booking with secure payment options"
+    },
+    {
+      icon: Check,
+      title: "Dedicated Support Team",
+      description: "Expert tour managers and round-the-clock assistance"
+    }
+  ];
 
   return (
-    <div className="min-h-screen overflow-hidden">
-      {/* Hero Section - Full Screen */}
+    <div className="min-h-screen">
+      {/* Hero Section */}
       <section className="relative h-screen overflow-hidden">
-        {/* Background Image Slider */}
         <div className="absolute inset-0">
-          {heroImages.map((image, index) => (
+          {heroSlides.map((slide, index) => (
             <div
               key={index}
               className={`absolute inset-0 transition-opacity duration-1000 ${
-                index === currentSlide ? 'opacity-100' : 'opacity-0'
+                index === currentSlide ? "opacity-100" : "opacity-0"
               }`}
             >
               <img
-                src={image}
-                alt={`Spiritual journey ${index + 1}`}
+                src={slide.image}
+                alt={slide.title}
                 className="w-full h-full object-cover"
               />
-              {/* Subtle overlay for better text contrast */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/40"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent"></div>
             </div>
           ))}
         </div>
-
-        {/* Floating mandala background */}
-        <div 
-          className="absolute inset-0 opacity-10 animate-spin" 
-          style={{ 
-            backgroundImage: `url(/lovable-uploads/9224665a-3020-4a03-9d34-e4d7523f8a73.png)`,
-            backgroundSize: '400px 400px',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'top right',
-            animationDuration: '120s'
-          }}
-        ></div>
-
-        {/* Hero Content - Left Aligned */}
+        
         <div className="relative z-10 h-full flex items-center">
           <div className="container mx-auto px-4">
-            <div className="max-w-3xl text-white animate-fade-in">
-              <h1 className="text-5xl md:text-7xl font-temple font-bold mb-6 text-left leading-tight">
-                Omy Travels
-              </h1>
-              <h2 className="text-2xl md:text-3xl mb-4 font-medium text-left">
-                Sacred Journeys Begin Here
-              </h2>
-              <p className="text-lg md:text-xl mb-8 text-orange-200 text-left max-w-2xl">
-                Authentic Spiritual Experiences • Historic Temples • Divine Blessings
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-start">
+            <div className="max-w-3xl text-white space-y-6 animate-fade-in">
+              <div className="space-y-4">
+                <h1 className="text-5xl md:text-6xl font-temple font-bold leading-tight">
+                  Omy Travels
+                </h1>
+                <h2 className="text-3xl md:text-4xl font-temple text-orange-300">
+                  Sacred Journeys Begin Here
+                </h2>
+                <p className="text-xl md:text-2xl font-light leading-relaxed">
+                  Authentic Spiritual Experiences • Historic Temples • Divine Blessings
+                </p>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button 
-                  size="lg" 
-                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                  onClick={() => document.getElementById('upcoming-yatras')?.scrollIntoView({ behavior: 'smooth' })}
+                  asChild
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg px-8 py-4 h-auto transition-all duration-300 transform hover:scale-105"
                 >
-                  Explore Yatras
+                  <Link to="#upcoming-yatras">
+                    <MapPin className="w-5 h-5 mr-2" />
+                    Explore Yatras
+                  </Link>
                 </Button>
                 <Button 
-                  size="lg" 
                   variant="outline"
-                  className="border-2 border-white text-white hover:bg-white hover:text-temple-maroon px-8 py-4 text-lg transition-all duration-300 backdrop-blur-sm"
-                  onClick={() => window.location.href = 'tel:+917348869099'}
+                  className="border-2 border-white text-white hover:bg-white hover:text-orange-600 text-lg px-8 py-4 h-auto transition-all duration-300"
                 >
+                  <Users className="w-5 h-5 mr-2" />
                   Contact Us
                 </Button>
               </div>
@@ -201,106 +204,113 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Hero Navigation Dots */}
-        <div className="absolute bottom-8 left-8 flex space-x-2">
-          {heroImages.map((_, index) => (
+        {/* Slide Indicators */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
+          {heroSlides.map((_, index) => (
             <button
               key={index}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentSlide ? 'bg-orange-500 scale-125' : 'bg-white/50 hover:bg-white/70'
-              }`}
               onClick={() => setCurrentSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentSlide ? "bg-orange-500 scale-125" : "bg-white/50"
+              }`}
             />
           ))}
         </div>
       </section>
 
-      {/* WhatsApp Floating Button */}
-      <a
-        href="https://wa.me/917348869099"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white p-4 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 animate-pulse"
-      >
-        <MessageCircle className="w-6 h-6" />
-      </a>
+      {/* Quick Values Bar */}
+      <section className="bg-gradient-to-r from-orange-500 to-orange-600 py-4">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-wrap justify-center gap-8 text-white">
+            <div className="flex items-center space-x-2">
+              <Shield className="w-5 h-5" />
+              <span className="font-medium">100% Trusted Pilgrim-Rated</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <MapPin className="w-5 h-5" />
+              <span className="font-medium">Comfortable AC Transport</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Heart className="w-5 h-5" />
+              <span className="font-medium">Authentic Veg Meals</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Users className="w-5 h-5" />
+              <span className="font-medium">Experienced Spiritual Guides</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Upcoming Yatras Section */}
-      <section id="upcoming-yatras" className="py-20 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 relative overflow-hidden">
-        {/* Rotating mandala background */}
-        <div 
-          className="absolute top-10 right-10 opacity-5 animate-spin" 
-          style={{ 
-            backgroundImage: `url(/lovable-uploads/9224665a-3020-4a03-9d34-e4d7523f8a73.png)`,
-            backgroundSize: '300px 300px',
-            backgroundRepeat: 'no-repeat',
-            width: '300px',
-            height: '300px',
-            animationDuration: '100s'
-          }}
-        ></div>
-
+      <section id="upcoming-yatras" className="py-16 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 relative">
+        <div className="absolute inset-0 mandala-overlay opacity-5"></div>
+        
         <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16 animate-fade-in">
-            <h2 className="text-4xl md:text-5xl font-temple font-bold text-temple-maroon mb-6">
+          <div className="text-center mb-12 animate-fade-in">
+            <h2 className="text-4xl md:text-5xl font-temple font-bold text-temple-maroon mb-4">
               Upcoming Sacred Pilgrimage Tours
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-orange-400 to-orange-600 mx-auto rounded-full"></div>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Join thousands of devotees on these blessed journeys to India's most sacred destinations
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {tours.slice(0, 4).map((tour, index) => (
-              <Card 
-                key={tour.id} 
-                className="group border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 bg-white/90 backdrop-blur-sm rounded-2xl overflow-hidden animate-fade-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={tourImages[index % tourImages.length]}
-                    alt={tour.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {upcomingTours.slice(currentTourSlide, currentTourSlide + 4).map((tour) => (
+              <Card key={tour.id} className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 bg-white border-0">
+                <div className="relative">
+                  <img 
+                    src={tour.image} 
+                    alt={tour.title}
+                    className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <Badge className="absolute top-4 right-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white border-0">
-                    Popular
-                  </Badge>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                  
+                  {tour.isPopular && (
+                    <Badge className="absolute top-3 left-3 bg-orange-500 text-white border-0">
+                      Popular
+                    </Badge>
+                  )}
+                  {tour.isNew && (
+                    <Badge className="absolute top-3 left-3 bg-green-500 text-white border-0">
+                      New
+                    </Badge>
+                  )}
+                  
+                  <div className="absolute bottom-3 left-3 text-white">
+                    <h3 className="font-temple font-bold text-lg">{tour.title}</h3>
+                  </div>
                 </div>
                 
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg font-temple text-temple-maroon group-hover:text-orange-600 transition-colors duration-300">
-                    {tour.name}
-                  </CardTitle>
-                  <div className="flex items-center space-x-2 text-sm text-orange-600">
-                    <Calendar className="w-4 h-4" />
-                    <span>{new Date(tour.departure_date).toLocaleDateString('en-IN')}</span>
-                  </div>
-                </CardHeader>
-
-                <CardContent className="space-y-4">
-                  <div className="flex items-center space-x-2">
-                    {tour.transport_mode === 'bus' ? (
-                      <Bus className="w-4 h-4 text-orange-600" />
-                    ) : (
-                      <Plane className="w-4 h-4 text-orange-600" />
-                    )}
-                    <span className="text-sm text-gray-600 capitalize">{tour.transport_mode}</span>
+                <CardContent className="p-6 space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center space-x-1 text-gray-600">
+                        <Clock className="w-4 h-4" />
+                        <span>{tour.duration}</span>
+                      </div>
+                      <div className="flex items-center space-x-1 text-gray-600">
+                        <Calendar className="w-4 h-4" />
+                        <span>{tour.date}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start space-x-1">
+                      <MapPin className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-sm text-gray-600">{tour.destinations}</span>
+                    </div>
                   </div>
                   
-                  <div className="flex items-start space-x-2 text-sm">
-                    <MapPin className="w-4 h-4 mt-0.5 text-orange-600 flex-shrink-0" />
-                    <span className="text-gray-600">{tour.destinations.split(',').slice(0, 2).join(', ')}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="text-2xl font-bold text-orange-600">
-                      ₹{tour.cost.toLocaleString()}
-                    </div>
+                  <div className="flex items-center justify-between pt-4 border-t">
+                    <div className="text-2xl font-bold text-orange-600">{tour.price}</div>
                     <Button 
-                      className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white transition-all duration-300 transform hover:scale-105"
-                      onClick={() => handleViewDetails(tour.id)}
+                      asChild
+                      className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105"
                     >
-                      View Details
+                      <Link to={`/trip/${tour.slug}`}>
+                        View Details
+                      </Link>
                     </Button>
                   </div>
                 </CardContent>
@@ -310,180 +320,163 @@ const Index = () => {
         </div>
       </section>
 
-      {/* About Us Intro Snippet */}
-      <section className="py-20 bg-white relative overflow-hidden">
-        <div className="absolute -left-20 top-20 opacity-5">
-          <img 
-            src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=800&h=600&fit=crop" 
-            alt="Temple architecture" 
-            className="w-96 h-96 object-cover rounded-full"
-          />
-        </div>
-        
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-temple font-bold text-temple-maroon mb-8 animate-fade-in">
-              Who We Are
-            </h2>
-            <p className="text-lg text-gray-700 mb-8 leading-relaxed animate-fade-in">
-              Omy Travels is a trusted name in spiritual journeys across India. From Kashi to Rameshwaram, 
-              we curate deeply devotional, safe, and comfortable yatras for seekers of all ages.
-            </p>
-            <Button 
-              variant="outline" 
-              className="border-2 border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white px-8 py-3 transition-all duration-300 transform hover:scale-105"
-              onClick={() => navigate('/about')}
-            >
-              Read Full Story
-            </Button>
+      {/* About Us Intro */}
+      <section className="py-16 bg-white relative">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6 animate-fade-in">
+              <h2 className="text-4xl font-temple font-bold text-temple-maroon">
+                Who We Are
+              </h2>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Omy Travels is a trusted name in spiritual journeys across India. From Kashi to Rameshwaram, 
+                we curate deeply devotional, safe, and comfortable yatras for seekers of all ages.
+              </p>
+              <p className="text-gray-600 leading-relaxed">
+                Founded with devotion and care, our mission is to make India's sacred journeys accessible, 
+                meaningful, and transformative for every pilgrim who travels with us.
+              </p>
+              <Button 
+                asChild
+                variant="outline" 
+                className="border-orange-500 text-orange-600 hover:bg-orange-50 px-6 py-3"
+              >
+                <Link to="/about">Read Full Story</Link>
+              </Button>
+            </div>
+            
+            <div className="relative">
+              <div className="grid grid-cols-2 gap-4">
+                <img 
+                  src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+                  alt="Temple"
+                  className="rounded-lg shadow-lg"
+                />
+                <img 
+                  src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+                  alt="Spiritual gathering"
+                  className="rounded-lg shadow-lg mt-8"
+                />
+              </div>
+              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full opacity-20 animate-gentle-bounce"></div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Why Choose Omy Travels */}
-      <section className="py-20 bg-gradient-to-br from-orange-50 to-amber-50 relative overflow-hidden">
-        <div 
-          className="absolute bottom-10 left-10 opacity-5 animate-spin" 
-          style={{ 
-            backgroundImage: `url(/lovable-uploads/9224665a-3020-4a03-9d34-e4d7523f8a73.png)`,
-            backgroundSize: '200px 200px',
-            backgroundRepeat: 'no-repeat',
-            width: '200px',
-            height: '200px',
-            animationDuration: '80s'
-          }}
-        ></div>
-
+      {/* Why Choose Us */}
+      <section className="py-16 bg-gradient-to-br from-orange-50 to-amber-100 relative">
+        <div className="absolute inset-0 mandala-overlay opacity-5"></div>
+        
         <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-temple font-bold text-temple-maroon mb-6 animate-fade-in">
+          <div className="text-center mb-12 animate-fade-in">
+            <h2 className="text-4xl font-temple font-bold text-temple-maroon mb-4">
               Why Thousands Trust Omy Travels
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-orange-400 to-orange-600 mx-auto rounded-full"></div>
+            <p className="text-xl text-gray-600">
+              Experience the difference of traveling with India's most trusted pilgrimage specialist
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              { icon: Users, title: "Spiritually Guided Tours", description: "Expert priests and guides for authentic experiences", image: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=400&h=200&fit=crop" },
-              { icon: Shield, title: "Comfortable & Safe Travel", description: "Modern AC transport with safety as priority", image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=200&fit=crop" },
-              { icon: Heart, title: "Handpicked Pilgrimage Sites", description: "Most sacred and powerful spiritual destinations", image: "https://images.unsplash.com/photo-1548013146-72479768bada?w=400&h=200&fit=crop" },
-              { icon: Calendar, title: "Scheduled Group Departures", description: "Regular departures with like-minded pilgrims", image: "https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=400&h=200&fit=crop" },
-              { icon: Phone, title: "Easy Enquiry Process", description: "Simple booking with transparent pricing", image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=400&h=200&fit=crop" },
-              { icon: CheckCircle, title: "Dedicated Support Team", description: "24/7 assistance throughout your journey", image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=200&fit=crop" }
-            ].map((feature, index) => {
-              const IconComponent = feature.icon;
-              return (
-                <Card 
-                  key={index} 
-                  className="group bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 rounded-2xl overflow-hidden animate-fade-in"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className="relative h-32 overflow-hidden">
-                    <img 
-                      src={feature.image} 
-                      alt={feature.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-orange-600/20 to-transparent"></div>
-                    <div className="absolute bottom-2 right-2 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center">
-                      <IconComponent className="w-5 h-5 text-orange-600" />
-                    </div>
+            {whyChooseUs.map((item, index) => (
+              <Card key={index} className="group p-6 text-center border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 bg-white/90 backdrop-blur-sm rounded-2xl">
+                <div className="mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform duration-300">
+                    <item.icon className="w-8 h-8 text-white" />
                   </div>
-                  <CardContent className="pt-6 text-center">
-                    <h3 className="font-temple font-semibold text-temple-maroon mb-3 text-lg group-hover:text-orange-600 transition-colors duration-300">
-                      {feature.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                </div>
+                <h3 className="text-xl font-temple font-semibold text-temple-maroon mb-3">
+                  {item.title}
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  {item.description}
+                </p>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Detailed Yatra List */}
-      <section className="py-20 bg-white relative overflow-hidden">
-        <div className="absolute right-0 top-0 h-full w-1/3 opacity-5">
-          <img 
-            src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=600&h=800&fit=crop" 
-            alt="Temple" 
-            className="w-full h-full object-cover"
-          />
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-temple font-bold text-temple-maroon mb-6">
-              Yatra Calendar – July to September 2025
+      {/* How It Works */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12 animate-fade-in">
+            <h2 className="text-4xl font-temple font-bold text-temple-maroon mb-4">
+              Your Pilgrimage in 3 Simple Steps
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-orange-400 to-orange-600 mx-auto rounded-full"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {tours.map((tour, index) => (
-              <Card 
-                key={tour.id} 
-                className="group border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-102 bg-gradient-to-br from-white to-orange-50/30 rounded-2xl overflow-hidden animate-fade-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="flex">
-                  <div className="w-1/3 relative overflow-hidden">
-                    <img
-                      src={tourImages[index % tourImages.length]}
-                      alt={tour.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-orange-600/20"></div>
-                  </div>
-                  <div className="w-2/3 p-6">
-                    <CardHeader className="p-0 mb-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <CardTitle className="text-xl font-temple text-temple-maroon group-hover:text-orange-600 transition-colors duration-300">
-                          {tour.name}
-                        </CardTitle>
-                        <Badge className="bg-gradient-to-r from-orange-500 to-orange-600 text-white border-0">
-                          Popular
-                        </Badge>
-                      </div>
-                      <CardDescription className="text-orange-600 font-medium">
-                        {tour.duration}
-                      </CardDescription>
-                    </CardHeader>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center space-y-4">
+              <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto">
+                <MapPin className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-xl font-temple font-semibold text-temple-maroon">Choose Your Yatra</h3>
+              <p className="text-gray-600">Browse tours, check dates & pricing to find your perfect pilgrimage</p>
+            </div>
+            
+            <div className="text-center space-y-4">
+              <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto">
+                <Check className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-xl font-temple font-semibold text-temple-maroon">Book & Pay Securely</h3>
+              <p className="text-gray-600">50% advance booking with multiple secure payment options</p>
+            </div>
+            
+            <div className="text-center space-y-4">
+              <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto">
+                <Heart className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-xl font-temple font-semibold text-temple-maroon">Depart & Experience</h3>
+              <p className="text-gray-600">Receive Yatra kit, enjoy guided darshans, return home blessed</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-                    <CardContent className="p-0 space-y-4">
-                      <div className="flex items-center space-x-4 text-sm">
-                        <div className="flex items-center space-x-1">
-                          <Calendar className="w-4 h-4 text-orange-600" />
-                          <span>{new Date(tour.departure_date).toLocaleDateString('en-IN')}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          {tour.transport_mode === 'bus' ? (
-                            <Bus className="w-4 h-4 text-orange-600" />
-                          ) : (
-                            <Plane className="w-4 h-4 text-orange-600" />
-                          )}
-                          <span className="capitalize">{tour.transport_mode}</span>
-                        </div>
-                      </div>
+      {/* Inspirational Quote */}
+      <section className="py-16 bg-gradient-to-r from-orange-500 to-orange-600 relative overflow-hidden">
+        <div className="absolute inset-0 mandala-overlay opacity-10"></div>
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <blockquote className="text-3xl md:text-4xl font-temple font-medium text-white leading-relaxed">
+            "Yatra is not a trip. It is a journey of the soul towards the Divine."
+          </blockquote>
+        </div>
+      </section>
 
-                      <div className="flex items-start space-x-2 text-sm text-gray-600">
-                        <MapPin className="w-4 h-4 mt-0.5 text-orange-600 flex-shrink-0" />
-                        <span>{tour.destinations}</span>
-                      </div>
+      {/* Testimonials */}
+      <section className="py-16 bg-gradient-to-br from-orange-50 to-amber-100 relative">
+        <div className="absolute inset-0 mandala-overlay opacity-5"></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-12 animate-fade-in">
+            <h2 className="text-4xl font-temple font-bold text-temple-maroon mb-4">
+              What Our Devotees Say
+            </h2>
+          </div>
 
-                      <div className="flex justify-between items-center pt-2">
-                        <div className="text-2xl font-bold text-orange-600">
-                          ₹{tour.cost.toLocaleString()}
-                        </div>
-                        <Button 
-                          onClick={() => handleViewDetails(tour.id)}
-                          className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white transition-all duration-300 transform hover:scale-105"
-                        >
-                          View Tour
-                        </Button>
-                      </div>
-                    </CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <Card key={index} className="p-6 border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white/90 backdrop-blur-sm rounded-2xl">
+                <div className="flex items-center space-x-1 mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 text-orange-500 fill-current" />
+                  ))}
+                </div>
+                <p className="text-gray-600 italic mb-6 leading-relaxed">
+                  "{testimonial.comment}"
+                </p>
+                <div className="flex items-center space-x-3">
+                  <img 
+                    src={testimonial.image} 
+                    alt={testimonial.name}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                  <div>
+                    <p className="font-semibold text-temple-maroon">{testimonial.name}</p>
+                    <p className="text-sm text-gray-500">{testimonial.city}</p>
                   </div>
                 </div>
               </Card>
@@ -492,246 +485,141 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Visual Break - Quote Section */}
-      <section className="py-20 bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 text-white relative overflow-hidden">
-        <div 
-          className="absolute inset-0 opacity-10 animate-spin" 
-          style={{ 
-            backgroundImage: `url(/lovable-uploads/9224665a-3020-4a03-9d34-e4d7523f8a73.png)`,
-            backgroundSize: '600px 600px',
-            backgroundRepeat: 'repeat',
-            animationDuration: '150s'
-          }}
-        ></div>
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <div className="max-w-4xl mx-auto animate-fade-in">
-            <h2 className="text-3xl md:text-5xl font-temple font-bold mb-6 leading-relaxed">
-              "Yatra is not a trip. It is a journey of the soul towards the Divine."
-            </h2>
-            <p className="text-2xl font-sanskrit opacity-90">ॐ नमः शिवाय</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-20 bg-gradient-to-br from-orange-50 to-amber-50 relative overflow-hidden">
-        <div 
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-3 animate-spin" 
-          style={{ 
-            backgroundImage: `url(/lovable-uploads/9224665a-3020-4a03-9d34-e4d7523f8a73.png)`,
-            backgroundSize: '800px 800px',
-            backgroundRepeat: 'no-repeat',
-            width: '800px',
-            height: '800px',
-            animationDuration: '200s'
-          }}
-        ></div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-temple font-bold text-temple-maroon mb-6">
-              What Our Devotees Say
-            </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-orange-400 to-orange-600 mx-auto rounded-full"></div>
-          </div>
-
-          <Carousel className="max-w-6xl mx-auto">
-            <CarouselContent>
-              {testimonials.map((testimonial, index) => (
-                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                  <Card className="h-full border-0 shadow-lg bg-white/80 backdrop-blur-sm rounded-2xl overflow-hidden group hover:shadow-2xl transition-all duration-500">
-                    <CardContent className="pt-8 pb-6 px-6 text-center">
-                      <div className="relative mb-6">
-                        <img
-                          src={testimonial.image}
-                          alt={testimonial.name}
-                          className="w-20 h-20 rounded-full mx-auto object-cover border-4 border-orange-200 group-hover:border-orange-400 transition-colors duration-300"
-                        />
-                      </div>
-                      <div className="flex justify-center mb-4">
-                        {[...Array(testimonial.rating)].map((_, i) => (
-                          <Star key={i} className="w-4 h-4 fill-orange-400 text-orange-400" />
-                        ))}
-                      </div>
-                      <p className="text-gray-700 mb-6 italic leading-relaxed">"{testimonial.quote}"</p>
-                      <div>
-                        <p className="font-semibold text-temple-maroon mb-1">{testimonial.name}</p>
-                        <p className="text-gray-500 text-sm">{testimonial.city}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="border-orange-200 text-orange-600 hover:bg-orange-100" />
-            <CarouselNext className="border-orange-200 text-orange-600 hover:bg-orange-100" />
-          </Carousel>
-        </div>
-      </section>
-
-      {/* Call to Action Banner */}
-      <section className="py-20 bg-gradient-to-r from-orange-600 via-orange-700 to-temple-maroon text-white relative overflow-hidden">
-        <div 
-          className="absolute inset-0 opacity-10" 
-          style={{ 
-            backgroundImage: `url(/lovable-uploads/9224665a-3020-4a03-9d34-e4d7523f8a73.png)`,
-            backgroundSize: '400px 400px',
-            backgroundRepeat: 'repeat'
-          }}
-        ></div>
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl font-temple font-bold mb-6 animate-fade-in">
-            Ready to Begin Your Yatra?
-          </h2>
-          <p className="text-xl mb-8 opacity-90 animate-fade-in">
-            Let us know your interest — we'll guide you personally.
-          </p>
-          <Button 
-            size="lg"
-            className="bg-white text-temple-maroon hover:bg-orange-50 px-8 py-4 text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-            onClick={() => setIsBookingOpen(true)}
-          >
-            Enquire Now
-          </Button>
-        </div>
-      </section>
-
-      {/* Newsletter & WhatsApp */}
-      <section className="py-20 bg-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="flex space-x-8">
-            <img src="https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=300&h=400&fit=crop" alt="" className="w-64 h-80 object-cover rounded-lg" />
-            <img src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=300&h=400&fit=crop" alt="" className="w-64 h-80 object-cover rounded-lg mt-12" />
-            <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=300&h=400&fit=crop" alt="" className="w-64 h-80 object-cover rounded-lg" />
-          </div>
-        </div>
+      {/* Call to Action */}
+      <section className="py-16 bg-gradient-to-r from-temple-maroon to-orange-700 relative overflow-hidden">
+        <div className="absolute inset-0 mandala-overlay opacity-10"></div>
         
         <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl font-temple font-bold text-temple-maroon mb-6">
-            Stay Updated on Our Upcoming Yatras
-          </h2>
-          <p className="text-lg text-gray-600 mb-8">
-            Get dates, spiritual updates, and exclusive offers
-          </p>
-          
-          <div className="max-w-md mx-auto space-y-6">
-            <form onSubmit={handleNewsletterSignup} className="flex gap-4">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Your Email Address"
-                className="flex-1 px-4 py-3 rounded-lg border border-orange-300 focus:border-orange-500 focus:outline-none transition-colors duration-300"
-                required
-              />
-              <Button 
-                type="submit" 
-                className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 px-6 transition-all duration-300"
-              >
-                Subscribe
-              </Button>
-            </form>
-            
+          <div className="max-w-3xl mx-auto space-y-6 text-white">
+            <h2 className="text-4xl font-temple font-bold">
+              Ready to Begin Your Yatra?
+            </h2>
+            <p className="text-xl">
+              Let us know your interest — we'll guide you personally through your spiritual journey.
+            </p>
             <Button 
-              variant="outline"
-              className="w-full border-2 border-green-500 text-green-600 hover:bg-green-500 hover:text-white transition-all duration-300"
-              onClick={() => window.open('https://wa.me/917348869099', '_blank')}
+              className="bg-white text-temple-maroon hover:bg-orange-50 text-lg px-8 py-4 h-auto transition-all duration-300 transform hover:scale-105"
             >
-              Join Our WhatsApp Updates
+              <Users className="w-5 h-5 mr-2" />
+              Enquire Now
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Contact & Location */}
-      <section className="py-20 bg-gradient-to-br from-orange-50 to-amber-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-temple font-bold text-temple-maroon mb-6">
-              Visit Us or Reach Out Anytime
-            </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-orange-400 to-orange-600 mx-auto rounded-full"></div>
-          </div>
+      {/* Newsletter & WhatsApp */}
+      <section className="py-16 bg-gradient-to-br from-orange-50 to-amber-100 relative">
+        <div className="absolute inset-0 mandala-overlay opacity-5"></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <Card className="p-8 border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
+                <h3 className="text-2xl font-temple font-bold text-temple-maroon mb-4">
+                  Stay Updated
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Subscribe for special offers, early-bird discounts, and spiritual insights.
+                </p>
+                <div className="flex gap-3">
+                  <Input 
+                    placeholder="Your Email Address" 
+                    className="flex-1"
+                  />
+                  <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700">
+                    Subscribe
+                  </Button>
+                </div>
+              </Card>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-            <div className="space-y-8">
-              <div className="flex items-center space-x-4 p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
-                  <Phone className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <p className="font-semibold text-temple-maroon">Phone</p>
-                  <p className="text-gray-700">+91 73488 69099</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-4 p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
-                  <Mail className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <p className="font-semibold text-temple-maroon">Email</p>
-                  <p className="text-gray-700">connect@omytravels.com</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-4 p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
-                  <MapPin className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <p className="font-semibold text-temple-maroon">Office Address</p>
-                  <p className="text-gray-700">Dhundasi Nagar Rd, Sirsi, Karnataka 581401</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-4 p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <p className="font-semibold text-temple-maroon">Office Hours</p>
-                  <p className="text-gray-700">9am to 6pm, Sunday closed</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-              <div className="h-96 bg-gradient-to-br from-orange-200 to-amber-200 flex items-center justify-center">
-                <div className="text-center">
-                  <MapPin className="w-16 h-16 text-orange-600 mx-auto mb-4" />
-                  <p className="text-gray-600 text-lg">Google Map Integration</p>
-                  <p className="text-gray-500 text-sm">Interactive map coming soon</p>
-                </div>
-              </div>
+              <Card className="p-8 border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
+                <h3 className="text-2xl font-temple font-bold text-temple-maroon mb-4">
+                  WhatsApp Updates
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Join our WhatsApp community for instant updates on yatra schedules and offers.
+                </p>
+                <Button 
+                  className="w-full bg-green-600 hover:bg-green-700 text-white"
+                >
+                  <Users className="w-5 h-5 mr-2" />
+                  Join WhatsApp Group
+                </Button>
+              </Card>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Booking Dialog */}
-      <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="font-temple text-temple-maroon">
-              Book Your Pilgrimage
-            </DialogTitle>
-          </DialogHeader>
-          {selectedTour ? (
-            <BookingForm
-              tourId={selectedTour.id}
-              tourName={selectedTour.name}
-              onClose={() => setIsBookingOpen(false)}
-            />
-          ) : (
-            <BookingForm
-              tourId=""
-              tourName="General Enquiry"
-              onClose={() => setIsBookingOpen(false)}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+      {/* Contact Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-temple font-bold text-temple-maroon mb-4">
+              Visit Us or Reach Out Anytime
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h4 className="font-temple font-semibold text-temple-maroon text-lg">Contact Information</h4>
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-3">
+                      <Users className="w-5 h-5 text-orange-500" />
+                      <span>+91 73488 69099</span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Users className="w-5 h-5 text-orange-500" />
+                      <span>connect@omytravels.com</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <h4 className="font-temple font-semibold text-temple-maroon text-lg">Office Hours</h4>
+                  <div className="space-y-2">
+                    <p className="text-gray-600">9am to 6pm</p>
+                    <p className="text-gray-600">Sunday closed</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <h4 className="font-temple font-semibold text-temple-maroon text-lg">Office Address</h4>
+                <p className="text-gray-600">
+                  Dhundasi Nagar Rd<br />
+                  Sirsi, Karnataka 581401
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-gray-200 rounded-lg h-80 flex items-center justify-center">
+              <p className="text-gray-500">Google Map Embed would go here</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Floating WhatsApp Button */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <Button 
+          className="w-14 h-14 rounded-full bg-green-500 hover:bg-green-600 shadow-lg animate-gentle-bounce"
+        >
+          <Users className="w-6 h-6 text-white" />
+        </Button>
+      </div>
+
+      {/* Scroll to Top Button */}
+      <div className="fixed bottom-24 right-6 z-50">
+        <Button 
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="w-12 h-12 rounded-full bg-orange-500 hover:bg-orange-600 shadow-lg"
+        >
+          <ArrowUp className="w-5 h-5 text-white" />
+        </Button>
+      </div>
     </div>
   );
 };
