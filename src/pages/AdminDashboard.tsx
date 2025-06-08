@@ -2,12 +2,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Edit, Trash2, Users, Calendar, MapPin, Star, Eye, LogOut, Plane, Bus, Loader, Archive } from "lucide-react";
@@ -30,22 +26,9 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [tours, setTours] = useState<Tour[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [isAddTourOpen, setIsAddTourOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [editingTour, setEditingTour] = useState<Tour | null>(null);
   const [showDrafts, setShowDrafts] = useState(false);
-  
-  const [newTour, setNewTour] = useState({
-    name: "",
-    duration: "",
-    transport_mode: "bus",
-    destinations: "",
-    departure_date: "",
-    cost: "",
-    cost_details: "",
-    description: ""
-  });
 
   useEffect(() => {
     fetchTours();
@@ -99,105 +82,6 @@ const AdminDashboard = () => {
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleAddTour = async () => {
-    if (!newTour.name || !newTour.duration || !newTour.cost) {
-      toast({
-        title: "Error",
-        description: "Please fill in all required fields",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setActionLoading('adding');
-
-    try {
-      const { error } = await supabase
-        .from('tours')
-        .insert({
-          name: newTour.name,
-          duration: newTour.duration,
-          transport_mode: newTour.transport_mode,
-          destinations: newTour.destinations,
-          departure_date: newTour.departure_date,
-          cost: parseInt(newTour.cost),
-          cost_details: newTour.cost_details,
-          description: newTour.description,
-          isDraft: false
-        });
-
-      if (error) throw error;
-
-      setNewTour({
-        name: "",
-        duration: "",
-        transport_mode: "bus",
-        destinations: "",
-        departure_date: "",
-        cost: "",
-        cost_details: "",
-        description: ""
-      });
-      setIsAddTourOpen(false);
-      fetchTours();
-
-      toast({
-        title: "Success",
-        description: "Tour added successfully!"
-      });
-    } catch (error) {
-      console.error('Error adding tour:', error);
-      toast({
-        title: "Error",
-        description: "Failed to add tour",
-        variant: "destructive"
-      });
-    } finally {
-      setActionLoading(null);
-    }
-  };
-
-  const handleUpdateTour = async () => {
-    if (!editingTour) return;
-
-    setActionLoading(`updating-${editingTour.id}`);
-
-    try {
-      const { error } = await supabase
-        .from('tours')
-        .update({
-          name: editingTour.name,
-          duration: editingTour.duration,
-          transport_mode: editingTour.transport_mode,
-          destinations: editingTour.destinations,
-          departure_date: editingTour.departure_date,
-          cost: editingTour.cost,
-          cost_details: editingTour.cost_details,
-          description: editingTour.description
-        })
-        .eq('id', editingTour.id);
-
-      if (error) throw error;
-
-      setEditingTour(null);
-      fetchTours();
-
-      toast({
-        title: "Success",
-        description: "Tour updated successfully!"
-      });
-    } catch (error) {
-      console.error('Error updating tour:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update tour",
-        variant: "destructive"
-      });
-    } finally {
-      setActionLoading(null);
     }
   };
 
@@ -489,68 +373,15 @@ const AdminDashboard = () => {
                       
                       <div className="flex flex-col space-y-2">
                         <div className="flex space-x-2">
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button 
-                                size="sm" 
-                                variant="outline" 
-                                className="flex-1"
-                                onClick={() => setEditingTour(tour)}
-                              >
-                                <Edit className="w-4 h-4 mr-1" />
-                                Edit
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
-                              <DialogHeader>
-                                <DialogTitle>Edit Tour</DialogTitle>
-                              </DialogHeader>
-                              {editingTour && (
-                                <div className="space-y-4">
-                                  <div>
-                                    <Label>Tour Name</Label>
-                                    <Input
-                                      value={editingTour.name}
-                                      onChange={(e) => setEditingTour({...editingTour, name: e.target.value})}
-                                    />
-                                  </div>
-                                  <div>
-                                    <Label>Duration</Label>
-                                    <Input
-                                      value={editingTour.duration}
-                                      onChange={(e) => setEditingTour({...editingTour, duration: e.target.value})}
-                                    />
-                                  </div>
-                                  <div>
-                                    <Label>Cost</Label>
-                                    <Input
-                                      type="number"
-                                      value={editingTour.cost}
-                                      onChange={(e) => setEditingTour({...editingTour, cost: parseInt(e.target.value)})}
-                                    />
-                                  </div>
-                                  <div>
-                                    <Label>Destinations</Label>
-                                    <Textarea
-                                      value={editingTour.destinations}
-                                      onChange={(e) => setEditingTour({...editingTour, destinations: e.target.value})}
-                                    />
-                                  </div>
-                                  <Button 
-                                    onClick={handleUpdateTour}
-                                    disabled={actionLoading === `updating-${editingTour.id}`}
-                                    className="w-full"
-                                  >
-                                    {actionLoading === `updating-${editingTour.id}` ? (
-                                      <><Loader className="w-4 h-4 mr-2 animate-spin" /> Updating...</>
-                                    ) : (
-                                      'Update Tour'
-                                    )}
-                                  </Button>
-                                </div>
-                              )}
-                            </DialogContent>
-                          </Dialog>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="flex-1"
+                            onClick={() => navigate(`/edit-tour/${tour.id}`)}
+                          >
+                            <Edit className="w-4 h-4 mr-1" />
+                            Edit
+                          </Button>
 
                           {!tour.isDraft ? (
                             <Button 

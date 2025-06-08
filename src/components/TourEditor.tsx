@@ -322,6 +322,60 @@ const TourEditor = ({ tourId, onSave, onCancel }: TourEditorProps) => {
     }
   };
 
+  const addItineraryDay = () => {
+    setTourData(prev => ({
+      ...prev,
+      itinerary: [...prev.itinerary, { day: prev.itinerary.length + 1, title: "", activities: [""] }]
+    }));
+  };
+
+  const updateItinerary = (index: number, field: 'title' | 'day', value: string | number) => {
+    setTourData(prev => ({
+      ...prev,
+      itinerary: prev.itinerary.map((item, i) => 
+        i === index ? { ...item, [field]: value } : item
+      )
+    }));
+  };
+
+  const updateItineraryActivity = (dayIndex: number, activityIndex: number, value: string) => {
+    setTourData(prev => ({
+      ...prev,
+      itinerary: prev.itinerary.map((item, i) => 
+        i === dayIndex 
+          ? { 
+              ...item, 
+              activities: item.activities.map((activity, j) => 
+                j === activityIndex ? value : activity
+              ) 
+            }
+          : item
+      )
+    }));
+  };
+
+  const addItineraryActivity = (dayIndex: number) => {
+    setTourData(prev => ({
+      ...prev,
+      itinerary: prev.itinerary.map((item, i) => 
+        i === dayIndex 
+          ? { ...item, activities: [...item.activities, ""] }
+          : item
+      )
+    }));
+  };
+
+  const removeItineraryActivity = (dayIndex: number, activityIndex: number) => {
+    setTourData(prev => ({
+      ...prev,
+      itinerary: prev.itinerary.map((item, i) => 
+        i === dayIndex 
+          ? { ...item, activities: item.activities.filter((_, j) => j !== activityIndex) }
+          : item
+      )
+    }));
+  };
+
   const generateSlug = (name: string) => {
     return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   };
@@ -408,7 +462,7 @@ const TourEditor = ({ tourId, onSave, onCancel }: TourEditorProps) => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-6xl mx-auto space-y-6">
       {/* Basic Information */}
       <Card>
         <CardHeader>
@@ -447,7 +501,7 @@ const TourEditor = ({ tourId, onSave, onCancel }: TourEditorProps) => {
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="cost">Cost (₹) *</Label>
               <Input
@@ -465,6 +519,90 @@ const TourEditor = ({ tourId, onSave, onCancel }: TourEditorProps) => {
                 type="date"
                 value={tourData.departure_date}
                 onChange={(e) => setTourData(prev => ({ ...prev, departure_date: e.target.value }))}
+              />
+            </div>
+            <div>
+              <Label htmlFor="next_departure">Next Departure</Label>
+              <Input
+                id="next_departure"
+                type="date"
+                value={tourData.next_departure}
+                onChange={(e) => setTourData(prev => ({ ...prev, next_departure: e.target.value }))}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <Label htmlFor="destinations">Destinations</Label>
+              <Textarea
+                id="destinations"
+                value={tourData.destinations}
+                onChange={(e) => setTourData(prev => ({ ...prev, destinations: e.target.value }))}
+                placeholder="List of destinations"
+                rows={3}
+              />
+            </div>
+            <div>
+              <Label htmlFor="transport_mode">Transport Mode</Label>
+              <Select 
+                value={tourData.transport_mode} 
+                onValueChange={(value) => setTourData(prev => ({ ...prev, transport_mode: value }))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="bus">Bus</SelectItem>
+                  <SelectItem value="flight">Flight</SelectItem>
+                  <SelectItem value="train">Train</SelectItem>
+                  <SelectItem value="car">Car</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="cost_details">Cost Details</Label>
+              <Textarea
+                id="cost_details"
+                value={tourData.cost_details}
+                onChange={(e) => setTourData(prev => ({ ...prev, cost_details: e.target.value }))}
+                placeholder="Additional cost information"
+                rows={3}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <Label htmlFor="rating">Rating</Label>
+              <Input
+                id="rating"
+                type="number"
+                step="0.1"
+                min="0"
+                max="5"
+                value={tourData.rating || ''}
+                onChange={(e) => setTourData(prev => ({ ...prev, rating: parseFloat(e.target.value) || null }))}
+                placeholder="e.g., 4.5"
+              />
+            </div>
+            <div>
+              <Label htmlFor="pilgrims_count">Pilgrims Count</Label>
+              <Input
+                id="pilgrims_count"
+                type="number"
+                value={tourData.pilgrims_count || ''}
+                onChange={(e) => setTourData(prev => ({ ...prev, pilgrims_count: parseInt(e.target.value) || null }))}
+                placeholder="e.g., 50"
+              />
+            </div>
+            <div>
+              <Label htmlFor="slug">URL Slug</Label>
+              <Input
+                id="slug"
+                value={tourData.slug}
+                onChange={(e) => setTourData(prev => ({ ...prev, slug: e.target.value }))}
+                placeholder="auto-generated from name"
               />
             </div>
           </div>
@@ -566,8 +704,431 @@ const TourEditor = ({ tourId, onSave, onCancel }: TourEditorProps) => {
         </CardContent>
       </Card>
 
+      {/* Itinerary */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Itinerary</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {tourData.itinerary.map((day, dayIndex) => (
+            <div key={dayIndex} className="border rounded-lg p-4 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Day Number</Label>
+                  <Input
+                    type="number"
+                    value={day.day}
+                    onChange={(e) => updateItinerary(dayIndex, 'day', parseInt(e.target.value) || 1)}
+                  />
+                </div>
+                <div>
+                  <Label>Day Title</Label>
+                  <Input
+                    value={day.title}
+                    onChange={(e) => updateItinerary(dayIndex, 'title', e.target.value)}
+                    placeholder="e.g., Arrival at Haridwar"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <Label>Activities</Label>
+                {day.activities.map((activity, activityIndex) => (
+                  <div key={activityIndex} className="flex space-x-2 mt-2">
+                    <Input
+                      value={activity}
+                      onChange={(e) => updateItineraryActivity(dayIndex, activityIndex, e.target.value)}
+                      placeholder="Activity description"
+                      className="flex-1"
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => removeItineraryActivity(dayIndex, activityIndex)}
+                      disabled={day.activities.length === 1}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => addItineraryActivity(dayIndex)}
+                  className="mt-2"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Activity
+                </Button>
+              </div>
+            </div>
+          ))}
+          <Button
+            variant="outline"
+            onClick={addItineraryDay}
+            className="w-full"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Day
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Accommodation */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Accommodation</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <Label>Room Type</Label>
+            <Input
+              value={tourData.accommodation.roomType}
+              onChange={(e) => setTourData(prev => ({
+                ...prev,
+                accommodation: { ...prev.accommodation, roomType: e.target.value }
+              }))}
+              placeholder="e.g., Double/Triple Sharing"
+            />
+          </div>
+          
+          <div>
+            <Label>Hotels</Label>
+            {tourData.accommodation.hotels.map((hotel, index) => (
+              <div key={index} className="flex space-x-2 mt-2">
+                <Input
+                  value={hotel}
+                  onChange={(e) => updateListItem('accommodation', index, e.target.value, 'hotels')}
+                  placeholder="Hotel name"
+                  className="flex-1"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => removeListItem('accommodation', index, 'hotels')}
+                  disabled={tourData.accommodation.hotels.length === 1}
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+            <Button
+              variant="outline"
+              onClick={() => addListItem('accommodation', 'hotels')}
+              className="w-full mt-2"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Hotel
+            </Button>
+          </div>
+
+          <div>
+            <Label>Amenities</Label>
+            {tourData.accommodation.amenities.map((amenity, index) => (
+              <div key={index} className="flex space-x-2 mt-2">
+                <Input
+                  value={amenity}
+                  onChange={(e) => updateListItem('accommodation', index, e.target.value, 'amenities')}
+                  placeholder="Amenity"
+                  className="flex-1"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => removeListItem('accommodation', index, 'amenities')}
+                  disabled={tourData.accommodation.amenities.length === 1}
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+            <Button
+              variant="outline"
+              onClick={() => addListItem('accommodation', 'amenities')}
+              className="w-full mt-2"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Amenity
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Meals */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Meals</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <Label>Included Meals</Label>
+            <Input
+              value={tourData.meals.included}
+              onChange={(e) => setTourData(prev => ({
+                ...prev,
+                meals: { ...prev.meals, included: e.target.value }
+              }))}
+              placeholder="e.g., Breakfast, Lunch, Dinner"
+            />
+          </div>
+          <div>
+            <Label>Special Dietary Options</Label>
+            <Input
+              value={tourData.meals.special}
+              onChange={(e) => setTourData(prev => ({
+                ...prev,
+                meals: { ...prev.meals, special: e.target.value }
+              }))}
+              placeholder="e.g., Vegetarian, Jain food available"
+            />
+          </div>
+          <div>
+            <Label>Meal Notes</Label>
+            <Textarea
+              value={tourData.meals.note}
+              onChange={(e) => setTourData(prev => ({
+                ...prev,
+                meals: { ...prev.meals, note: e.target.value }
+              }))}
+              placeholder="Additional meal information"
+              rows={3}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Transport */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Transport Details</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>Pickup Point</Label>
+              <Input
+                value={tourData.transport.pickup}
+                onChange={(e) => setTourData(prev => ({
+                  ...prev,
+                  transport: { ...prev.transport, pickup: e.target.value }
+                }))}
+                placeholder="e.g., Delhi Railway Station"
+              />
+            </div>
+            <div>
+              <Label>Drop Point</Label>
+              <Input
+                value={tourData.transport.drop}
+                onChange={(e) => setTourData(prev => ({
+                  ...prev,
+                  transport: { ...prev.transport, drop: e.target.value }
+                }))}
+                placeholder="e.g., Delhi Railway Station"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>Vehicle Type</Label>
+              <Input
+                value={tourData.transport.vehicle}
+                onChange={(e) => setTourData(prev => ({
+                  ...prev,
+                  transport: { ...prev.transport, vehicle: e.target.value }
+                }))}
+                placeholder="e.g., AC Bus, Tempo Traveller"
+              />
+            </div>
+            <div>
+              <Label>Luggage Policy</Label>
+              <Input
+                value={tourData.transport.luggage}
+                onChange={(e) => setTourData(prev => ({
+                  ...prev,
+                  transport: { ...prev.transport, luggage: e.target.value }
+                }))}
+                placeholder="e.g., 15kg per person"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Spiritual Arrangements */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Spiritual Arrangements</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {tourData.spiritualArrangements.map((arrangement, index) => (
+            <div key={index} className="flex space-x-2">
+              <Input
+                value={arrangement}
+                onChange={(e) => updateListItem('spiritualArrangements', index, e.target.value)}
+                placeholder="Spiritual arrangement"
+                className="flex-1"
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => removeListItem('spiritualArrangements', index)}
+                disabled={tourData.spiritualArrangements.length === 1}
+              >
+                Remove
+              </Button>
+            </div>
+          ))}
+          <Button
+            variant="outline"
+            onClick={() => addListItem('spiritualArrangements')}
+            className="w-full"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Spiritual Arrangement
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Inclusions */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Inclusions</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {tourData.inclusions.map((inclusion, index) => (
+            <div key={index} className="flex space-x-2">
+              <Input
+                value={inclusion}
+                onChange={(e) => updateListItem('inclusions', index, e.target.value)}
+                placeholder="What's included"
+                className="flex-1"
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => removeListItem('inclusions', index)}
+                disabled={tourData.inclusions.length === 1}
+              >
+                Remove
+              </Button>
+            </div>
+          ))}
+          <Button
+            variant="outline"
+            onClick={() => addListItem('inclusions')}
+            className="w-full"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Inclusion
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Exclusions */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Exclusions</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {tourData.exclusions.map((exclusion, index) => (
+            <div key={index} className="flex space-x-2">
+              <Input
+                value={exclusion}
+                onChange={(e) => updateListItem('exclusions', index, e.target.value)}
+                placeholder="What's not included"
+                className="flex-1"
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => removeListItem('exclusions', index)}
+                disabled={tourData.exclusions.length === 1}
+              >
+                Remove
+              </Button>
+            </div>
+          ))}
+          <Button
+            variant="outline"
+            onClick={() => addListItem('exclusions')}
+            className="w-full"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Exclusion
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Pricing */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Pricing Details</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>Double/Triple Sharing</Label>
+              <Input
+                value={tourData.pricing.doubleSharing}
+                onChange={(e) => setTourData(prev => ({
+                  ...prev,
+                  pricing: { ...prev.pricing, doubleSharing: e.target.value }
+                }))}
+                placeholder="e.g., ₹25,999 per person"
+              />
+            </div>
+            <div>
+              <Label>Single Room Supplement</Label>
+              <Input
+                value={tourData.pricing.singleSupplement}
+                onChange={(e) => setTourData(prev => ({
+                  ...prev,
+                  pricing: { ...prev.pricing, singleSupplement: e.target.value }
+                }))}
+                placeholder="e.g., ₹5,000 extra"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <Label>Child (5-12 years)</Label>
+              <Input
+                value={tourData.pricing.child5to12}
+                onChange={(e) => setTourData(prev => ({
+                  ...prev,
+                  pricing: { ...prev.pricing, child5to12: e.target.value }
+                }))}
+                placeholder="e.g., 75% of adult price"
+              />
+            </div>
+            <div>
+              <Label>Group Discount</Label>
+              <Input
+                value={tourData.pricing.groupDiscount}
+                onChange={(e) => setTourData(prev => ({
+                  ...prev,
+                  pricing: { ...prev.pricing, groupDiscount: e.target.value }
+                }))}
+                placeholder="e.g., 10% off for groups of 10+"
+              />
+            </div>
+            <div>
+              <Label>Early Bird Discount</Label>
+              <Input
+                value={tourData.pricing.earlyBird}
+                onChange={(e) => setTourData(prev => ({
+                  ...prev,
+                  pricing: { ...prev.pricing, earlyBird: e.target.value }
+                }))}
+                placeholder="e.g., 5% off for bookings 60 days prior"
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Action Buttons */}
-      <div className="flex justify-end space-x-4">
+      <div className="flex justify-end space-x-4 sticky bottom-4 bg-white p-4 border-t">
         <Button variant="outline" onClick={onCancel}>
           Cancel
         </Button>
