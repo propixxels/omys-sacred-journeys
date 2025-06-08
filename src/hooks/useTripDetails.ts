@@ -69,19 +69,23 @@ export const useTripDetails = (slug: string) => {
         setLoading(true);
         setError(null);
 
-        // Fetch tour data - only published tours (isDraft = false)
+        // Fetch tour data - only published tours (isDraft = false or null)
         const { data: tour, error: tourError } = await supabase
           .from('tours')
           .select('*')
           .eq('slug', slug)
-          .eq('isDraft', false)
+          .or('isDraft.is.null,isDraft.eq.false')
           .single();
 
         console.log('Supabase response:', { tour, tourError });
 
         if (tourError) {
           console.error('Supabase error:', tourError);
-          setError('Tour not found');
+          if (tourError.code === 'PGRST116') {
+            setError('Tour not found');
+          } else {
+            setError('Failed to load tour');
+          }
           return;
         }
 
@@ -90,6 +94,33 @@ export const useTripDetails = (slug: string) => {
           setError('Tour not found');
           return;
         }
+
+        // Helper function to safely parse JSON fields
+        const safeParseArray = (field: any): any[] => {
+          if (Array.isArray(field)) return field;
+          if (typeof field === 'string') {
+            try {
+              const parsed = JSON.parse(field);
+              return Array.isArray(parsed) ? parsed : [];
+            } catch {
+              return [];
+            }
+          }
+          return [];
+        };
+
+        const safeParseObject = (field: any, defaultValue: any): any => {
+          if (field && typeof field === 'object' && !Array.isArray(field)) return field;
+          if (typeof field === 'string') {
+            try {
+              const parsed = JSON.parse(field);
+              return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : defaultValue;
+            } catch {
+              return defaultValue;
+            }
+          }
+          return defaultValue;
+        };
 
         const tripData: TripDetails = {
           id: tour.id,
@@ -105,23 +136,15 @@ export const useTripDetails = (slug: string) => {
           rating: tour.rating,
           pilgrims_count: tour.pilgrims_count,
           next_departure: tour.next_departure,
-          highlights: Array.isArray(tour.highlights) ? tour.highlights as string[] : [],
-          itinerary: Array.isArray(tour.itinerary) ? tour.itinerary as TripDetails['itinerary'] : [],
-          accommodation: tour.accommodation && typeof tour.accommodation === 'object' && !Array.isArray(tour.accommodation) ? 
-            tour.accommodation as TripDetails['accommodation'] : 
-            { hotels: [], roomType: null, amenities: [] },
-          meals: tour.meals && typeof tour.meals === 'object' && !Array.isArray(tour.meals) ? 
-            tour.meals as TripDetails['meals'] : 
-            { included: '', special: null, note: null },
-          transport: tour.transport && typeof tour.transport === 'object' && !Array.isArray(tour.transport) ? 
-            tour.transport as TripDetails['transport'] : 
-            { pickup: '', drop: '', vehicle: '', luggage: null },
-          spiritualArrangements: Array.isArray(tour.spiritual_arrangements) ? tour.spiritual_arrangements as string[] : [],
-          inclusions: Array.isArray(tour.inclusions) ? tour.inclusions as string[] : [],
-          exclusions: Array.isArray(tour.exclusions) ? tour.exclusions as string[] : [],
-          pricing: tour.pricing && typeof tour.pricing === 'object' && !Array.isArray(tour.pricing) ? 
-            tour.pricing as TripDetails['pricing'] : 
-            { doubleSharing: '', singleSupplement: null, child5to12: null, groupDiscount: null, earlyBird: null }
+          highlights: safeParseArray(tour.highlights),
+          itinerary: safeParseArray(tour.itinerary),
+          accommodation: safeParseObject(tour.accommodation, { hotels: [], roomType: null, amenities: [] }),
+          meals: safeParseObject(tour.meals, { included: '', special: null, note: null }),
+          transport: safeParseObject(tour.transport, { pickup: '', drop: '', vehicle: '', luggage: null }),
+          spiritualArrangements: safeParseArray(tour.spiritual_arrangements),
+          inclusions: safeParseArray(tour.inclusions),
+          exclusions: safeParseArray(tour.exclusions),
+          pricing: safeParseObject(tour.pricing, { doubleSharing: '', singleSupplement: null, child5to12: null, groupDiscount: null, earlyBird: null })
         };
 
         console.log('Processed trip data:', tripData);
