@@ -91,15 +91,23 @@ export const useTripDetails = (slug: string) => {
           rating: tour.rating,
           pilgrims_count: tour.pilgrims_count,
           next_departure: tour.next_departure,
-          highlights: tour.highlights || [],
-          itinerary: tour.itinerary || [],
-          accommodation: tour.accommodation || { hotels: [], roomType: null, amenities: [] },
-          meals: tour.meals || { included: '', special: null, note: null },
-          transport: tour.transport || { pickup: '', drop: '', vehicle: '', luggage: null },
-          spiritualArrangements: tour.spiritual_arrangements || [],
-          inclusions: tour.inclusions || [],
-          exclusions: tour.exclusions || [],
-          pricing: tour.pricing || { doubleSharing: '', singleSupplement: null, child5to12: null, groupDiscount: null, earlyBird: null }
+          highlights: Array.isArray(tour.highlights) ? tour.highlights as string[] : [],
+          itinerary: Array.isArray(tour.itinerary) ? tour.itinerary as TripDetails['itinerary'] : [],
+          accommodation: tour.accommodation && typeof tour.accommodation === 'object' && !Array.isArray(tour.accommodation) ? 
+            tour.accommodation as TripDetails['accommodation'] : 
+            { hotels: [], roomType: null, amenities: [] },
+          meals: tour.meals && typeof tour.meals === 'object' && !Array.isArray(tour.meals) ? 
+            tour.meals as TripDetails['meals'] : 
+            { included: '', special: null, note: null },
+          transport: tour.transport && typeof tour.transport === 'object' && !Array.isArray(tour.transport) ? 
+            tour.transport as TripDetails['transport'] : 
+            { pickup: '', drop: '', vehicle: '', luggage: null },
+          spiritualArrangements: Array.isArray(tour.spiritual_arrangements) ? tour.spiritual_arrangements as string[] : [],
+          inclusions: Array.isArray(tour.inclusions) ? tour.inclusions as string[] : [],
+          exclusions: Array.isArray(tour.exclusions) ? tour.exclusions as string[] : [],
+          pricing: tour.pricing && typeof tour.pricing === 'object' && !Array.isArray(tour.pricing) ? 
+            tour.pricing as TripDetails['pricing'] : 
+            { doubleSharing: '', singleSupplement: null, child5to12: null, groupDiscount: null, earlyBird: null }
         };
 
         setTripDetails(tripData);
