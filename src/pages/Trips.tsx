@@ -2,12 +2,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Calendar, MapPin, Users, Clock, Search, Filter, SortAsc } from "lucide-react";
+import { Calendar, MapPin, Clock, Search, Filter, SortAsc } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Tour {
@@ -20,6 +20,8 @@ interface Tour {
   cost: number;
   cost_details: string;
   description?: string;
+  slug?: string;
+  image_url?: string;
 }
 
 const Trips = () => {
@@ -65,7 +67,7 @@ const Trips = () => {
     let filtered = tours.filter(tour => {
       const matchesSearch = tour.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            tour.destinations.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesTransport = transportFilter === "all" || tour.transport_mode === transportFilter;
+      const matchesTransport = transportFilter === "all" || tour.transport_mode.toLowerCase().includes(transportFilter.toLowerCase());
       return matchesSearch && matchesTransport;
     });
 
@@ -96,7 +98,8 @@ const Trips = () => {
     setFilteredTours(filtered);
   };
 
-  const createSlug = (name: string) => {
+  const getSlugFromName = (name: string, slug?: string) => {
+    if (slug) return slug;
     return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   };
 
@@ -145,6 +148,8 @@ const Trips = () => {
                 <SelectItem value="all">All Transport</SelectItem>
                 <SelectItem value="bus">Bus</SelectItem>
                 <SelectItem value="flight">Flight</SelectItem>
+                <SelectItem value="volvo">AC Volvo</SelectItem>
+                <SelectItem value="tempo">Tempo Traveller</SelectItem>
               </SelectContent>
             </Select>
 
@@ -187,14 +192,22 @@ const Trips = () => {
           {filteredTours.map((tour) => (
             <Card key={tour.id} className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-white border-0 shadow-lg overflow-hidden">
               <div className="relative h-48 bg-gradient-to-br from-saffron-400 to-orange-500 overflow-hidden">
-                <div className="absolute inset-0 mandala-bg opacity-20"></div>
+                {tour.image_url ? (
+                  <img 
+                    src={tour.image_url} 
+                    alt={tour.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="absolute inset-0 mandala-bg opacity-20"></div>
+                )}
                 <div className="absolute inset-0 bg-black/20"></div>
                 <div className="relative z-10 p-6 text-white">
                   <Badge 
                     variant="secondary" 
                     className="mb-2 bg-white/20 text-white border-white/30"
                   >
-                    {tour.transport_mode === 'bus' ? 'Bus Travel' : 'Flight + Bus'}
+                    {tour.transport_mode}
                   </Badge>
                   <h3 className="text-xl font-temple font-bold mb-2">{tour.name}</h3>
                   <p className="text-sm opacity-90">{tour.duration}</p>
@@ -234,7 +247,9 @@ const Trips = () => {
                         <span className="text-2xl font-bold text-saffron-600">
                           ₹{tour.cost.toLocaleString()}
                         </span>
-                        <p className="text-xs text-gray-500">{tour.cost_details}</p>
+                        {tour.cost_details && (
+                          <p className="text-xs text-gray-500">{tour.cost_details}</p>
+                        )}
                       </div>
                     </div>
 
@@ -242,7 +257,7 @@ const Trips = () => {
                       asChild
                       className="w-full btn-temple group-hover:shadow-lg transition-all duration-300"
                     >
-                      <Link to={`/trip/${createSlug(tour.name)}`}>
+                      <Link to={`/trip/${getSlugFromName(tour.name, tour.slug)}`}>
                         View Details
                       </Link>
                     </Button>

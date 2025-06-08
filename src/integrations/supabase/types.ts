@@ -77,6 +77,306 @@ export type Database = {
           },
         ]
       }
+      tour_accommodation: {
+        Row: {
+          amenities: string[] | null
+          created_at: string | null
+          hotels: string[]
+          id: string
+          room_type: string | null
+          tour_id: string | null
+        }
+        Insert: {
+          amenities?: string[] | null
+          created_at?: string | null
+          hotels: string[]
+          id?: string
+          room_type?: string | null
+          tour_id?: string | null
+        }
+        Update: {
+          amenities?: string[] | null
+          created_at?: string | null
+          hotels?: string[]
+          id?: string
+          room_type?: string | null
+          tour_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_accommodation_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tour_exclusions: {
+        Row: {
+          created_at: string | null
+          exclusion: string
+          id: string
+          tour_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          exclusion: string
+          id?: string
+          tour_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          exclusion?: string
+          id?: string
+          tour_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_exclusions_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tour_highlights: {
+        Row: {
+          created_at: string | null
+          highlight: string
+          id: string
+          tour_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          highlight: string
+          id?: string
+          tour_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          highlight?: string
+          id?: string
+          tour_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_highlights_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tour_inclusions: {
+        Row: {
+          created_at: string | null
+          id: string
+          inclusion: string
+          tour_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          inclusion: string
+          tour_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          inclusion?: string
+          tour_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_inclusions_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tour_itinerary: {
+        Row: {
+          activities: string[]
+          created_at: string | null
+          day_number: number
+          id: string
+          title: string
+          tour_id: string | null
+        }
+        Insert: {
+          activities: string[]
+          created_at?: string | null
+          day_number: number
+          id?: string
+          title: string
+          tour_id?: string | null
+        }
+        Update: {
+          activities?: string[]
+          created_at?: string | null
+          day_number?: number
+          id?: string
+          title?: string
+          tour_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_itinerary_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tour_meals: {
+        Row: {
+          created_at: string | null
+          id: string
+          included: string
+          note: string | null
+          special: string | null
+          tour_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          included: string
+          note?: string | null
+          special?: string | null
+          tour_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          included?: string
+          note?: string | null
+          special?: string | null
+          tour_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_meals_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tour_pricing: {
+        Row: {
+          child_5_to_12: string | null
+          created_at: string | null
+          double_sharing: string
+          early_bird: string | null
+          group_discount: string | null
+          id: string
+          single_supplement: string | null
+          tour_id: string | null
+        }
+        Insert: {
+          child_5_to_12?: string | null
+          created_at?: string | null
+          double_sharing: string
+          early_bird?: string | null
+          group_discount?: string | null
+          id?: string
+          single_supplement?: string | null
+          tour_id?: string | null
+        }
+        Update: {
+          child_5_to_12?: string | null
+          created_at?: string | null
+          double_sharing?: string
+          early_bird?: string | null
+          group_discount?: string | null
+          id?: string
+          single_supplement?: string | null
+          tour_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_pricing_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tour_spiritual_arrangements: {
+        Row: {
+          arrangement: string
+          created_at: string | null
+          id: string
+          tour_id: string | null
+        }
+        Insert: {
+          arrangement: string
+          created_at?: string | null
+          id?: string
+          tour_id?: string | null
+        }
+        Update: {
+          arrangement?: string
+          created_at?: string | null
+          id?: string
+          tour_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_spiritual_arrangements_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tour_transport: {
+        Row: {
+          created_at: string | null
+          drop_location: string
+          id: string
+          luggage: string | null
+          pickup: string
+          tour_id: string | null
+          vehicle: string
+        }
+        Insert: {
+          created_at?: string | null
+          drop_location: string
+          id?: string
+          luggage?: string | null
+          pickup: string
+          tour_id?: string | null
+          vehicle: string
+        }
+        Update: {
+          created_at?: string | null
+          drop_location?: string
+          id?: string
+          luggage?: string | null
+          pickup?: string
+          tour_id?: string | null
+          vehicle?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tour_transport_tour_id_fkey"
+            columns: ["tour_id"]
+            isOneToOne: false
+            referencedRelation: "tours"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tours: {
         Row: {
           cost: number
@@ -87,7 +387,12 @@ export type Database = {
           destinations: string
           duration: string
           id: string
+          image_url: string | null
           name: string
+          next_departure: string | null
+          pilgrims_count: number | null
+          rating: number | null
+          slug: string | null
           transport_mode: string
           updated_at: string
         }
@@ -100,7 +405,12 @@ export type Database = {
           destinations: string
           duration: string
           id?: string
+          image_url?: string | null
           name: string
+          next_departure?: string | null
+          pilgrims_count?: number | null
+          rating?: number | null
+          slug?: string | null
           transport_mode: string
           updated_at?: string
         }
@@ -113,7 +423,12 @@ export type Database = {
           destinations?: string
           duration?: string
           id?: string
+          image_url?: string | null
           name?: string
+          next_departure?: string | null
+          pilgrims_count?: number | null
+          rating?: number | null
+          slug?: string | null
           transport_mode?: string
           updated_at?: string
         }
