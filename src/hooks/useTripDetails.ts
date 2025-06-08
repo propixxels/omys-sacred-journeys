@@ -146,7 +146,7 @@ export const useTripDetails = (slug: string) => {
           inclusions: safeParseArray(tour.inclusions),
           exclusions: safeParseArray(tour.exclusions),
           pricing: safeParseObject(tour.pricing, { doubleSharing: '', singleSupplement: null, child5to12: null, groupDiscount: null, earlyBird: null }),
-          gallery: safeParseArray(tour.gallery)
+          gallery: safeParseArray(tour.gallery || [])
         };
 
         console.log('Processed trip data:', tripData);

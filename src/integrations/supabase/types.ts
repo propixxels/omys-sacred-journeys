@@ -88,6 +88,7 @@ export type Database = {
           destinations: string
           duration: string
           exclusions: Json | null
+          gallery: Json | null
           highlights: Json | null
           id: string
           image_url: string | null
@@ -116,6 +117,7 @@ export type Database = {
           destinations: string
           duration: string
           exclusions?: Json | null
+          gallery?: Json | null
           highlights?: Json | null
           id?: string
           image_url?: string | null
@@ -144,6 +146,7 @@ export type Database = {
           destinations?: string
           duration?: string
           exclusions?: Json | null
+          gallery?: Json | null
           highlights?: Json | null
           id?: string
           image_url?: string | null

@@ -181,7 +181,7 @@ const TourEditor = ({ tourId, onSave, onCancel }: TourEditorProps) => {
           inclusions: safeParseArray(data.inclusions),
           exclusions: safeParseArray(data.exclusions),
           pricing: safeParseObject(data.pricing, { doubleSharing: "", singleSupplement: "", child5to12: "", groupDiscount: "", earlyBird: "" }),
-          gallery: safeParseArray(data.gallery),
+          gallery: safeParseArray(data.gallery || []),
           isDraft: data.isDraft || false
         });
       }
