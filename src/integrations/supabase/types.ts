@@ -86,13 +86,13 @@ export type Database = {
           departure_date: string
           description: string | null
           destinations: string
-          draft: boolean | null
           duration: string
           exclusions: Json | null
           highlights: Json | null
           id: string
           image_url: string | null
           inclusions: Json | null
+          isDraft: boolean | null
           itinerary: Json | null
           meals: Json | null
           name: string
@@ -114,13 +114,13 @@ export type Database = {
           departure_date: string
           description?: string | null
           destinations: string
-          draft?: boolean | null
           duration: string
           exclusions?: Json | null
           highlights?: Json | null
           id?: string
           image_url?: string | null
           inclusions?: Json | null
+          isDraft?: boolean | null
           itinerary?: Json | null
           meals?: Json | null
           name: string
@@ -142,13 +142,13 @@ export type Database = {
           departure_date?: string
           description?: string | null
           destinations?: string
-          draft?: boolean | null
           duration?: string
           exclusions?: Json | null
           highlights?: Json | null
           id?: string
           image_url?: string | null
           inclusions?: Json | null
+          isDraft?: boolean | null
           itinerary?: Json | null
           meals?: Json | null
           name?: string

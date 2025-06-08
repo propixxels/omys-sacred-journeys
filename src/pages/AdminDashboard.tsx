@@ -16,10 +16,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import type { Tables } from "@/integrations/supabase/types";
 
-// Create a type that extends the Supabase Tour type with draft property
-type Tour = Tables<'tours'> & {
-  draft: boolean;
-};
+type Tour = Tables<'tours'>;
 
 type Booking = Tables<'bookings'> & {
   tours: {
@@ -61,20 +58,13 @@ const AdminDashboard = () => {
       const { data, error } = await supabase
         .from('tours')
         .select('*')
-        .eq('draft', showDrafts)
+        .eq('isDraft', showDrafts)
         .order('departure_date', { ascending: true });
 
       console.log('Tours response:', { data, error });
 
       if (error) throw error;
-      
-      // Transform the data to ensure draft property exists
-      const transformedTours = (data || []).map(tour => ({
-        ...tour,
-        draft: Boolean(tour.draft)
-      })) as Tour[];
-      
-      setTours(transformedTours);
+      setTours(data || []);
     } catch (error) {
       console.error('Error fetching tours:', error);
       toast({
@@ -136,7 +126,7 @@ const AdminDashboard = () => {
           cost: parseInt(newTour.cost),
           cost_details: newTour.cost_details,
           description: newTour.description,
-          draft: false
+          isDraft: false
         });
 
       if (error) throw error;
@@ -217,7 +207,7 @@ const AdminDashboard = () => {
     try {
       const { error } = await supabase
         .from('tours')
-        .update({ draft: true })
+        .update({ isDraft: true })
         .eq('id', id);
 
       if (error) throw error;
@@ -273,7 +263,7 @@ const AdminDashboard = () => {
     try {
       const { error } = await supabase
         .from('tours')
-        .update({ draft: false })
+        .update({ isDraft: false })
         .eq('id', id);
 
       if (error) throw error;
@@ -331,8 +321,8 @@ const AdminDashboard = () => {
     }, 0);
 
   const totalBookings = bookings.length;
-  const activeTours = tours.filter(t => !t.draft).length;
-  const draftTours = tours.filter(t => t.draft).length;
+  const activeTours = tours.filter(t => !t.isDraft).length;
+  const draftTours = tours.filter(t => t.isDraft).length;
 
   if (loading) {
     return (
@@ -471,7 +461,7 @@ const AdminDashboard = () => {
                             <><Plane className="w-3 h-3 mr-1" /> Flight</>
                           )}
                         </Badge>
-                        {tour.draft && (
+                        {tour.isDraft && (
                           <Badge variant="secondary">Draft</Badge>
                         )}
                       </div>
@@ -562,7 +552,7 @@ const AdminDashboard = () => {
                             </DialogContent>
                           </Dialog>
 
-                          {!tour.draft ? (
+                          {!tour.isDraft ? (
                             <Button 
                               size="sm" 
                               variant="outline" 
