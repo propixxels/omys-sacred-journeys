@@ -69,11 +69,12 @@ export const useTripDetails = (slug: string) => {
         setLoading(true);
         setError(null);
 
-        // Fetch tour data with all JSON columns
+        // Fetch tour data - only published tours (isDraft = false)
         const { data: tour, error: tourError } = await supabase
           .from('tours')
           .select('*')
           .eq('slug', slug)
+          .eq('isDraft', false)
           .single();
 
         console.log('Supabase response:', { tour, tourError });

@@ -26,28 +26,57 @@ const AdminLogin = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
-    const { error } = await signIn(loginEmail, loginPassword);
-
-    if (error) {
+    if (!loginEmail || !loginPassword) {
       toast({
-        title: "Login Failed",
-        description: "Invalid email or password",
+        title: "Error",
+        description: "Please enter both email and password",
         variant: "destructive"
       });
-    } else {
-      toast({
-        title: "Success",
-        description: "Logged in successfully"
-      });
+      return;
     }
 
-    setLoading(false);
+    setLoading(true);
+    console.log('Attempting login for:', loginEmail);
+
+    try {
+      const { error } = await signIn(loginEmail, loginPassword);
+
+      if (error) {
+        console.error('Login error:', error);
+        toast({
+          title: "Login Failed",
+          description: error.message || "Invalid email or password",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Logged in successfully"
+        });
+      }
+    } catch (err) {
+      console.error('Unexpected login error:', err);
+      toast({
+        title: "Login Failed",
+        description: "An unexpected error occurred",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!signupEmail || !signupPassword || !signupName) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -85,14 +114,15 @@ const AdminLogin = () => {
         setSignupPassword('');
       }
     } catch (error: any) {
+      console.error('Signup error:', error);
       toast({
         title: "Signup Failed",
         description: error.message || "Failed to create admin account",
         variant: "destructive"
       });
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -124,6 +154,7 @@ const AdminLogin = () => {
                     onChange={(e) => setLoginEmail(e.target.value)}
                     required
                     placeholder="admin@example.com"
+                    disabled={loading}
                   />
                 </div>
                 <div>
@@ -135,6 +166,7 @@ const AdminLogin = () => {
                     onChange={(e) => setLoginPassword(e.target.value)}
                     required
                     placeholder="Enter your password"
+                    disabled={loading}
                   />
                 </div>
                 <Button 
@@ -158,6 +190,7 @@ const AdminLogin = () => {
                     onChange={(e) => setSignupName(e.target.value)}
                     required
                     placeholder="Your full name"
+                    disabled={loading}
                   />
                 </div>
                 <div>
@@ -169,6 +202,7 @@ const AdminLogin = () => {
                     onChange={(e) => setSignupEmail(e.target.value)}
                     required
                     placeholder="admin@example.com"
+                    disabled={loading}
                   />
                 </div>
                 <div>
@@ -181,6 +215,7 @@ const AdminLogin = () => {
                     required
                     placeholder="Create a strong password"
                     minLength={6}
+                    disabled={loading}
                   />
                 </div>
                 <Button 
