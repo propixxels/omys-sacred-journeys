@@ -8,45 +8,33 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2, Users, Calendar, MapPin, Star, Eye, LogOut, Plane, Bus } from "lucide-react";
+import { Plus, Edit, Trash2, Users, Calendar, MapPin, Star, Eye, LogOut, Plane, Bus, Loader, Archive } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import type { Tables } from "@/integrations/supabase/types";
 
-interface Tour {
-  id: string;
-  name: string;
-  duration: string;
-  transport_mode: string;
-  destinations: string;
-  departure_date: string;
-  cost: number;
-  cost_details: string;
-  description?: string;
-}
+type Tour = Tables<'tours'>;
 
-interface Booking {
-  id: string;
-  tour_id: string;
-  customer_name: string;
-  email: string;
-  mobile_number: string;
-  number_of_people: number;
-  booking_date: string;
-  status: string;
-  notes?: string;
+type Booking = Tables<'bookings'> & {
   tours: {
     name: string;
   };
-}
+};
 
 const AdminDashboard = () => {
   const { toast } = useToast();
   const { signOut } = useAuth();
+  const navigate = useNavigate();
   const [tours, setTours] = useState<Tour[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isAddTourOpen, setIsAddTourOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [editingTour, setEditingTour] = useState<Tour | null>(null);
+  const [showDrafts, setShowDrafts] = useState(false);
   
   const [newTour, setNewTour] = useState({
     name: "",
@@ -62,18 +50,23 @@ const AdminDashboard = () => {
   useEffect(() => {
     fetchTours();
     fetchBookings();
-  }, []);
+  }, [showDrafts]);
 
   const fetchTours = async () => {
     try {
+      console.log('Fetching tours...');
       const { data, error } = await supabase
         .from('tours')
         .select('*')
+        .eq('isDraft', showDrafts)
         .order('departure_date', { ascending: true });
+
+      console.log('Tours response:', { data, error });
 
       if (error) throw error;
       setTours(data || []);
     } catch (error) {
+      console.error('Error fetching tours:', error);
       toast({
         title: "Error",
         description: "Failed to load tours",
@@ -84,17 +77,21 @@ const AdminDashboard = () => {
 
   const fetchBookings = async () => {
     try {
+      console.log('Fetching bookings...');
       const { data, error } = await supabase
         .from('bookings')
         .select(`
           *,
-          tours (name)
+          tours!inner (name)
         `)
         .order('booking_date', { ascending: false });
+
+      console.log('Bookings response:', { data, error });
 
       if (error) throw error;
       setBookings(data || []);
     } catch (error) {
+      console.error('Error fetching bookings:', error);
       toast({
         title: "Error",
         description: "Failed to load bookings",
@@ -115,6 +112,8 @@ const AdminDashboard = () => {
       return;
     }
 
+    setActionLoading('adding');
+
     try {
       const { error } = await supabase
         .from('tours')
@@ -126,7 +125,8 @@ const AdminDashboard = () => {
           departure_date: newTour.departure_date,
           cost: parseInt(newTour.cost),
           cost_details: newTour.cost_details,
-          description: newTour.description
+          description: newTour.description,
+          isDraft: false
         });
 
       if (error) throw error;
@@ -149,15 +149,89 @@ const AdminDashboard = () => {
         description: "Tour added successfully!"
       });
     } catch (error) {
+      console.error('Error adding tour:', error);
       toast({
         title: "Error",
         description: "Failed to add tour",
         variant: "destructive"
       });
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleUpdateTour = async () => {
+    if (!editingTour) return;
+
+    setActionLoading(`updating-${editingTour.id}`);
+
+    try {
+      const { error } = await supabase
+        .from('tours')
+        .update({
+          name: editingTour.name,
+          duration: editingTour.duration,
+          transport_mode: editingTour.transport_mode,
+          destinations: editingTour.destinations,
+          departure_date: editingTour.departure_date,
+          cost: editingTour.cost,
+          cost_details: editingTour.cost_details,
+          description: editingTour.description
+        })
+        .eq('id', editingTour.id);
+
+      if (error) throw error;
+
+      setEditingTour(null);
+      fetchTours();
+
+      toast({
+        title: "Success",
+        description: "Tour updated successfully!"
+      });
+    } catch (error) {
+      console.error('Error updating tour:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update tour",
+        variant: "destructive"
+      });
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleMoveToDraft = async (id: string) => {
+    setActionLoading(`moving-${id}`);
+
+    try {
+      const { error } = await supabase
+        .from('tours')
+        .update({ isDraft: true })
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      fetchTours();
+      toast({
+        title: "Success",
+        description: "Tour moved to drafts!"
+      });
+    } catch (error) {
+      console.error('Error moving tour to draft:', error);
+      toast({
+        title: "Error",
+        description: "Failed to move tour to drafts",
+        variant: "destructive"
+      });
+    } finally {
+      setActionLoading(null);
     }
   };
 
   const handleDeleteTour = async (id: string) => {
+    setActionLoading(`deleting-${id}`);
+
     try {
       const { error } = await supabase
         .from('tours')
@@ -172,15 +246,48 @@ const AdminDashboard = () => {
         description: "Tour deleted successfully!"
       });
     } catch (error) {
+      console.error('Error deleting tour:', error);
       toast({
         title: "Error",
         description: "Failed to delete tour",
         variant: "destructive"
       });
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handlePublishTour = async (id: string) => {
+    setActionLoading(`publishing-${id}`);
+
+    try {
+      const { error } = await supabase
+        .from('tours')
+        .update({ isDraft: false })
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      fetchTours();
+      toast({
+        title: "Success",
+        description: "Tour published successfully!"
+      });
+    } catch (error) {
+      console.error('Error publishing tour:', error);
+      toast({
+        title: "Error",
+        description: "Failed to publish tour",
+        variant: "destructive"
+      });
+    } finally {
+      setActionLoading(null);
     }
   };
 
   const handleUpdateBookingStatus = async (bookingId: string, newStatus: string) => {
+    setActionLoading(`booking-${bookingId}`);
+
     try {
       const { error } = await supabase
         .from('bookings')
@@ -195,11 +302,14 @@ const AdminDashboard = () => {
         description: `Booking status updated to ${newStatus}`
       });
     } catch (error) {
+      console.error('Error updating booking status:', error);
       toast({
         title: "Error",
         description: "Failed to update booking status",
         variant: "destructive"
       });
+    } finally {
+      setActionLoading(null);
     }
   };
 
@@ -211,7 +321,8 @@ const AdminDashboard = () => {
     }, 0);
 
   const totalBookings = bookings.length;
-  const activeTours = tours.length;
+  const activeTours = tours.filter(t => !t.isDraft).length;
+  const draftTours = tours.filter(t => t.isDraft).length;
 
   if (loading) {
     return (
@@ -236,114 +347,13 @@ const AdminDashboard = () => {
           </div>
           
           <div className="flex space-x-4">
-            <Dialog open={isAddTourOpen} onOpenChange={setIsAddTourOpen}>
-              <DialogTrigger asChild>
-                <Button className="btn-temple">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add New Tour
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md max-h-[80vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle className="font-temple text-temple-maroon">Add New Tour</DialogTitle>
-                  <DialogDescription>
-                    Create a new pilgrimage tour package
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="name">Tour Name *</Label>
-                    <Input
-                      id="name"
-                      value={newTour.name}
-                      onChange={(e) => setNewTour({...newTour, name: e.target.value})}
-                      placeholder="e.g., Kedarnath Yatra"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="duration">Duration *</Label>
-                    <Input
-                      id="duration"
-                      value={newTour.duration}
-                      onChange={(e) => setNewTour({...newTour, duration: e.target.value})}
-                      placeholder="e.g., 7 Days / 6 Nights"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="transport_mode">Transport Mode *</Label>
-                    <select
-                      id="transport_mode"
-                      value={newTour.transport_mode}
-                      onChange={(e) => setNewTour({...newTour, transport_mode: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                    >
-                      <option value="bus">Bus</option>
-                      <option value="flight">Flight</option>
-                    </select>
-                  </div>
-                  <div>
-                    <Label htmlFor="destinations">Destinations *</Label>
-                    <Textarea
-                      id="destinations"
-                      value={newTour.destinations}
-                      onChange={(e) => setNewTour({...newTour, destinations: e.target.value})}
-                      placeholder="List of destinations separated by commas"
-                      rows={3}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="departure_date">Departure Date *</Label>
-                    <Input
-                      id="departure_date"
-                      type="date"
-                      value={newTour.departure_date}
-                      onChange={(e) => setNewTour({...newTour, departure_date: e.target.value})}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="cost">Cost (₹) *</Label>
-                    <Input
-                      id="cost"
-                      type="number"
-                      value={newTour.cost}
-                      onChange={(e) => setNewTour({...newTour, cost: e.target.value})}
-                      placeholder="e.g., 25999"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="cost_details">Cost Details</Label>
-                    <Input
-                      id="cost_details"
-                      value={newTour.cost_details}
-                      onChange={(e) => setNewTour({...newTour, cost_details: e.target.value})}
-                      placeholder="e.g., GST inclusive + Airfare separately"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="description">Description</Label>
-                    <Textarea
-                      id="description"
-                      value={newTour.description}
-                      onChange={(e) => setNewTour({...newTour, description: e.target.value})}
-                      placeholder="Brief description of the tour"
-                      rows={3}
-                    />
-                  </div>
-                  <div className="flex space-x-2">
-                    <Button onClick={handleAddTour} className="btn-temple flex-1">
-                      Add Tour
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => setIsAddTourOpen(false)}
-                      className="flex-1"
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
+            <Button 
+              onClick={() => navigate('/add-tour')}
+              className="btn-temple"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add New Tour
+            </Button>
             
             <Button variant="outline" onClick={signOut}>
               <LogOut className="w-4 h-4 mr-2" />
@@ -353,7 +363,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
           <Card className="card-temple">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">Confirmed Revenue</CardTitle>
@@ -382,7 +392,17 @@ const AdminDashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-temple-maroon">{activeTours}</div>
-              <p className="text-sm text-gray-600 mt-1">Packages available</p>
+              <p className="text-sm text-gray-600 mt-1">Published tours</p>
+            </CardContent>
+          </Card>
+
+          <Card className="card-temple">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-gray-600">Draft Tours</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-temple-maroon">{draftTours}</div>
+              <p className="text-sm text-gray-600 mt-1">Unpublished tours</p>
             </CardContent>
           </Card>
 
@@ -408,6 +428,23 @@ const AdminDashboard = () => {
 
           {/* Tours Tab */}
           <TabsContent value="tours" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <div className="flex space-x-2">
+                <Button
+                  variant={!showDrafts ? "default" : "outline"}
+                  onClick={() => setShowDrafts(false)}
+                >
+                  Published Tours ({activeTours})
+                </Button>
+                <Button
+                  variant={showDrafts ? "default" : "outline"}
+                  onClick={() => setShowDrafts(true)}
+                >
+                  Draft Tours ({draftTours})
+                </Button>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {tours.map((tour) => (
                 <Card key={tour.id} className="card-temple">
@@ -416,13 +453,18 @@ const AdminDashboard = () => {
                       <CardTitle className="text-lg font-temple text-temple-maroon">
                         {tour.name}
                       </CardTitle>
-                      <Badge variant="outline" className="border-saffron-600 text-saffron-600">
-                        {tour.transport_mode === 'bus' ? (
-                          <><Bus className="w-3 h-3 mr-1" /> Bus</>
-                        ) : (
-                          <><Plane className="w-3 h-3 mr-1" /> Flight</>
+                      <div className="flex space-x-1">
+                        <Badge variant="outline" className="border-saffron-600 text-saffron-600">
+                          {tour.transport_mode === 'bus' ? (
+                            <><Bus className="w-3 h-3 mr-1" /> Bus</>
+                          ) : (
+                            <><Plane className="w-3 h-3 mr-1" /> Flight</>
+                          )}
+                        </Badge>
+                        {tour.isDraft && (
+                          <Badge variant="secondary">Draft</Badge>
                         )}
-                      </Badge>
+                      </div>
                     </div>
                     <CardDescription>{tour.duration}</CardDescription>
                   </CardHeader>
@@ -445,19 +487,136 @@ const AdminDashboard = () => {
                       </div>
                       <p className="text-xs text-gray-500 mb-4">{tour.cost_details}</p>
                       
-                      <div className="flex space-x-2">
-                        <Button size="sm" variant="outline" className="flex-1">
-                          <Edit className="w-4 h-4 mr-1" />
-                          Edit
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          className="text-red-600 hover:bg-red-50"
-                          onClick={() => handleDeleteTour(tour.id)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                      <div className="flex flex-col space-y-2">
+                        <div className="flex space-x-2">
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button 
+                                size="sm" 
+                                variant="outline" 
+                                className="flex-1"
+                                onClick={() => setEditingTour(tour)}
+                              >
+                                <Edit className="w-4 h-4 mr-1" />
+                                Edit
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
+                              <DialogHeader>
+                                <DialogTitle>Edit Tour</DialogTitle>
+                              </DialogHeader>
+                              {editingTour && (
+                                <div className="space-y-4">
+                                  <div>
+                                    <Label>Tour Name</Label>
+                                    <Input
+                                      value={editingTour.name}
+                                      onChange={(e) => setEditingTour({...editingTour, name: e.target.value})}
+                                    />
+                                  </div>
+                                  <div>
+                                    <Label>Duration</Label>
+                                    <Input
+                                      value={editingTour.duration}
+                                      onChange={(e) => setEditingTour({...editingTour, duration: e.target.value})}
+                                    />
+                                  </div>
+                                  <div>
+                                    <Label>Cost</Label>
+                                    <Input
+                                      type="number"
+                                      value={editingTour.cost}
+                                      onChange={(e) => setEditingTour({...editingTour, cost: parseInt(e.target.value)})}
+                                    />
+                                  </div>
+                                  <div>
+                                    <Label>Destinations</Label>
+                                    <Textarea
+                                      value={editingTour.destinations}
+                                      onChange={(e) => setEditingTour({...editingTour, destinations: e.target.value})}
+                                    />
+                                  </div>
+                                  <Button 
+                                    onClick={handleUpdateTour}
+                                    disabled={actionLoading === `updating-${editingTour.id}`}
+                                    className="w-full"
+                                  >
+                                    {actionLoading === `updating-${editingTour.id}` ? (
+                                      <><Loader className="w-4 h-4 mr-2 animate-spin" /> Updating...</>
+                                    ) : (
+                                      'Update Tour'
+                                    )}
+                                  </Button>
+                                </div>
+                              )}
+                            </DialogContent>
+                          </Dialog>
+
+                          {!tour.isDraft ? (
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              className="text-orange-600 hover:bg-orange-50"
+                              onClick={() => handleMoveToDraft(tour.id)}
+                              disabled={actionLoading === `moving-${tour.id}`}
+                            >
+                              {actionLoading === `moving-${tour.id}` ? (
+                                <Loader className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <Archive className="w-4 h-4" />
+                              )}
+                            </Button>
+                          ) : (
+                            <div className="flex space-x-1">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="text-green-600 hover:bg-green-50"
+                                onClick={() => handlePublishTour(tour.id)}
+                                disabled={actionLoading === `publishing-${tour.id}`}
+                              >
+                                {actionLoading === `publishing-${tour.id}` ? (
+                                  <Loader className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  'Publish'
+                                )}
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline" 
+                                    className="text-red-600 hover:bg-red-50"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Delete Tour</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Are you sure you want to permanently delete "{tour.name}"? This action cannot be undone.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction 
+                                      onClick={() => handleDeleteTour(tour.id)}
+                                      disabled={actionLoading === `deleting-${tour.id}`}
+                                      className="bg-red-600 hover:bg-red-700"
+                                    >
+                                      {actionLoading === `deleting-${tour.id}` ? (
+                                        <><Loader className="w-4 h-4 mr-2 animate-spin" /> Deleting...</>
+                                      ) : (
+                                        'Delete'
+                                      )}
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -468,77 +627,101 @@ const AdminDashboard = () => {
 
           {/* Bookings Tab */}
           <TabsContent value="bookings" className="space-y-6">
-            <div className="grid gap-4">
-              {bookings.map((booking) => (
-                <Card key={booking.id} className="card-temple">
-                  <CardContent className="p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-center">
-                      <div>
-                        <h3 className="font-temple font-semibold text-temple-maroon">
-                          {booking.customer_name}
-                        </h3>
-                        <p className="text-sm text-gray-600">{booking.email}</p>
-                        <p className="text-sm text-gray-600">{booking.mobile_number}</p>
-                      </div>
+            {bookings.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="w-24 h-24 bg-saffron-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-12 h-12 text-saffron-600" />
+                </div>
+                <h3 className="text-xl font-temple font-semibold text-gray-700 mb-2">
+                  No bookings yet
+                </h3>
+                <p className="text-gray-600">
+                  Bookings will appear here once customers start booking tours.
+                </p>
+              </div>
+            ) : (
+              <div className="grid gap-4">
+                {bookings.map((booking) => (
+                  <Card key={booking.id} className="card-temple">
+                    <CardContent className="p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-center">
+                        <div>
+                          <h3 className="font-temple font-semibold text-temple-maroon">
+                            {booking.customer_name}
+                          </h3>
+                          <p className="text-sm text-gray-600">{booking.email}</p>
+                          <p className="text-sm text-gray-600">{booking.mobile_number}</p>
+                        </div>
 
-                      <div>
-                        <p className="font-medium">{booking.tours.name}</p>
-                        <p className="text-sm text-gray-600">
-                          {booking.number_of_people} person{booking.number_of_people > 1 ? 's' : ''}
-                        </p>
-                      </div>
+                        <div>
+                          <p className="font-medium">{booking.tours.name}</p>
+                          <p className="text-sm text-gray-600">
+                            {booking.number_of_people} person{booking.number_of_people > 1 ? 's' : ''}
+                          </p>
+                        </div>
 
-                      <div>
-                        <p className="text-sm text-gray-600">Booking Date</p>
-                        <p className="font-medium">
-                          {new Date(booking.booking_date).toLocaleDateString()}
-                        </p>
-                      </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Booking Date</p>
+                          <p className="font-medium">
+                            {new Date(booking.booking_date).toLocaleDateString()}
+                          </p>
+                        </div>
 
-                      <div>
-                        <Badge 
-                          variant={booking.status === 'confirmed' ? 'default' : booking.status === 'cancelled' ? 'destructive' : 'secondary'}
-                          className={
-                            booking.status === 'confirmed' 
-                              ? 'bg-green-500 hover:bg-green-600' 
-                              : booking.status === 'cancelled'
-                              ? 'bg-red-500 hover:bg-red-600'
-                              : 'bg-yellow-500 hover:bg-yellow-600 text-white'
-                          }
-                        >
-                          {booking.status}
-                        </Badge>
-                      </div>
+                        <div>
+                          <Badge 
+                            variant={booking.status === 'confirmed' ? 'default' : booking.status === 'cancelled' ? 'destructive' : 'secondary'}
+                            className={
+                              booking.status === 'confirmed' 
+                                ? 'bg-green-500 hover:bg-green-600' 
+                                : booking.status === 'cancelled'
+                                ? 'bg-red-500 hover:bg-red-600'
+                                : 'bg-yellow-500 hover:bg-yellow-600 text-white'
+                            }
+                          >
+                            {booking.status}
+                          </Badge>
+                        </div>
 
-                      <div className="col-span-2 flex space-x-2">
-                        {booking.status === 'pending' && (
-                          <>
-                            <Button 
-                              size="sm" 
-                              className="btn-temple"
-                              onClick={() => handleUpdateBookingStatus(booking.id, 'confirmed')}
-                            >
-                              Confirm
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="outline"
-                              className="text-red-600 hover:bg-red-50"
-                              onClick={() => handleUpdateBookingStatus(booking.id, 'cancelled')}
-                            >
-                              Cancel
-                            </Button>
-                          </>
-                        )}
-                        <Button size="sm" variant="outline">
-                          <Eye className="w-4 h-4" />
-                        </Button>
+                        <div className="col-span-2 flex space-x-2">
+                          {booking.status === 'pending' && (
+                            <>
+                              <Button 
+                                size="sm" 
+                                className="btn-temple"
+                                onClick={() => handleUpdateBookingStatus(booking.id, 'confirmed')}
+                                disabled={actionLoading === `booking-${booking.id}`}
+                              >
+                                {actionLoading === `booking-${booking.id}` ? (
+                                  <Loader className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  'Confirm'
+                                )}
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                className="text-red-600 hover:bg-red-50"
+                                onClick={() => handleUpdateBookingStatus(booking.id, 'cancelled')}
+                                disabled={actionLoading === `booking-${booking.id}`}
+                              >
+                                {actionLoading === `booking-${booking.id}` ? (
+                                  <Loader className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  'Cancel'
+                                )}
+                              </Button>
+                            </>
+                          )}
+                          <Button size="sm" variant="outline">
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>
