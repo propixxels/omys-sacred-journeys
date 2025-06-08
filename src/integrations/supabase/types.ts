@@ -92,7 +92,6 @@ export type Database = {
           id: string
           image_url: string | null
           inclusions: Json | null
-          isDraft: boolean | null
           itinerary: Json | null
           meals: Json | null
           name: string
@@ -120,7 +119,6 @@ export type Database = {
           id?: string
           image_url?: string | null
           inclusions?: Json | null
-          isDraft?: boolean | null
           itinerary?: Json | null
           meals?: Json | null
           name: string
@@ -148,7 +146,6 @@ export type Database = {
           id?: string
           image_url?: string | null
           inclusions?: Json | null
-          isDraft?: boolean | null
           itinerary?: Json | null
           meals?: Json | null
           name?: string

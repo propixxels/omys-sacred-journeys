@@ -22,7 +22,6 @@ interface Tour {
   description?: string;
   slug?: string;
   image_url?: string;
-  isDraft?: boolean;
 }
 
 const Trips = () => {
@@ -46,40 +45,19 @@ const Trips = () => {
   const fetchTours = async () => {
     try {
       console.log('Fetching tours...');
-      setLoading(true);
-      
-      // Fetch only published tours (isDraft = false or null)
       const { data, error } = await supabase
         .from('tours')
         .select('*')
-        .or('isDraft.is.null,isDraft.eq.false')
         .order('departure_date', { ascending: true });
 
-      console.log('Tours fetched:', { data, error, count: data?.length });
+      console.log('Tours fetched:', { data, error });
 
       if (error) {
         console.error('Error fetching tours:', error);
         throw error;
       }
       
-      // Map the data to ensure proper typing
-      const mappedTours: Tour[] = (data || []).map(tour => ({
-        id: tour.id,
-        name: tour.name,
-        duration: tour.duration,
-        transport_mode: tour.transport_mode,
-        destinations: tour.destinations,
-        departure_date: tour.departure_date,
-        cost: tour.cost,
-        cost_details: tour.cost_details || '',
-        description: tour.description,
-        slug: tour.slug,
-        image_url: tour.image_url,
-        isDraft: tour.isDraft || false
-      }));
-      
-      console.log('Mapped tours:', mappedTours);
-      setTours(mappedTours);
+      setTours(data || []);
     } catch (error) {
       console.error('Fetch tours error:', error);
       toast({

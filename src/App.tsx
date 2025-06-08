@@ -10,7 +10,6 @@ import About from "./pages/About";
 import Trips from "./pages/Trips";
 import TripDetail from "./pages/TripDetail";
 import AdminDashboard from "./pages/AdminDashboard";
-import AddTour from "./pages/AddTour";
 import AdminLogin from "./components/AdminLogin";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
@@ -40,14 +39,6 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <AdminDashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/add-tour" 
-                  element={
-                    <ProtectedRoute>
-                      <AddTour />
                     </ProtectedRoute>
                   } 
                 />
