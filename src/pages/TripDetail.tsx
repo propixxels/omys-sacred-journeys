@@ -1,4 +1,3 @@
-
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Calendar, Clock, MapPin, Users, Star, Check, X, Phone, Mail } from "lucide-react";
+import { Calendar, Clock, MapPin, Users, Star, Check, X, Phone, Mail, Image as ImageIcon } from "lucide-react";
 import BookingForm from "@/components/BookingForm";
 import { useTripDetails } from "@/hooks/useTripDetails";
 
@@ -15,6 +14,7 @@ const TripDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [selectedGalleryImage, setSelectedGalleryImage] = useState<string | null>(null);
   
   const { tripDetails: trip, loading, error } = useTripDetails(slug || '');
 
@@ -313,6 +313,38 @@ const TripDetail = () => {
               )}
             </div>
 
+            {/* Gallery Section */}
+            {trip.gallery && trip.gallery.length > 0 && (
+              <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
+                <CardHeader>
+                  <CardTitle className="text-2xl font-temple text-temple-maroon flex items-center space-x-2">
+                    <ImageIcon className="w-6 h-6" />
+                    <span>Tour Gallery</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {trip.gallery.map((imageUrl, index) => (
+                      <div 
+                        key={index} 
+                        className="relative group cursor-pointer"
+                        onClick={() => setSelectedGalleryImage(imageUrl)}
+                      >
+                        <img 
+                          src={imageUrl} 
+                          alt={`${trip.name} gallery ${index + 1}`}
+                          className="w-full h-32 object-cover rounded-lg transition-transform group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-lg flex items-center justify-center">
+                          <ImageIcon className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* FAQs */}
             <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
               <CardHeader>
@@ -481,6 +513,26 @@ const TripDetail = () => {
             tourName={trip.name}
             onClose={() => setIsBookingOpen(false)}
           />
+        </DialogContent>
+      </Dialog>
+
+      {/* Gallery Image Modal */}
+      <Dialog open={!!selectedGalleryImage} onOpenChange={() => setSelectedGalleryImage(null)}>
+        <DialogContent className="sm:max-w-4xl">
+          <DialogHeader>
+            <DialogTitle className="font-temple text-temple-maroon">
+              {trip.name} - Gallery
+            </DialogTitle>
+          </DialogHeader>
+          {selectedGalleryImage && (
+            <div className="flex justify-center">
+              <img 
+                src={selectedGalleryImage} 
+                alt="Gallery image"
+                className="max-w-full max-h-[70vh] object-contain rounded-lg"
+              />
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>

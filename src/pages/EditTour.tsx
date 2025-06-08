@@ -1,10 +1,11 @@
 
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import TourEditor from "@/components/TourEditor";
 
-const AddTour = () => {
+const EditTour = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const handleSave = () => {
@@ -28,11 +29,12 @@ const AddTour = () => {
             <span>Back to Dashboard</span>
           </Button>
           <h1 className="text-4xl font-temple font-bold text-temple-maroon">
-            Add New Tour
+            Edit Tour
           </h1>
         </div>
 
         <TourEditor 
+          tourId={id} 
           onSave={handleSave} 
           onCancel={handleCancel} 
         />
@@ -41,4 +43,4 @@ const AddTour = () => {
   );
 };
 
-export default AddTour;
+export default EditTour;

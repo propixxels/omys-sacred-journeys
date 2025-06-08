@@ -49,6 +49,7 @@ interface TripDetails {
     groupDiscount: string | null;
     earlyBird: string | null;
   };
+  gallery: string[];
 }
 
 export const useTripDetails = (slug: string) => {
@@ -74,7 +75,7 @@ export const useTripDetails = (slug: string) => {
           .from('tours')
           .select('*')
           .eq('slug', slug)
-          .or('isDraft.is.null,isDraft.eq.false')
+          .eq('isDraft', false)
           .single();
 
         console.log('Supabase response:', { tour, tourError });
@@ -144,7 +145,8 @@ export const useTripDetails = (slug: string) => {
           spiritualArrangements: safeParseArray(tour.spiritual_arrangements),
           inclusions: safeParseArray(tour.inclusions),
           exclusions: safeParseArray(tour.exclusions),
-          pricing: safeParseObject(tour.pricing, { doubleSharing: '', singleSupplement: null, child5to12: null, groupDiscount: null, earlyBird: null })
+          pricing: safeParseObject(tour.pricing, { doubleSharing: '', singleSupplement: null, child5to12: null, groupDiscount: null, earlyBird: null }),
+          gallery: safeParseArray(tour.gallery)
         };
 
         console.log('Processed trip data:', tripData);

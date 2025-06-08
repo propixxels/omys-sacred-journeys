@@ -11,6 +11,7 @@ import Trips from "./pages/Trips";
 import TripDetail from "./pages/TripDetail";
 import AdminDashboard from "./pages/AdminDashboard";
 import AddTour from "./pages/AddTour";
+import EditTour from "./pages/EditTour";
 import AdminLogin from "./components/AdminLogin";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
@@ -48,6 +49,14 @@ const App = () => (
                   element={
                     <ProtectedRoute>
                       <AddTour />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/edit-tour/:id" 
+                  element={
+                    <ProtectedRoute>
+                      <EditTour />
                     </ProtectedRoute>
                   } 
                 />
