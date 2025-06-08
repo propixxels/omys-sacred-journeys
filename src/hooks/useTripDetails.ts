@@ -65,7 +65,7 @@ export const useTripDetails = (slug: string) => {
         setLoading(true);
         setError(null);
 
-        // Fetch main tour data
+        // Fetch tour data with all JSON columns
         const { data: tour, error: tourError } = await supabase
           .from('tours')
           .select('*')
@@ -76,29 +76,6 @@ export const useTripDetails = (slug: string) => {
           setError('Tour not found');
           return;
         }
-
-        // Fetch all related data
-        const [
-          { data: highlights },
-          { data: itinerary },
-          { data: accommodation },
-          { data: meals },
-          { data: transport },
-          { data: spiritualArrangements },
-          { data: inclusions },
-          { data: exclusions },
-          { data: pricing }
-        ] = await Promise.all([
-          supabase.from('tour_highlights').select('*').eq('tour_id', tour.id),
-          supabase.from('tour_itinerary').select('*').eq('tour_id', tour.id).order('day_number'),
-          supabase.from('tour_accommodation').select('*').eq('tour_id', tour.id).single(),
-          supabase.from('tour_meals').select('*').eq('tour_id', tour.id).single(),
-          supabase.from('tour_transport').select('*').eq('tour_id', tour.id).single(),
-          supabase.from('tour_spiritual_arrangements').select('*').eq('tour_id', tour.id),
-          supabase.from('tour_inclusions').select('*').eq('tour_id', tour.id),
-          supabase.from('tour_exclusions').select('*').eq('tour_id', tour.id),
-          supabase.from('tour_pricing').select('*').eq('tour_id', tour.id).single()
-        ]);
 
         const tripData: TripDetails = {
           id: tour.id,
@@ -114,38 +91,15 @@ export const useTripDetails = (slug: string) => {
           rating: tour.rating,
           pilgrims_count: tour.pilgrims_count,
           next_departure: tour.next_departure,
-          highlights: highlights?.map(h => h.highlight) || [],
-          itinerary: itinerary?.map(item => ({
-            day: item.day_number,
-            title: item.title,
-            activities: item.activities
-          })) || [],
-          accommodation: {
-            hotels: accommodation?.hotels || [],
-            roomType: accommodation?.room_type || null,
-            amenities: accommodation?.amenities || []
-          },
-          meals: {
-            included: meals?.included || '',
-            special: meals?.special || null,
-            note: meals?.note || null
-          },
-          transport: {
-            pickup: transport?.pickup || '',
-            drop: transport?.drop_location || '',
-            vehicle: transport?.vehicle || '',
-            luggage: transport?.luggage || null
-          },
-          spiritualArrangements: spiritualArrangements?.map(s => s.arrangement) || [],
-          inclusions: inclusions?.map(i => i.inclusion) || [],
-          exclusions: exclusions?.map(e => e.exclusion) || [],
-          pricing: {
-            doubleSharing: pricing?.double_sharing || '',
-            singleSupplement: pricing?.single_supplement || null,
-            child5to12: pricing?.child_5_to_12 || null,
-            groupDiscount: pricing?.group_discount || null,
-            earlyBird: pricing?.early_bird || null
-          }
+          highlights: tour.highlights || [],
+          itinerary: tour.itinerary || [],
+          accommodation: tour.accommodation || { hotels: [], roomType: null, amenities: [] },
+          meals: tour.meals || { included: '', special: null, note: null },
+          transport: tour.transport || { pickup: '', drop: '', vehicle: '', luggage: null },
+          spiritualArrangements: tour.spiritual_arrangements || [],
+          inclusions: tour.inclusions || [],
+          exclusions: tour.exclusions || [],
+          pricing: tour.pricing || { doubleSharing: '', singleSupplement: null, child5to12: null, groupDiscount: null, earlyBird: null }
         };
 
         setTripDetails(tripData);
