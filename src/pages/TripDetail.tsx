@@ -479,7 +479,7 @@ const TripDetail = () => {
           <BookingForm
             tourId={trip.id}
             tourName={trip.name}
-            onSuccess={() => setIsBookingOpen(false)}
+            onClose={() => setIsBookingOpen(false)}
           />
         </DialogContent>
       </Dialog>
