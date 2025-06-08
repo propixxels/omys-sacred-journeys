@@ -44,15 +44,22 @@ const Trips = () => {
 
   const fetchTours = async () => {
     try {
+      console.log('Fetching tours...');
       const { data, error } = await supabase
         .from('tours')
         .select('*')
-        .gte('departure_date', new Date().toISOString().split('T')[0]) // Only upcoming tours
         .order('departure_date', { ascending: true });
 
-      if (error) throw error;
+      console.log('Tours fetched:', { data, error });
+
+      if (error) {
+        console.error('Error fetching tours:', error);
+        throw error;
+      }
+      
       setTours(data || []);
     } catch (error) {
+      console.error('Fetch tours error:', error);
       toast({
         title: "Error",
         description: "Failed to load tours",
@@ -180,6 +187,11 @@ const Trips = () => {
           </div>
         </div>
 
+        {/* Debug Info */}
+        <div className="mb-4 text-sm text-gray-600">
+          Total tours: {tours.length}, Filtered: {filteredTours.length}
+        </div>
+
         {/* Results Count */}
         <div className="mb-6">
           <p className="text-gray-600">
@@ -269,7 +281,7 @@ const Trips = () => {
         </div>
 
         {/* No Results */}
-        {filteredTours.length === 0 && (
+        {filteredTours.length === 0 && tours.length > 0 && (
           <div className="text-center py-12">
             <div className="w-24 h-24 bg-saffron-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search className="w-12 h-12 text-saffron-600" />
@@ -279,6 +291,21 @@ const Trips = () => {
             </h3>
             <p className="text-gray-600">
               Try adjusting your search criteria or filters to find more tours.
+            </p>
+          </div>
+        )}
+
+        {/* No Tours at all */}
+        {tours.length === 0 && (
+          <div className="text-center py-12">
+            <div className="w-24 h-24 bg-saffron-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Search className="w-12 h-12 text-saffron-600" />
+            </div>
+            <h3 className="text-xl font-temple font-semibold text-gray-700 mb-2">
+              No tours available
+            </h3>
+            <p className="text-gray-600">
+              Tours will appear here once they are added to the database.
             </p>
           </div>
         )}

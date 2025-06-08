@@ -58,10 +58,14 @@ export const useTripDetails = (slug: string) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!slug) return;
+    if (!slug) {
+      setLoading(false);
+      return;
+    }
 
     const fetchTripDetails = async () => {
       try {
+        console.log('Fetching trip details for slug:', slug);
         setLoading(true);
         setError(null);
 
@@ -72,7 +76,16 @@ export const useTripDetails = (slug: string) => {
           .eq('slug', slug)
           .single();
 
-        if (tourError || !tour) {
+        console.log('Supabase response:', { tour, tourError });
+
+        if (tourError) {
+          console.error('Supabase error:', tourError);
+          setError('Tour not found');
+          return;
+        }
+
+        if (!tour) {
+          console.log('No tour found for slug:', slug);
           setError('Tour not found');
           return;
         }
@@ -110,6 +123,7 @@ export const useTripDetails = (slug: string) => {
             { doubleSharing: '', singleSupplement: null, child5to12: null, groupDiscount: null, earlyBird: null }
         };
 
+        console.log('Processed trip data:', tripData);
         setTripDetails(tripData);
       } catch (err) {
         console.error('Error fetching trip details:', err);
