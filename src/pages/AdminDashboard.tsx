@@ -14,34 +14,18 @@ import { Plus, Edit, Trash2, Users, Calendar, MapPin, Star, Eye, LogOut, Plane, 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import type { Tables } from "@/integrations/supabase/types";
 
-interface Tour {
-  id: string;
-  name: string;
-  duration: string;
-  transport_mode: string;
-  destinations: string;
-  departure_date: string;
-  cost: number;
-  cost_details: string;
-  description?: string;
+// Create a type that extends the Supabase Tour type with draft property
+type Tour = Tables<'tours'> & {
   draft: boolean;
-}
+};
 
-interface Booking {
-  id: string;
-  tour_id: string;
-  customer_name: string;
-  email: string;
-  mobile_number: string;
-  number_of_people: number;
-  booking_date: string;
-  status: string;
-  notes?: string;
+type Booking = Tables<'bookings'> & {
   tours: {
     name: string;
   };
-}
+};
 
 const AdminDashboard = () => {
   const { toast } = useToast();
@@ -84,10 +68,10 @@ const AdminDashboard = () => {
 
       if (error) throw error;
       
-      // Transform the data to include draft property
+      // Transform the data to ensure draft property exists
       const transformedTours = (data || []).map(tour => ({
         ...tour,
-        draft: tour.draft ?? false
+        draft: Boolean(tour.draft)
       })) as Tour[];
       
       setTours(transformedTours);

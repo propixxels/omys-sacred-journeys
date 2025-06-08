@@ -86,6 +86,7 @@ export type Database = {
           departure_date: string
           description: string | null
           destinations: string
+          draft: boolean | null
           duration: string
           exclusions: Json | null
           highlights: Json | null
@@ -113,6 +114,7 @@ export type Database = {
           departure_date: string
           description?: string | null
           destinations: string
+          draft?: boolean | null
           duration: string
           exclusions?: Json | null
           highlights?: Json | null
@@ -140,6 +142,7 @@ export type Database = {
           departure_date?: string
           description?: string | null
           destinations?: string
+          draft?: boolean | null
           duration?: string
           exclusions?: Json | null
           highlights?: Json | null
