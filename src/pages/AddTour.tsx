@@ -63,17 +63,18 @@ const AddTour = () => {
 
   const addListItem = (field: string, subField?: string) => {
     if (subField) {
+      const fieldData = tourData[field as keyof typeof tourData] as any;
       setTourData(prev => ({
         ...prev,
         [field]: {
-          ...prev[field as keyof typeof prev],
-          [subField]: [...(prev[field as keyof typeof prev] as any)[subField], ""]
+          ...fieldData,
+          [subField]: [...fieldData[subField], ""]
         }
       }));
     } else {
       setTourData(prev => ({
         ...prev,
-        [field]: [...(prev[field as keyof typeof prev] as string[]), ""]
+        [field]: [...(tourData[field as keyof typeof tourData] as string[]), ""]
       }));
     }
   };

@@ -83,7 +83,14 @@ const AdminDashboard = () => {
       console.log('Tours response:', { data, error });
 
       if (error) throw error;
-      setTours(data || []);
+      
+      // Transform the data to include draft property
+      const transformedTours = (data || []).map(tour => ({
+        ...tour,
+        draft: tour.draft ?? false
+      })) as Tour[];
+      
+      setTours(transformedTours);
     } catch (error) {
       console.error('Error fetching tours:', error);
       toast({
