@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [initialized, setInitialized] = useState(false);
 
   const checkAdminStatus = async (userEmail: string) => {
     try {
@@ -65,21 +64,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             
             if (initialSession?.user?.email) {
               const adminStatus = await checkAdminStatus(initialSession.user.email);
-              setIsAdmin(adminStatus);
+              if (mounted) {
+                setIsAdmin(adminStatus);
+              }
             } else {
-              setIsAdmin(false);
+              if (mounted) {
+                setIsAdmin(false);
+              }
             }
           }
         }
-        
-        if (mounted) {
-          setInitialized(true);
-          setLoading(false);
-        }
       } catch (err) {
         console.error('Error initializing auth:', err);
+      } finally {
         if (mounted) {
-          setInitialized(true);
           setLoading(false);
         }
       }
@@ -96,30 +94,44 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(session?.user ?? null);
         
         if (session?.user?.email) {
-          const adminStatus = await checkAdminStatus(session.user.email);
-          setIsAdmin(adminStatus);
+          try {
+            const adminStatus = await checkAdminStatus(session.user.email);
+            if (mounted) {
+              setIsAdmin(adminStatus);
+            }
+          } catch (err) {
+            console.error('Error checking admin status on auth change:', err);
+            if (mounted) {
+              setIsAdmin(false);
+            }
+          }
         } else {
-          setIsAdmin(false);
+          if (mounted) {
+            setIsAdmin(false);
+          }
         }
         
-        // Only set loading to false after initialization is complete
-        if (initialized) {
+        // Set loading to false after processing auth state change
+        if (mounted) {
           setLoading(false);
         }
       }
     );
 
+    // Initialize auth
     initializeAuth();
 
     return () => {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, [initialized]);
+  }, []); // Empty dependency array to prevent re-initialization
 
   const signIn = async (email: string, password: string) => {
     try {
       console.log('Attempting to sign in with:', email);
+      setLoading(true);
+      
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -130,15 +142,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (err) {
       console.error('Sign in error:', err);
       return { error: err };
+    } finally {
+      // Don't set loading to false here as the auth state change will handle it
     }
   };
 
   const signOut = async () => {
     try {
+      setLoading(true);
       await supabase.auth.signOut();
       setIsAdmin(false);
     } catch (err) {
       console.error('Sign out error:', err);
+    } finally {
+      setLoading(false);
     }
   };
 

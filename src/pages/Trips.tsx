@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -50,10 +49,11 @@ const Trips = () => {
       console.log('Fetching tours...');
       setLoading(true);
       
+      // Simplified query - remove the complex OR condition that might be causing issues
       const { data, error } = await supabase
         .from('tours')
         .select('*')
-        .or('isDraft.is.null,isDraft.eq.false')
+        .eq('isDraft', false)
         .order('departure_date', { ascending: true });
 
       console.log('Tours fetched:', { data, error, count: data?.length });
