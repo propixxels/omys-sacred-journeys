@@ -74,24 +74,24 @@ const HeroSection = () => {
       {/* Left Arrow */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 md:left-8 top-1/2 transform -translate-y-1/2 z-20 bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
+        className="absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 z-20 bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
         aria-label="Previous slide"
       >
-        <ChevronLeft size={20} className="md:w-6 md:h-6" />
+        <ChevronLeft size={16} className="md:w-5 md:h-5" />
       </button>
 
       {/* Right Arrow */}
       <button
         onClick={nextSlide}
-        className="absolute right-4 md:right-8 top-1/2 transform -translate-y-1/2 z-20 bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
+        className="absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 z-20 bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
         aria-label="Next slide"
       >
-        <ChevronRight size={20} className="md:w-6 md:h-6" />
+        <ChevronRight size={16} className="md:w-5 md:h-5" />
       </button>
 
       <div className="relative z-10 h-full flex items-center">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl">
+          <div className="max-w-4xl ml-8 md:ml-16">
             <h1 className="text-4xl md:text-7xl font-temple font-bold text-left mb-4 md:mb-6 text-white drop-shadow-2xl">
               Incredible Journeys
               <span className="block text-temple-gold">Await You</span>
