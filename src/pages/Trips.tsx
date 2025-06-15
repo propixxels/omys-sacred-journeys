@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Calendar, MapPin, Clock, Search, Filter, SortAsc, Users, Star } from "lucide-react";
+import { Calendar, MapPin, Clock, Search, Filter, SortAsc, Users, Star, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Tour {
@@ -228,140 +228,138 @@ const Trips = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12">
-        {/* Enhanced Search and Filters */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-12 -mt-8 relative z-20">
-          <div className="mb-6">
-            <h2 className="text-2xl font-temple font-semibold text-temple-maroon mb-2">
-              Find Your Perfect Tour
-            </h2>
-            <p className="text-gray-600">Use the filters below to discover tours that match your preferences</p>
-          </div>
-
+      <div className="container mx-auto px-4 py-8">
+        {/* Compact Filter Section */}
+        <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 p-6 mb-8 -mt-16 relative z-20">
           {/* Search Bar */}
-          <div className="relative mb-6">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <div className="relative mb-4">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               placeholder="Search destinations, tour names, or attractions..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 h-12 text-lg border-2 border-gray-200 focus:border-saffron-400"
+              className="pl-11 h-11 border-gray-200 focus:border-saffron-400 bg-white/80"
             />
           </div>
 
-          {/* Filter Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Transport Mode</label>
-              <Select value={transportFilter} onValueChange={setTransportFilter}>
-                <SelectTrigger className="h-11">
-                  <SelectValue placeholder="Any Transport" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Any Transport</SelectItem>
-                  <SelectItem value="bus">Bus</SelectItem>
-                  <SelectItem value="flight">Flight</SelectItem>
-                  <SelectItem value="volvo">AC Volvo</SelectItem>
-                  <SelectItem value="tempo">Tempo Traveller</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          {/* Filters Grid - Compact Layout */}
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-4">
+            <Select value={transportFilter} onValueChange={setTransportFilter}>
+              <SelectTrigger className="h-10 text-sm">
+                <SelectValue placeholder="Transport" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Any Transport</SelectItem>
+                <SelectItem value="bus">Bus</SelectItem>
+                <SelectItem value="flight">Flight</SelectItem>
+                <SelectItem value="volvo">AC Volvo</SelectItem>
+                <SelectItem value="tempo">Tempo Traveller</SelectItem>
+              </SelectContent>
+            </Select>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Price Range</label>
-              <Select value={priceRange} onValueChange={setPriceRange}>
-                <SelectTrigger className="h-11">
-                  <SelectValue placeholder="Any Price" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Any Price</SelectItem>
-                  <SelectItem value="budget">Budget (₹0 - ₹20,000)</SelectItem>
-                  <SelectItem value="mid">Mid-range (₹20,000 - ₹50,000)</SelectItem>
-                  <SelectItem value="premium">Premium (₹50,000+)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <Select value={priceRange} onValueChange={setPriceRange}>
+              <SelectTrigger className="h-10 text-sm">
+                <SelectValue placeholder="Price Range" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Any Price</SelectItem>
+                <SelectItem value="budget">Budget (₹0 - ₹20K)</SelectItem>
+                <SelectItem value="mid">Mid (₹20K - ₹50K)</SelectItem>
+                <SelectItem value="premium">Premium (₹50K+)</SelectItem>
+              </SelectContent>
+            </Select>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Duration</label>
-              <Select value={durationFilter} onValueChange={setDurationFilter}>
-                <SelectTrigger className="h-11">
-                  <SelectValue placeholder="Any Duration" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Any Duration</SelectItem>
-                  <SelectItem value="short">Short (1-7 days)</SelectItem>
-                  <SelectItem value="medium">Medium (8-14 days)</SelectItem>
-                  <SelectItem value="long">Long (15+ days)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <Select value={durationFilter} onValueChange={setDurationFilter}>
+              <SelectTrigger className="h-10 text-sm">
+                <SelectValue placeholder="Duration" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Any Duration</SelectItem>
+                <SelectItem value="short">Short (1-7 days)</SelectItem>
+                <SelectItem value="medium">Medium (8-14 days)</SelectItem>
+                <SelectItem value="long">Long (15+ days)</SelectItem>
+              </SelectContent>
+            </Select>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Sort By</label>
-              <div className="flex gap-2">
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="h-11">
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="departure_date">Departure Date</SelectItem>
-                    <SelectItem value="cost">Price</SelectItem>
-                    <SelectItem value="name">Name</SelectItem>
-                    <SelectItem value="duration">Duration</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-11 w-11"
-                  onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-                >
-                  <SortAsc className={`h-4 w-4 transition-transform ${sortOrder === "desc" ? "rotate-180" : ""}`} />
-                </Button>
-              </div>
-            </div>
-          </div>
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="h-10 text-sm">
+                <SelectValue placeholder="Sort By" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="departure_date">Departure Date</SelectItem>
+                <SelectItem value="cost">Price</SelectItem>
+                <SelectItem value="name">Name</SelectItem>
+                <SelectItem value="duration">Duration</SelectItem>
+              </SelectContent>
+            </Select>
 
-          {/* Active Filters and Clear */}
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">Active filters:</span>
-              {(searchTerm || transportFilter !== "all" || priceRange !== "all" || durationFilter !== "all") ? (
-                <div className="flex flex-wrap gap-2">
-                  {searchTerm && <Badge variant="secondary">Search: "{searchTerm}"</Badge>}
-                  {transportFilter !== "all" && <Badge variant="secondary">Transport: {transportFilter}</Badge>}
-                  {priceRange !== "all" && <Badge variant="secondary">Price: {priceRange}</Badge>}
-                  {durationFilter !== "all" && <Badge variant="secondary">Duration: {durationFilter}</Badge>}
-                </div>
-              ) : (
-                <span className="text-sm text-gray-500">None</span>
-              )}
-            </div>
-            <Button 
-              variant="ghost" 
-              onClick={clearAllFilters}
-              className="text-saffron-600 hover:text-saffron-700"
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-10 px-3"
+              onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
             >
-              Clear All Filters
+              <SortAsc className={`h-4 w-4 mr-1 transition-transform ${sortOrder === "desc" ? "rotate-180" : ""}`} />
+              <span className="hidden sm:inline">{sortOrder === "asc" ? "Asc" : "Desc"}</span>
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearAllFilters}
+              className="h-10 text-saffron-600 hover:text-saffron-700 hover:bg-saffron-50"
+            >
+              <X className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline">Clear</span>
             </Button>
           </div>
+
+          {/* Active Filters Row */}
+          {(searchTerm || transportFilter !== "all" || priceRange !== "all" || durationFilter !== "all") && (
+            <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-gray-100">
+              <span className="text-xs font-medium text-gray-600 mr-2">Active:</span>
+              {searchTerm && (
+                <Badge variant="secondary" className="text-xs">
+                  "{searchTerm}"
+                  <X className="h-3 w-3 ml-1 cursor-pointer" onClick={() => setSearchTerm("")} />
+                </Badge>
+              )}
+              {transportFilter !== "all" && (
+                <Badge variant="secondary" className="text-xs">
+                  {transportFilter}
+                  <X className="h-3 w-3 ml-1 cursor-pointer" onClick={() => setTransportFilter("all")} />
+                </Badge>
+              )}
+              {priceRange !== "all" && (
+                <Badge variant="secondary" className="text-xs">
+                  {priceRange}
+                  <X className="h-3 w-3 ml-1 cursor-pointer" onClick={() => setPriceRange("all")} />
+                </Badge>
+              )}
+              {durationFilter !== "all" && (
+                <Badge variant="secondary" className="text-xs">
+                  {durationFilter}
+                  <X className="h-3 w-3 ml-1 cursor-pointer" onClick={() => setDurationFilter("all")} />
+                </Badge>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Results Summary */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="text-xl font-temple font-semibold text-temple-maroon">
               {filteredTours.length} Tours Available
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 text-sm">
               {filteredTours.length === tours.length 
                 ? "Showing all tours" 
                 : `Filtered from ${tours.length} total tours`}
             </p>
           </div>
           <div className="text-sm text-gray-500">
-            Sorted by {sortBy.replace('_', ' ')} ({sortOrder === 'asc' ? 'ascending' : 'descending'})
+            Sorted by {sortBy.replace('_', ' ')} ({sortOrder === 'asc' ? '↑' : '↓'})
           </div>
         </div>
 
@@ -456,7 +454,7 @@ const Trips = () => {
               No tours match your criteria
             </h3>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              Try adjusting your search criteria or filters to discover more spiritual journeys.
+              Try adjusting your search criteria or filters to discover more tours.
             </p>
             <Button onClick={clearAllFilters} className="btn-temple">
               Clear All Filters
@@ -474,7 +472,7 @@ const Trips = () => {
               No tours available yet
             </h3>
             <p className="text-gray-600 max-w-md mx-auto">
-              Sacred pilgrimage tours will appear here once they are added to our collection. Check back soon for spiritual adventures.
+              Tours will appear here once they are added to our collection. Check back soon for travel adventures.
             </p>
           </div>
         )}
