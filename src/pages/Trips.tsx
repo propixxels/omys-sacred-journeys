@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Calendar, MapPin, Clock, Search, Filter, SortAsc } from "lucide-react";
+import { Calendar, MapPin, Clock, Search, Filter, SortAsc, Users, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Tour {
@@ -31,6 +31,8 @@ const Trips = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [transportFilter, setTransportFilter] = useState("all");
+  const [priceRange, setPriceRange] = useState("all");
+  const [durationFilter, setDurationFilter] = useState("all");
   const [sortBy, setSortBy] = useState("departure_date");
   const [sortOrder, setSortOrder] = useState("asc");
   const { toast } = useToast();
@@ -41,14 +43,13 @@ const Trips = () => {
 
   useEffect(() => {
     filterAndSortTours();
-  }, [tours, searchTerm, transportFilter, sortBy, sortOrder]);
+  }, [tours, searchTerm, transportFilter, priceRange, durationFilter, sortBy, sortOrder]);
 
   const fetchTours = async () => {
     try {
       console.log('Fetching tours...');
       setLoading(true);
       
-      // Fetch only published tours (isDraft = false or null)
       const { data, error } = await supabase
         .from('tours')
         .select('*')
@@ -62,7 +63,6 @@ const Trips = () => {
         throw error;
       }
       
-      // Map the data to ensure proper typing
       const mappedTours: Tour[] = (data || []).map(tour => ({
         id: tour.id,
         name: tour.name,
@@ -97,7 +97,39 @@ const Trips = () => {
       const matchesSearch = tour.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            tour.destinations.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesTransport = transportFilter === "all" || tour.transport_mode.toLowerCase().includes(transportFilter.toLowerCase());
-      return matchesSearch && matchesTransport;
+      
+      let matchesPrice = true;
+      if (priceRange !== "all") {
+        switch (priceRange) {
+          case "budget":
+            matchesPrice = tour.cost <= 20000;
+            break;
+          case "mid":
+            matchesPrice = tour.cost > 20000 && tour.cost <= 50000;
+            break;
+          case "premium":
+            matchesPrice = tour.cost > 50000;
+            break;
+        }
+      }
+
+      let matchesDuration = true;
+      if (durationFilter !== "all") {
+        const dayCount = parseInt(tour.duration.match(/\d+/)?.[0] || "0");
+        switch (durationFilter) {
+          case "short":
+            matchesDuration = dayCount <= 7;
+            break;
+          case "medium":
+            matchesDuration = dayCount > 7 && dayCount <= 14;
+            break;
+          case "long":
+            matchesDuration = dayCount > 14;
+            break;
+        }
+      }
+
+      return matchesSearch && matchesTransport && matchesPrice && matchesDuration;
     });
 
     // Sort tours
@@ -132,6 +164,15 @@ const Trips = () => {
     return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   };
 
+  const clearAllFilters = () => {
+    setSearchTerm("");
+    setTransportFilter("all");
+    setPriceRange("all");
+    setDurationFilter("all");
+    setSortBy("departure_date");
+    setSortOrder("asc");
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-temple-cream flex items-center justify-center">
@@ -142,83 +183,168 @@ const Trips = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-temple-cream">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-temple font-bold text-temple-maroon mb-4">
+      {/* Hero Section */}
+      <div className="relative bg-gradient-to-r from-temple-maroon via-orange-800 to-temple-maroon py-20 px-4 overflow-hidden">
+        <div className="absolute inset-0 mandala-bg opacity-10"></div>
+        <div className="relative z-10 container mx-auto text-center">
+          <h1 className="text-5xl md:text-6xl font-temple font-bold text-white mb-6">
             Sacred Pilgrimage Tours
           </h1>
-          <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-            Discover spiritual journeys across India's most sacred destinations with expert guidance and comfortable accommodations.
+          <p className="text-xl md:text-2xl text-orange-100 max-w-3xl mx-auto mb-8">
+            Embark on transformative spiritual journeys across India's most revered destinations with expert guidance and comfortable accommodations
           </p>
+          <div className="flex flex-wrap justify-center gap-6 text-orange-100">
+            <div className="flex items-center gap-2">
+              <Star className="w-5 h-5 text-temple-gold" />
+              <span>Expert Spiritual Guides</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="w-5 h-5 text-temple-gold" />
+              <span>Small Group Tours</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-temple-gold" />
+              <span>Authentic Experiences</span>
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Filters and Search */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search tours or destinations..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
+      <div className="container mx-auto px-4 py-12">
+        {/* Enhanced Search and Filters */}
+        <div className="bg-white rounded-2xl shadow-xl p-8 mb-12 -mt-8 relative z-20">
+          <div className="mb-6">
+            <h2 className="text-2xl font-temple font-semibold text-temple-maroon mb-2">
+              Find Your Perfect Pilgrimage
+            </h2>
+            <p className="text-gray-600">Use the filters below to discover tours that match your preferences</p>
+          </div>
+
+          {/* Search Bar */}
+          <div className="relative mb-6">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Input
+              placeholder="Search destinations, tour names, or spiritual sites..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-12 h-12 text-lg border-2 border-gray-200 focus:border-saffron-400"
+            />
+          </div>
+
+          {/* Filter Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Transport Mode</label>
+              <Select value={transportFilter} onValueChange={setTransportFilter}>
+                <SelectTrigger className="h-11">
+                  <SelectValue placeholder="Any Transport" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Any Transport</SelectItem>
+                  <SelectItem value="bus">Bus</SelectItem>
+                  <SelectItem value="flight">Flight</SelectItem>
+                  <SelectItem value="volvo">AC Volvo</SelectItem>
+                  <SelectItem value="tempo">Tempo Traveller</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
-            {/* Transport Filter */}
-            <Select value={transportFilter} onValueChange={setTransportFilter}>
-              <SelectTrigger>
-                <Filter className="h-4 w-4 mr-2" />
-                <SelectValue placeholder="Transport Mode" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Transport</SelectItem>
-                <SelectItem value="bus">Bus</SelectItem>
-                <SelectItem value="flight">Flight</SelectItem>
-                <SelectItem value="volvo">AC Volvo</SelectItem>
-                <SelectItem value="tempo">Tempo Traveller</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Price Range</label>
+              <Select value={priceRange} onValueChange={setPriceRange}>
+                <SelectTrigger className="h-11">
+                  <SelectValue placeholder="Any Price" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Any Price</SelectItem>
+                  <SelectItem value="budget">Budget (₹0 - ₹20,000)</SelectItem>
+                  <SelectItem value="mid">Mid-range (₹20,000 - ₹50,000)</SelectItem>
+                  <SelectItem value="premium">Premium (₹50,000+)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-            {/* Sort By */}
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger>
-                <SortAsc className="h-4 w-4 mr-2" />
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="departure_date">Departure Date</SelectItem>
-                <SelectItem value="cost">Price</SelectItem>
-                <SelectItem value="name">Name</SelectItem>
-                <SelectItem value="duration">Duration</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Duration</label>
+              <Select value={durationFilter} onValueChange={setDurationFilter}>
+                <SelectTrigger className="h-11">
+                  <SelectValue placeholder="Any Duration" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Any Duration</SelectItem>
+                  <SelectItem value="short">Short (1-7 days)</SelectItem>
+                  <SelectItem value="medium">Medium (8-14 days)</SelectItem>
+                  <SelectItem value="long">Long (15+ days)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-            {/* Sort Order */}
-            <Select value={sortOrder} onValueChange={setSortOrder}>
-              <SelectTrigger>
-                <SelectValue placeholder="Order" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="asc">Ascending</SelectItem>
-                <SelectItem value="desc">Descending</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Sort By</label>
+              <div className="flex gap-2">
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="h-11">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="departure_date">Departure Date</SelectItem>
+                    <SelectItem value="cost">Price</SelectItem>
+                    <SelectItem value="name">Name</SelectItem>
+                    <SelectItem value="duration">Duration</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-11 w-11"
+                  onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+                >
+                  <SortAsc className={`h-4 w-4 transition-transform ${sortOrder === "desc" ? "rotate-180" : ""}`} />
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Active Filters and Clear */}
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-gray-700">Active filters:</span>
+              {(searchTerm || transportFilter !== "all" || priceRange !== "all" || durationFilter !== "all") ? (
+                <div className="flex flex-wrap gap-2">
+                  {searchTerm && <Badge variant="secondary">Search: "{searchTerm}"</Badge>}
+                  {transportFilter !== "all" && <Badge variant="secondary">Transport: {transportFilter}</Badge>}
+                  {priceRange !== "all" && <Badge variant="secondary">Price: {priceRange}</Badge>}
+                  {durationFilter !== "all" && <Badge variant="secondary">Duration: {durationFilter}</Badge>}
+                </div>
+              ) : (
+                <span className="text-sm text-gray-500">None</span>
+              )}
+            </div>
+            <Button 
+              variant="ghost" 
+              onClick={clearAllFilters}
+              className="text-saffron-600 hover:text-saffron-700"
+            >
+              Clear All Filters
+            </Button>
           </div>
         </div>
 
-        {/* Debug Info */}
-        <div className="mb-4 text-sm text-gray-600">
-          Total tours: {tours.length}, Filtered: {filteredTours.length}
-        </div>
-
-        {/* Results Count */}
-        <div className="mb-6">
-          <p className="text-gray-600">
-            Showing {filteredTours.length} of {tours.length} tours
-          </p>
+        {/* Results Summary */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h3 className="text-xl font-temple font-semibold text-temple-maroon">
+              {filteredTours.length} Tours Available
+            </h3>
+            <p className="text-gray-600">
+              {filteredTours.length === tours.length 
+                ? "Showing all tours" 
+                : `Filtered from ${tours.length} total tours`}
+            </p>
+          </div>
+          <div className="text-sm text-gray-500">
+            Sorted by {sortBy.replace('_', ' ')} ({sortOrder === 'asc' ? 'ascending' : 'descending'})
+          </div>
         </div>
 
         {/* Tours Grid */}
@@ -304,30 +430,33 @@ const Trips = () => {
 
         {/* No Results */}
         {filteredTours.length === 0 && tours.length > 0 && (
-          <div className="text-center py-12">
-            <div className="w-24 h-24 bg-saffron-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-12 h-12 text-saffron-600" />
+          <div className="text-center py-16">
+            <div className="w-32 h-32 bg-saffron-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Search className="w-16 h-16 text-saffron-600" />
             </div>
-            <h3 className="text-xl font-temple font-semibold text-gray-700 mb-2">
-              No tours found
+            <h3 className="text-2xl font-temple font-semibold text-gray-700 mb-4">
+              No tours match your criteria
             </h3>
-            <p className="text-gray-600">
-              Try adjusting your search criteria or filters to find more tours.
+            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+              Try adjusting your search criteria or filters to discover more spiritual journeys.
             </p>
+            <Button onClick={clearAllFilters} className="btn-temple">
+              Clear All Filters
+            </Button>
           </div>
         )}
 
         {/* No Tours at all */}
         {tours.length === 0 && (
-          <div className="text-center py-12">
-            <div className="w-24 h-24 bg-saffron-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-12 h-12 text-saffron-600" />
+          <div className="text-center py-16">
+            <div className="w-32 h-32 bg-saffron-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <MapPin className="w-16 h-16 text-saffron-600" />
             </div>
-            <h3 className="text-xl font-temple font-semibold text-gray-700 mb-2">
-              No tours available
+            <h3 className="text-2xl font-temple font-semibold text-gray-700 mb-4">
+              No tours available yet
             </h3>
-            <p className="text-gray-600">
-              Tours will appear here once they are added to the database.
+            <p className="text-gray-600 max-w-md mx-auto">
+              Sacred pilgrimage tours will appear here once they are added to our collection. Check back soon for spiritual adventures.
             </p>
           </div>
         )}
