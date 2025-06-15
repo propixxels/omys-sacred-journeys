@@ -742,17 +742,24 @@ const Index = () => {
 
       {/* Floating WhatsApp Button */}
       <div className="fixed bottom-6 right-6 z-50">
-        <Button 
-          onClick={openWhatsApp}
-          className="w-14 h-14 rounded-full bg-transparent hover:bg-transparent shadow-lg animate-[pulse_1.5s_ease-in-out_infinite] p-0"
-          title="Chat with us on WhatsApp"
-        >
-          <img 
-            src="/lovable-uploads/8acb597e-cc8e-447a-89e7-75d37af60313.png" 
-            alt="WhatsApp" 
-            className="w-full h-full object-contain"
-          />
-        </Button>
+        <div className="relative">
+          {/* Radiating pulse background */}
+          <div className="absolute inset-0 w-14 h-14 bg-green-500 rounded-full animate-ping opacity-20"></div>
+          <div className="absolute inset-0 w-14 h-14 bg-green-500 rounded-full animate-pulse opacity-10"></div>
+          
+          {/* WhatsApp button */}
+          <Button 
+            onClick={openWhatsApp}
+            className="relative w-14 h-14 rounded-full bg-transparent hover:bg-transparent shadow-lg p-0 border-0"
+            title="Chat with us on WhatsApp"
+          >
+            <img 
+              src="/lovable-uploads/8acb597e-cc8e-447a-89e7-75d37af60313.png" 
+              alt="WhatsApp" 
+              className="w-full h-full object-contain"
+            />
+          </Button>
+        </div>
       </div>
 
       {/* Scroll to Top Button */}
