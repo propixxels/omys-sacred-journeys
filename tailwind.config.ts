@@ -87,6 +87,18 @@ export default {
 					800: '#92400e',
 					900: '#78350f',
 				},
+				saffron: {
+					50: '#fff8e1',
+					100: '#ffecb3',
+					200: '#ffe082',
+					300: '#ffd54f',
+					400: '#ffca28',
+					500: '#f59e0b',
+					600: '#ff8f00',
+					700: '#ff6f00',
+					800: '#e65100',
+					900: '#bf360c',
+				},
 				temple: {
 					gold: '#f59e0b',
 					bronze: '#cd7f32',
@@ -123,6 +135,14 @@ export default {
 				'slide-in': {
 					'0%': { transform: 'translateX(-100%)' },
 					'100%': { transform: 'translateX(0)' }
+				},
+				'slide-left': {
+					'0%': { transform: 'translateX(100%)' },
+					'100%': { transform: 'translateX(-100%)' }
+				},
+				'slide-right': {
+					'0%': { transform: 'translateX(-100%)' },
+					'100%': { transform: 'translateX(100%)' }
 				},
 				'gentle-bounce': {
 					'0%, 100%': { transform: 'translateY(0)' },

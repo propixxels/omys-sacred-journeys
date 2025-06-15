@@ -147,7 +147,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-temple-cream">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
+      <section className="relative h-screen md:min-h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0">
           {heroSlides.map((slide, index) => (
             <div
@@ -169,17 +169,17 @@ const Index = () => {
         <div className="relative z-10 h-full flex items-center">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl">
-              <h1 className="text-5xl md:text-7xl font-temple font-bold text-left mb-6 text-white drop-shadow-2xl">
+              <h1 className="text-4xl md:text-7xl font-temple font-bold text-left mb-4 md:mb-6 text-white drop-shadow-2xl">
                 Sacred Journeys
                 <span className="block text-temple-gold">Await You</span>
               </h1>
-              <p className="text-xl md:text-2xl text-left mb-8 text-white/90 max-w-2xl leading-relaxed drop-shadow-lg">
+              <p className="text-lg md:text-2xl text-left mb-6 md:mb-8 text-white/90 max-w-2xl leading-relaxed drop-shadow-lg">
                 Experience divine darshan across India's most sacred temples with comfortable stays and expert guidance
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
                   size="lg" 
-                  className="btn-temple text-lg px-8 py-4 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
+                  className="btn-temple text-base md:text-lg px-6 md:px-8 py-3 md:py-4 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
                   asChild
                 >
                   <Link to="/trips">Explore All Tours</Link>
@@ -187,7 +187,7 @@ const Index = () => {
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30 text-lg px-8 py-4 shadow-xl"
+                  className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30 text-base md:text-lg px-6 md:px-8 py-3 md:py-4 shadow-xl"
                   asChild
                 >
                   <Link to="/about">Learn More</Link>
@@ -212,9 +212,10 @@ const Index = () => {
       </section>
 
       {/* Quick Values Bar */}
-      <section className="bg-gradient-to-r from-orange-500 to-orange-600 py-4">
+      <section className="bg-gradient-to-r from-orange-500 to-orange-600 py-4 overflow-hidden">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-8 text-white">
+          {/* Desktop/Tablet View */}
+          <div className="hidden md:flex flex-wrap justify-center gap-8 text-white">
             <div className="flex items-center space-x-2">
               <Shield className="w-5 h-5" />
               <span className="font-medium">100% Trusted Pilgrim-Rated</span>
@@ -230,6 +231,47 @@ const Index = () => {
             <div className="flex items-center space-x-2">
               <Users className="w-5 h-5" />
               <span className="font-medium">Experienced Spiritual Guides</span>
+            </div>
+          </div>
+          
+          {/* Mobile Sliding View */}
+          <div className="md:hidden">
+            <div className="flex animate-[slide-left_20s_linear_infinite] text-white">
+              <div className="flex items-center space-x-8 whitespace-nowrap">
+                <div className="flex items-center space-x-2">
+                  <Shield className="w-4 h-4" />
+                  <span className="font-medium">100% Trusted Pilgrim-Rated</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <MapPin className="w-4 h-4" />
+                  <span className="font-medium">Comfortable AC Transport</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Heart className="w-4 h-4" />
+                  <span className="font-medium">Authentic Veg Meals</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Users className="w-4 h-4" />
+                  <span className="font-medium">Experienced Spiritual Guides</span>
+                </div>
+                {/* Duplicate for seamless loop */}
+                <div className="flex items-center space-x-2">
+                  <Shield className="w-4 h-4" />
+                  <span className="font-medium">100% Trusted Pilgrim-Rated</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <MapPin className="w-4 h-4" />
+                  <span className="font-medium">Comfortable AC Transport</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Heart className="w-4 h-4" />
+                  <span className="font-medium">Authentic Veg Meals</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Users className="w-4 h-4" />
+                  <span className="font-medium">Experienced Spiritual Guides</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -317,10 +359,10 @@ const Index = () => {
       <section className="py-20 bg-gradient-to-r from-saffron-500 to-orange-500 relative overflow-hidden">
         <div className="absolute inset-0 mandala-bg opacity-10"></div>
         <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-4xl font-temple font-bold text-white mb-6">
+          <h2 className="text-4xl font-temple font-bold text-white mb-6 drop-shadow-lg">
             Discover More Sacred Destinations
           </h2>
-          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-white mb-8 max-w-2xl mx-auto drop-shadow-md">
             Explore our complete collection of pilgrimage tours across India
           </p>
           <Button 
@@ -608,8 +650,17 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="bg-gray-200 rounded-lg h-80 flex items-center justify-center">
-              <p className="text-gray-500">Google Map Embed would go here</p>
+            <div className="rounded-lg h-80 overflow-hidden shadow-lg">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3874.123456789!2d74.8339!3d14.6243!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTTCsDM3JzI3LjUiTiA3NMKwNTAnMDIuMCJF!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Omy Travels Location"
+              ></iframe>
             </div>
           </div>
         </div>
