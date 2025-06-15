@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -742,17 +741,16 @@ const Index = () => {
 
       {/* Floating WhatsApp Button */}
       <div className="fixed bottom-6 right-6 z-[9999]">
-        <div className="relative">
-          {/* Radiating pulse background - slower animation */}
-          <div className="absolute inset-0 w-14 h-14 bg-green-500 rounded-full animate-[ping_3s_ease-in-out_infinite] opacity-20"></div>
-          <div className="absolute inset-0 w-14 h-14 bg-green-500 rounded-full animate-[pulse_3s_ease-in-out_infinite] opacity-10"></div>
+        <div className="relative w-14 h-14">
+          {/* Radiating pulse background - properly positioned */}
+          <div className="absolute inset-0 w-14 h-14 bg-green-500 rounded-full animate-[ping_4s_ease-in-out_infinite] opacity-20"></div>
+          <div className="absolute inset-0 w-14 h-14 bg-green-500 rounded-full animate-[pulse_4s_ease-in-out_infinite] opacity-10"></div>
           
           {/* WhatsApp button */}
           <Button 
             onClick={openWhatsApp}
             className="relative w-14 h-14 rounded-full bg-transparent hover:bg-transparent shadow-lg p-0 border-0"
             title="Chat with us on WhatsApp"
-            style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 9999 }}
           >
             <img 
               src="/lovable-uploads/8acb597e-cc8e-447a-89e7-75d37af60313.png" 
