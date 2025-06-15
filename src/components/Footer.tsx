@@ -1,3 +1,4 @@
+
 import { Mail, Phone, MapPin, Star, Clock, Home, Users, Heart } from "lucide-react";
 
 const Footer = () => {
@@ -19,19 +20,19 @@ const Footer = () => {
                 className="h-12 w-auto brightness-0 invert"
               />
             </div>
-            <p className="text-white/90 leading-relaxed text-sm">
+            <p className="text-white text-sm leading-relaxed">
               Incredible journeys across India with authentic travel experiences, 
               comfortable stays, and expert guidance since 2015.
             </p>
             <div className="flex items-center justify-center md:justify-start space-x-2">
-              <Star className="w-5 h-5 text-yellow-300 animate-pulse" />
-              <span className="text-white/90 text-sm font-medium">Trusted by thousands of travelers</span>
+              <Star className="w-5 h-5 text-yellow-200 animate-pulse" />
+              <span className="text-white text-sm font-medium">Trusted by thousands of travelers</span>
             </div>
           </div>
 
           {/* Quick Links */}
           <div className="space-y-6 text-center md:text-left">
-            <h3 className="text-xl font-temple font-semibold text-white flex items-center justify-center md:justify-start space-x-2 border-b border-white/30 pb-2">
+            <h3 className="text-xl font-temple font-semibold text-white flex items-center justify-center md:justify-start space-x-2 border-b border-white/40 pb-2">
               <Home className="w-5 h-5" />
               <span>Quick Links</span>
             </h3>
@@ -45,7 +46,7 @@ const Footer = () => {
                 <li key={link.name}>
                   <a 
                     href={link.href}
-                    className="text-white/90 hover:text-white transition-colors duration-300 hover:underline text-sm font-medium block py-1"
+                    className="text-white hover:text-yellow-200 transition-colors duration-300 hover:underline text-sm font-medium block py-1"
                   >
                     {link.name}
                   </a>
@@ -56,7 +57,7 @@ const Footer = () => {
 
           {/* Tour Categories */}
           <div className="space-y-6 text-center md:text-left">
-            <h3 className="text-xl font-temple font-semibold text-white flex items-center justify-center md:justify-start space-x-2 border-b border-white/30 pb-2">
+            <h3 className="text-xl font-temple font-semibold text-white flex items-center justify-center md:justify-start space-x-2 border-b border-white/40 pb-2">
               <MapPin className="w-5 h-5" />
               <span>Tour Categories</span>
             </h3>
@@ -68,7 +69,7 @@ const Footer = () => {
                 <li key={category}>
                   <a 
                     href="/trips"
-                    className="text-white/90 hover:text-white transition-colors duration-300 hover:underline text-sm font-medium block py-1"
+                    className="text-white hover:text-yellow-200 transition-colors duration-300 hover:underline text-sm font-medium block py-1"
                   >
                     {category}
                   </a>
@@ -79,40 +80,40 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div className="space-y-6 text-center md:text-left">
-            <h3 className="text-xl font-temple font-semibold text-white flex items-center justify-center md:justify-start space-x-2 border-b border-white/30 pb-2">
+            <h3 className="text-xl font-temple font-semibold text-white flex items-center justify-center md:justify-start space-x-2 border-b border-white/40 pb-2">
               <Users className="w-5 h-5" />
               <span>Contact Us</span>
             </h3>
             <div className="space-y-4">
               <div className="flex items-start justify-center md:justify-start space-x-3 group">
-                <Phone className="w-5 h-5 text-yellow-300 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
+                <Phone className="w-5 h-5 text-yellow-200 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
                 <div className="text-center md:text-left">
-                  <p className="text-white font-medium">+91 73488 69099</p>
-                  <p className="text-xs text-white/80">24/7 Travel Support</p>
+                  <p className="text-white font-semibold">+91 73488 69099</p>
+                  <p className="text-xs text-gray-100">24/7 Travel Support</p>
                 </div>
               </div>
               
               <div className="flex items-start justify-center md:justify-start space-x-3 group">
-                <Mail className="w-5 h-5 text-yellow-300 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
+                <Mail className="w-5 h-5 text-yellow-200 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
                 <div className="text-center md:text-left">
-                  <p className="text-white font-medium">connect@omytravels.com</p>
-                  <p className="text-xs text-white/80">Quick Response</p>
+                  <p className="text-white font-semibold">connect@omytravels.com</p>
+                  <p className="text-xs text-gray-100">Quick Response</p>
                 </div>
               </div>
               
               <div className="flex items-start justify-center md:justify-start space-x-3 group">
-                <MapPin className="w-5 h-5 text-yellow-300 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
+                <MapPin className="w-5 h-5 text-yellow-200 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
                 <div className="text-center md:text-left">
-                  <p className="text-white font-medium text-sm">Dhundasi Nagar Rd</p>
-                  <p className="text-white font-medium text-sm">Sirsi, Karnataka 581401</p>
+                  <p className="text-white font-semibold text-sm">Dhundasi Nagar Rd</p>
+                  <p className="text-white font-semibold text-sm">Sirsi, Karnataka 581401</p>
                 </div>
               </div>
               
               <div className="flex items-start justify-center md:justify-start space-x-3 group">
-                <Clock className="w-5 h-5 text-yellow-300 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
+                <Clock className="w-5 h-5 text-yellow-200 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
                 <div className="text-center md:text-left">
-                  <p className="text-white font-medium">9am to 6pm</p>
-                  <p className="text-xs text-white/80">Sunday closed</p>
+                  <p className="text-white font-semibold">9am to 6pm</p>
+                  <p className="text-xs text-gray-100">Sunday closed</p>
                 </div>
               </div>
             </div>
@@ -120,13 +121,13 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-white/30 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <p className="text-white/90 text-sm font-medium text-center md:text-left">
+        <div className="border-t border-white/40 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <p className="text-white text-sm font-medium text-center md:text-left">
             © 2025 Omy Travels. All rights reserved. Incredible journeys with expertise.
           </p>
           <div className="flex flex-col sm:flex-row items-center sm:space-x-6 space-y-2 sm:space-y-0">
-            <span className="text-white/90 text-sm flex items-center space-x-2 font-medium">
-              <Heart className="w-4 h-4 animate-pulse text-yellow-300" />
+            <span className="text-white text-sm flex items-center space-x-2 font-medium">
+              <Heart className="w-4 h-4 animate-pulse text-yellow-200" />
               <span>Follow us:</span>
             </span>
             <div className="flex items-center space-x-6">
@@ -140,7 +141,7 @@ const Footer = () => {
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-white/90 hover:text-white transition-colors duration-300 text-sm hover:underline font-medium"
+                  className="text-white hover:text-yellow-200 transition-colors duration-300 text-sm hover:underline font-medium"
                 >
                   {social.name}
                 </a>
