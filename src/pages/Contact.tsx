@@ -6,7 +6,7 @@ import ContactMapSection from "@/components/contact/ContactMapSection";
 
 const Contact = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-temple-cream">
+    <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-orange-50">
       <ContactHero />
       <section className="py-16">
         <div className="container mx-auto px-4">

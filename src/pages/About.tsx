@@ -4,7 +4,7 @@ import { Shield, Users, CheckCircle, Heart, Star, Phone, Mail, MapPin } from "lu
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-temple-cream">
+    <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-orange-50">
       {/* Standardized Hero Section */}
       <div className="relative h-[600px] overflow-hidden">
         {/* Background Image */}
@@ -41,7 +41,7 @@ const About = () => {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl font-temple font-bold text-temple-maroon mb-8 text-center">
+            <h2 className="text-4xl font-temple font-bold text-orange-600 mb-8 text-center">
               Who We Are
             </h2>
             <div className="text-lg text-gray-700 leading-relaxed space-y-6">
@@ -62,36 +62,36 @@ const About = () => {
       </section>
 
       {/* Why Choose Us */}
-      <section className="py-16 bg-gradient-to-br from-temple-cream to-saffron-50">
+      <section className="py-16 bg-gradient-to-br from-saffron-50 to-orange-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-temple font-bold text-temple-maroon mb-12 text-center">
+          <h2 className="text-4xl font-temple font-bold text-orange-600 mb-12 text-center">
             Why Choose Omy Travels?
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {[
               {
-                icon: <Heart className="w-8 h-8 text-saffron-600" />,
+                icon: <Heart className="w-8 h-8 text-orange-600" />,
                 title: "Handcrafted Experiences",
                 description: "Not just tours, we offer immersive travel experiences"
               },
               {
-                icon: <Users className="w-8 h-8 text-saffron-600" />,
+                icon: <Users className="w-8 h-8 text-orange-600" />,
                 title: "Trusted by 2,000+ Travelers",
                 description: "With 4.8★ average Google rating"
               },
               {
-                icon: <CheckCircle className="w-8 h-8 text-saffron-600" />,
+                icon: <CheckCircle className="w-8 h-8 text-orange-600" />,
                 title: "All-Inclusive Packages",
                 description: "Stay, sightseeing, transport, and meals included"
               },
               {
-                icon: <Shield className="w-8 h-8 text-saffron-600" />,
+                icon: <Shield className="w-8 h-8 text-orange-600" />,
                 title: "Local Experts",
                 description: "Professional guides and drivers who know the local culture"
               },
               {
-                icon: <Star className="w-8 h-8 text-saffron-600" />,
+                icon: <Star className="w-8 h-8 text-orange-600" />,
                 title: "Comfortable Travel",
                 description: "Quality accommodations, AC transport, and assistance for all ages"
               }
@@ -101,7 +101,7 @@ const About = () => {
                   <div className="flex justify-center mb-4">
                     {feature.icon}
                   </div>
-                  <h3 className="font-temple font-semibold text-temple-maroon mb-3 text-lg">
+                  <h3 className="font-temple font-semibold text-orange-600 mb-3 text-lg">
                     ✅ {feature.title}
                   </h3>
                   <p className="text-gray-600">{feature.description}</p>
@@ -111,7 +111,7 @@ const About = () => {
           </div>
 
           <div className="text-center mt-12">
-            <blockquote className="text-2xl font-temple text-temple-maroon italic">
+            <blockquote className="text-2xl font-temple text-orange-600 italic">
               "When expertise meets passion, the journey becomes extraordinary."
             </blockquote>
           </div>
@@ -123,7 +123,7 @@ const About = () => {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto">
             <div className="text-center">
-              <h3 className="text-3xl font-temple font-bold text-temple-maroon mb-6">
+              <h3 className="text-3xl font-temple font-bold text-orange-600 mb-6">
                 Our Vision
               </h3>
               <p className="text-lg text-gray-700 leading-relaxed">
@@ -132,7 +132,7 @@ const About = () => {
             </div>
             
             <div className="text-center">
-              <h3 className="text-3xl font-temple font-bold text-temple-maroon mb-6">
+              <h3 className="text-3xl font-temple font-bold text-orange-600 mb-6">
                 Our Promise
               </h3>
               <p className="text-lg text-gray-700 leading-relaxed">
@@ -154,7 +154,7 @@ const About = () => {
         />
         
         {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-temple-maroon/90 to-saffron-600/90" />
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/90 to-orange-600/90" />
         
         {/* Decorative Pattern Overlay */}
         <div className="absolute inset-0 mandala-bg opacity-10" />

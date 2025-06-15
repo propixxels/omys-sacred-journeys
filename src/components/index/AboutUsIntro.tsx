@@ -7,7 +7,7 @@ const AboutUsIntro = () => (
     <div className="container mx-auto px-4">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div className="space-y-6 animate-fade-in">
-          <h2 className="text-4xl font-temple font-bold text-temple-maroon">
+          <h2 className="text-4xl font-temple font-bold text-orange-600">
             Who We Are
           </h2>
           <p className="text-lg text-gray-600 leading-relaxed">
