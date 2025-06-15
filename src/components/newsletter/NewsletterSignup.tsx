@@ -20,11 +20,12 @@ const NewsletterSignup = () => {
     e.preventDefault();
     if (!email) return;
 
+    // For reCAPTCHA v3, execute it before submission if no token exists
     if (!recaptchaToken) {
+      recaptchaRef.current?.execute();
       toast({
-        title: "reCAPTCHA Required",
-        description: "Please complete the reCAPTCHA verification.",
-        variant: "destructive",
+        title: "Verifying Security",
+        description: "Please wait while we verify your request...",
       });
       return;
     }
@@ -137,7 +138,7 @@ const NewsletterSignup = () => {
         <Button 
           type="submit"
           className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
-          disabled={isSubmitting || !recaptchaToken}
+          disabled={isSubmitting}
         >
           {isSubmitting ? "Subscribing..." : "Subscribe"}
         </Button>
@@ -148,6 +149,7 @@ const NewsletterSignup = () => {
         onVerify={handleRecaptchaChange}
         onExpired={() => setRecaptchaToken(null)}
         onError={() => setRecaptchaToken(null)}
+        action="newsletter_signup"
       />
     </div>
   );

@@ -41,11 +41,12 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({ isOpen, onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // For reCAPTCHA v3, execute it before submission if no token exists
     if (!recaptchaToken) {
+      recaptchaRef.current?.execute();
       toast({
-        title: "reCAPTCHA Required",
-        description: "Please complete the reCAPTCHA verification.",
-        variant: "destructive",
+        title: "Verifying Security",
+        description: "Please wait while we verify your request...",
       });
       return;
     }
@@ -182,6 +183,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({ isOpen, onClose }) => {
             onVerify={handleRecaptchaChange}
             onExpired={() => setRecaptchaToken(null)}
             onError={() => setRecaptchaToken(null)}
+            action="enquiry_submit"
           />
 
           <div className="flex gap-3 pt-4">
@@ -195,7 +197,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({ isOpen, onClose }) => {
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting || !recaptchaToken}
+              disabled={isSubmitting}
               className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white"
             >
               {isSubmitting ? "Submitting..." : "Submit Enquiry"}
