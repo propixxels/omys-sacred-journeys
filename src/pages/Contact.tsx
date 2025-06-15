@@ -10,19 +10,11 @@ const Contact = () => {
       <ContactHero />
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             <div className="w-full">
               <ContactInfoCards />
             </div>
-            <div className="w-full flex flex-col">
-              <div className="mb-6">
-                <h2 className="text-3xl font-temple font-bold text-temple-maroon">
-                  Send us a Message
-                </h2>
-                <p className="text-gray-600 text-lg leading-relaxed">
-                  We're here to assist you with all your travel needs.
-                </p>
-              </div>
+            <div className="w-full">
               <ContactForm />
             </div>
           </div>
