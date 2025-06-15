@@ -1,9 +1,8 @@
-
 import { Mail, Phone, MapPin, Star, Clock, Home, Users, Heart } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#ff602a] text-white relative overflow-hidden">
+    <footer className="bg-gradient-to-r from-orange-500 to-orange-600 text-white relative overflow-hidden">
       {/* Footer Background Animation */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[slide-right_20s_ease-in-out_infinite]"></div>
