@@ -202,7 +202,7 @@ const Index = () => {
       <QuickValuesBar />
       <AboutUsIntro />
 
-      {/* Featured Tours Section - ONLY section with mandala background */}
+      {/* Featured Tours Section - WITH mandala background */}
       <section id="featured-tours" className="py-16 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 relative">
         <div className="absolute inset-0 mandala-bg"></div>
         
@@ -215,8 +215,6 @@ const Index = () => {
               Join thousands of travelers on these amazing journeys across India's most beautiful destinations
             </p>
           </div>
-
-          {/* ... keep existing code (tours rendering logic) */}
 
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -311,7 +309,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Why Choose Us - Removed mandala background */}
+      {/* Why Choose Us - No mandala background */}
       <section className="py-16 bg-gradient-to-br from-orange-50 to-amber-100">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 animate-fade-in">
@@ -343,7 +341,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* How It Works - No mandala background */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 animate-fade-in">
@@ -380,7 +378,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Inspirational Quote - Removed mandala background */}
+      {/* Inspirational Quote - No mandala background */}
       <section className="py-16 bg-gradient-to-r from-orange-500 to-orange-600">
         <div className="container mx-auto px-4 text-center">
           <blockquote className="text-3xl md:text-4xl font-temple font-medium text-white leading-relaxed">
@@ -389,7 +387,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Testimonials - Removed mandala background */}
+      {/* Testimonials - No mandala background */}
       <section className="py-16 bg-gradient-to-br from-orange-50 to-amber-100">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 animate-fade-in">
@@ -426,7 +424,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Call to Action - Removed mandala background */}
+      {/* Call to Action - No mandala background */}
       <section className="py-16 bg-gradient-to-r from-orange-500 to-orange-600">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto space-y-6 text-white">
@@ -447,7 +445,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Newsletter & WhatsApp - Removed mandala background */}
+      {/* Newsletter & WhatsApp - No mandala background */}
       <section className="py-16 bg-gradient-to-br from-orange-50 to-amber-100">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
@@ -481,7 +479,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Contact Section */}
+      {/* Contact Section - No mandala background */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
