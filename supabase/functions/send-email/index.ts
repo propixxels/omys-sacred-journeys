@@ -9,6 +9,11 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
+const ALL_DESTINATIONS = [
+  "connect@omytravels.in",
+  "omytravelsweb@gmail.com"
+];
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -24,27 +29,38 @@ serve(async (req) => {
     );
   }
 
-  // Determine email purpose based on request body shape/type
   const { type, name, email, phone, message, to, subject, html } = reqBody;
 
-  // Setup nodemailer with SMTP
+  // Fetch SMTP creds and log if missing
+  const host = Deno.env.get("SMTP_HOST");
+  const port = Deno.env.get("SMTP_PORT");
+  const user = Deno.env.get("SMTP_USERNAME");
+  const pass = Deno.env.get("SMTP_PASSWORD");
+
+  if (!host || !port || !user || !pass) {
+    console.error("SMTP secret(s) missing", { host, port, user, pass });
+    return new Response(
+      JSON.stringify({ error: "SMTP credentials not configured" }),
+      { status: 401, headers: corsHeaders }
+    );
+  }
+
   const transporter = nodemailer.createTransport({
-    host: Deno.env.get("SMTP_HOST"),
-    port: parseInt(Deno.env.get("SMTP_PORT") ?? "2525"),
-    secure: false, // not SSL by default
+    host,
+    port: parseInt(port ?? "2525"),
+    secure: false,
     auth: {
-      user: Deno.env.get("SMTP_USERNAME"),
-      pass: Deno.env.get("SMTP_PASSWORD"),
+      user,
+      pass,
     },
   });
 
-  // Fallbacks for general email sending
   let mailOptions: Record<string, any> = {};
 
   if (type === "contact") {
     mailOptions = {
       from: `"${name}" <${email}>`,
-      to: "connect@omytravels.com", // receives contact form
+      to: ALL_DESTINATIONS,
       subject: "Contact Form Submission",
       text: `
 New contact form submission:
@@ -65,18 +81,35 @@ Message: ${message}
       `,
     };
   } else if (type === "newsletter") {
-    // For newsletters - use 'to', 'subject', 'html'
-    if (!to || !subject || !html) {
+    if (!subject || !html) {
       return new Response(
         JSON.stringify({ error: "Missing newsletter fields" }),
         { status: 400, headers: corsHeaders }
       );
     }
     mailOptions = {
-      from: "Omy Travels <connect@omytravels.com>",
-      to,
+      from: "Omy Travels <connect@omytravels.in>",
+      to: ALL_DESTINATIONS,
       subject,
       html,
+    };
+  } else if (type === "booking") {
+    // Assume a booking payload with details similar to contact
+    mailOptions = {
+      from: `"${name || "Booking"}" <${email || "noreply@omytravels.in"}>`,
+      to: ALL_DESTINATIONS,
+      subject: subject || "New Booking Request",
+      text: message || "A new booking was received.",
+      html: html ||
+        `<div>
+          <h2>New Booking Request</h2>
+          <ul>
+            ${name ? `<li><b>Name:</b> ${name}</li>` : ""}
+            ${email ? `<li><b>Email:</b> ${email}</li>` : ""}
+            ${phone ? `<li><b>Phone:</b> ${phone}</li>` : ""}
+          </ul>
+          ${message ? `<div><b>Message:</b><br/>${message}</div>` : ""}
+        </div>`,
     };
   } else {
     return new Response(
