@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -11,19 +10,24 @@ interface Slide {
 
 const heroSlides: Slide[] = [
   {
-    image: "https://images.unsplash.com/photo-1466442929976-97f336a657be?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80",
-    title: "Discover India's Hidden Gems",
-    subtitle: "Experience breathtaking destinations across incredible India"
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+    title: "Sacred Kashi Darshan",
+    subtitle: "Experience the spiritual heart of India at the holy city of Varanasi"
   },
   {
-    image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80",
-    title: "Adventure Awaits",
-    subtitle: "Discover thrilling experiences and unforgettable moments"
+    image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+    title: "Divine Kedarnath Yatra",
+    subtitle: "Journey to the sacred Himalayan temple of Lord Shiva"
   },
   {
-    image: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80",
-    title: "Cultural Heritage Tours",
-    subtitle: "Explore India's rich history and vibrant traditions"
+    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+    title: "Kodachadri Hill Trek",
+    subtitle: "Discover the pristine beauty of Western Ghats peaks"
+  },
+  {
+    image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+    title: "Kumta Om Beach Bliss",
+    subtitle: "Relax at the serene beaches of Karnataka's coastline"
   }
 ];
 
