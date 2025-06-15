@@ -1,10 +1,9 @@
-
 import React, { useState, useRef } from "react";
 import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import ReCaptcha, { ReCaptchaRef } from "../ReCaptcha";
@@ -102,12 +101,7 @@ const ContactForm = () => {
 
   return (
     <Card className="border-orange-200 shadow-lg">
-      <CardHeader>
-        <CardTitle className="text-2xl font-temple text-temple-maroon">
-          Send us a Message
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         {sent ? (
           <div className="text-green-700 font-semibold py-6 text-center">Thank you! Your message has been sent.</div>
         ) : (
