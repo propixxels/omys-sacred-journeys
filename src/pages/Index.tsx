@@ -739,26 +739,24 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Floating WhatsApp Button */}
+      {/* Floating WhatsApp Button - Fixed to viewport */}
       <div className="fixed bottom-6 right-6 z-[9999]">
-        <div className="relative w-14 h-14">
-          {/* Radiating pulse background - properly positioned */}
-          <div className="absolute inset-0 w-14 h-14 bg-green-500 rounded-full animate-[ping_4s_ease-in-out_infinite] opacity-20"></div>
-          <div className="absolute inset-0 w-14 h-14 bg-green-500 rounded-full animate-[pulse_4s_ease-in-out_infinite] opacity-10"></div>
-          
-          {/* WhatsApp button */}
-          <Button 
-            onClick={openWhatsApp}
-            className="relative w-14 h-14 rounded-full bg-transparent hover:bg-transparent shadow-lg p-0 border-0"
-            title="Chat with us on WhatsApp"
-          >
-            <img 
-              src="/lovable-uploads/8acb597e-cc8e-447a-89e7-75d37af60313.png" 
-              alt="WhatsApp" 
-              className="w-full h-full object-contain"
-            />
-          </Button>
-        </div>
+        {/* Pulse animation backgrounds */}
+        <div className="absolute inset-0 w-14 h-14 bg-green-500 rounded-full animate-[ping_4s_ease-in-out_infinite] opacity-15"></div>
+        <div className="absolute inset-0 w-14 h-14 bg-green-500 rounded-full animate-[pulse_4s_ease-in-out_infinite] opacity-10"></div>
+        
+        {/* WhatsApp button - simplified structure */}
+        <button
+          onClick={openWhatsApp}
+          className="w-14 h-14 rounded-full bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 flex items-center justify-center border-0 cursor-pointer"
+          title="Chat with us on WhatsApp"
+        >
+          <img 
+            src="/lovable-uploads/8acb597e-cc8e-447a-89e7-75d37af60313.png" 
+            alt="WhatsApp" 
+            className="w-10 h-10 object-contain"
+          />
+        </button>
       </div>
 
       {/* Scroll to Top Button */}
