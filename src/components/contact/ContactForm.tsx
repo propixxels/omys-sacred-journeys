@@ -22,17 +22,20 @@ const ContactForm = () => {
   const recaptchaRef = useRef<ReCaptchaRef>(null);
 
   const handleRecaptchaChange = (token: string | null) => {
+    console.log('reCAPTCHA token received:', token ? 'Token received' : 'No token');
     setRecaptchaToken(token);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // If no token, try to execute reCAPTCHA
     if (!recaptchaToken) {
+      console.log('No reCAPTCHA token, executing...');
+      recaptchaRef.current?.execute();
       toast({
-        title: "reCAPTCHA Required",
-        description: "Please complete the reCAPTCHA verification.",
-        variant: "destructive",
+        title: "Verifying Security",
+        description: "Please wait while we verify your request...",
       });
       return;
     }
@@ -41,6 +44,7 @@ const ContactForm = () => {
     setSent(false);
     
     console.log("Submitting contact form with data:", formData);
+    console.log("reCAPTCHA token length:", recaptchaToken.length);
     
     try {
       const resp = await fetch(
@@ -84,8 +88,13 @@ const ContactForm = () => {
         description: err?.message ?? "Unknown error",
         variant: "destructive",
       });
+      // Reset reCAPTCHA on error
       recaptchaRef.current?.reset();
       setRecaptchaToken(null);
+      // Try to get a new token
+      setTimeout(() => {
+        recaptchaRef.current?.execute();
+      }, 1000);
     } finally {
       setIsSubmitting(false);
     }
@@ -165,14 +174,21 @@ const ContactForm = () => {
             <ReCaptcha
               ref={recaptchaRef}
               onVerify={handleRecaptchaChange}
-              onExpired={() => setRecaptchaToken(null)}
-              onError={() => setRecaptchaToken(null)}
+              onExpired={() => {
+                console.log('reCAPTCHA expired');
+                setRecaptchaToken(null);
+              }}
+              onError={() => {
+                console.log('reCAPTCHA error');
+                setRecaptchaToken(null);
+              }}
+              action="contact_form"
             />
             
             <Button
               type="submit"
               className="w-full bg-gradient-to-r from-temple-maroon to-orange-700 hover:from-temple-maroon/90 hover:to-orange-700/90"
-              disabled={isSubmitting || !recaptchaToken}
+              disabled={isSubmitting}
             >
               <Send className="w-4 h-4 mr-2" />
               {isSubmitting ? "Sending..." : "Send Message"}
