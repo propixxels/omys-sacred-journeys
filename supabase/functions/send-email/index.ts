@@ -45,7 +45,7 @@ serve(async (req) => {
     );
   }
 
-  const transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransporter({
     host,
     port: parseInt(port ?? "2525"),
     secure: false,
@@ -59,7 +59,8 @@ serve(async (req) => {
 
   if (type === "contact") {
     mailOptions = {
-      from: `"${name}" <${email}>`,
+      from: `"Omy Travels Contact Form" <${user}>`, // Use authenticated sender email
+      replyTo: email, // Set reply-to as the user's email
       to: ALL_DESTINATIONS,
       subject: "Contact Form Submission",
       text: `
@@ -88,7 +89,7 @@ Message: ${message}
       );
     }
     mailOptions = {
-      from: "Omy Travels <connect@omytravels.in>",
+      from: `"Omy Travels" <${user}>`, // Use authenticated sender email
       to: ALL_DESTINATIONS,
       subject,
       html,
@@ -96,7 +97,8 @@ Message: ${message}
   } else if (type === "booking") {
     // Assume a booking payload with details similar to contact
     mailOptions = {
-      from: `"${name || "Booking"}" <${email || "noreply@omytravels.in"}>`,
+      from: `"Omy Travels Booking" <${user}>`, // Use authenticated sender email
+      replyTo: email || undefined, // Set reply-to if email provided
       to: ALL_DESTINATIONS,
       subject: subject || "New Booking Request",
       text: message || "A new booking was received.",
@@ -119,7 +121,15 @@ Message: ${message}
   }
 
   try {
+    console.log("Attempting to send email with options:", { 
+      from: mailOptions.from,
+      to: mailOptions.to,
+      subject: mailOptions.subject 
+    });
+    
     const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent successfully:", info.messageId);
+    
     return new Response(
       JSON.stringify({ success: true, messageId: info.messageId }),
       { status: 200, headers: corsHeaders }
