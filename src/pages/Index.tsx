@@ -11,11 +11,13 @@ import HeroSection from "@/components/index/HeroSection";
 import QuickValuesBar from "@/components/index/QuickValuesBar";
 import AboutUsIntro from "@/components/index/AboutUsIntro";
 import NewsletterSignup from "@/components/newsletter/NewsletterSignup";
+import EnquiryForm from "@/components/EnquiryForm";
 
 const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [tours, setTours] = useState<TourData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isEnquiryFormOpen, setIsEnquiryFormOpen] = useState(false);
 
   const heroSlides = [
     {
@@ -195,7 +197,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-temple-cream">
+    <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-orange-50">
       <HeroSection />
       <QuickValuesBar />
       <AboutUsIntro />
@@ -206,7 +208,7 @@ const Index = () => {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12 animate-fade-in">
-            <h2 className="text-4xl md:text-5xl font-temple font-bold text-temple-maroon mb-4">
+            <h2 className="text-4xl md:text-5xl font-temple font-bold text-orange-600 mb-4">
               Featured Tours & Adventures
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -313,7 +315,7 @@ const Index = () => {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12 animate-fade-in">
-            <h2 className="text-4xl font-temple font-bold text-temple-maroon mb-4">
+            <h2 className="text-4xl font-temple font-bold text-orange-600 mb-4">
               Why Thousands Trust Omy Travels
             </h2>
             <p className="text-xl text-gray-600">
@@ -329,7 +331,7 @@ const Index = () => {
                     <item.icon className="w-8 h-8 text-white" />
                   </div>
                 </div>
-                <h3 className="text-xl font-temple font-semibold text-temple-maroon mb-3">
+                <h3 className="text-xl font-temple font-semibold text-orange-600 mb-3">
                   {item.title}
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
@@ -345,7 +347,7 @@ const Index = () => {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 animate-fade-in">
-            <h2 className="text-4xl font-temple font-bold text-temple-maroon mb-4">
+            <h2 className="text-4xl font-temple font-bold text-orange-600 mb-4">
               Your Journey in 3 Simple Steps
             </h2>
           </div>
@@ -355,7 +357,7 @@ const Index = () => {
               <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto">
                 <MapPin className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-xl font-temple font-semibold text-temple-maroon">Choose Your Tour</h3>
+              <h3 className="text-xl font-temple font-semibold text-orange-600">Choose Your Tour</h3>
               <p className="text-gray-600">Browse destinations, check dates & pricing to find your perfect getaway</p>
             </div>
             
@@ -363,7 +365,7 @@ const Index = () => {
               <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto">
                 <Check className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-xl font-temple font-semibold text-temple-maroon">Book & Pay Securely</h3>
+              <h3 className="text-xl font-temple font-semibold text-orange-600">Book & Pay Securely</h3>
               <p className="text-gray-600">Easy booking with flexible payment options and instant confirmation</p>
             </div>
             
@@ -371,7 +373,7 @@ const Index = () => {
               <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto">
                 <Heart className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-xl font-temple font-semibold text-temple-maroon">Travel & Explore</h3>
+              <h3 className="text-xl font-temple font-semibold text-orange-600">Travel & Explore</h3>
               <p className="text-gray-600">Receive travel kit, enjoy guided tours, create unforgettable memories</p>
             </div>
           </div>
@@ -395,7 +397,7 @@ const Index = () => {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12 animate-fade-in">
-            <h2 className="text-4xl font-temple font-bold text-temple-maroon mb-4">
+            <h2 className="text-4xl font-temple font-bold text-orange-600 mb-4">
               What Our Travelers Say
             </h2>
           </div>
@@ -418,7 +420,7 @@ const Index = () => {
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div>
-                    <p className="font-semibold text-temple-maroon">{testimonial.name}</p>
+                    <p className="font-semibold text-orange-600">{testimonial.name}</p>
                     <p className="text-sm text-gray-500">{testimonial.city}</p>
                   </div>
                 </div>
@@ -428,8 +430,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="py-16 bg-gradient-to-r from-temple-maroon to-orange-700 relative overflow-hidden">
+      {/* Call to Action - UPDATED COLORS */}
+      <section className="py-16 bg-gradient-to-r from-orange-500 to-orange-600 relative overflow-hidden">
         <div className="absolute inset-0 mandala-overlay opacity-10"></div>
         
         <div className="container mx-auto px-4 text-center relative z-10">
@@ -441,7 +443,8 @@ const Index = () => {
               Let us know your travel interests — we'll guide you personally through your perfect journey.
             </p>
             <Button 
-              className="bg-white text-temple-maroon hover:bg-orange-50 text-lg px-8 py-4 h-auto transition-all duration-300 transform hover:scale-105"
+              onClick={() => setIsEnquiryFormOpen(true)}
+              className="bg-white text-orange-600 hover:bg-orange-50 text-lg px-8 py-4 h-auto transition-all duration-300 transform hover:scale-105"
             >
               <Users className="w-5 h-5 mr-2" />
               Enquire Now
@@ -458,7 +461,7 @@ const Index = () => {
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <Card className="p-8 border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
-                <h3 className="text-2xl font-temple font-bold text-temple-maroon mb-4">
+                <h3 className="text-2xl font-temple font-bold text-orange-600 mb-4">
                   Stay Updated
                 </h3>
                 <p className="text-gray-600 mb-6">
@@ -468,7 +471,7 @@ const Index = () => {
               </Card>
 
               <Card className="p-8 border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
-                <h3 className="text-2xl font-temple font-bold text-temple-maroon mb-4">
+                <h3 className="text-2xl font-temple font-bold text-orange-600 mb-4">
                   WhatsApp Updates
                 </h3>
                 <p className="text-gray-600 mb-6">
@@ -490,7 +493,7 @@ const Index = () => {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-temple font-bold text-temple-maroon mb-4">
+            <h2 className="text-4xl font-temple font-bold text-orange-600 mb-4">
               Visit Us or Reach Out Anytime
             </h2>
           </div>
@@ -499,7 +502,7 @@ const Index = () => {
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <h4 className="font-temple font-semibold text-temple-maroon text-lg">Contact Information</h4>
+                  <h4 className="font-temple font-semibold text-orange-600 text-lg">Contact Information</h4>
                   <div className="space-y-3">
                     <div className="flex items-center space-x-3">
                       <Users className="w-5 h-5 text-orange-500" />
@@ -513,7 +516,7 @@ const Index = () => {
                 </div>
                 
                 <div className="space-y-4">
-                  <h4 className="font-temple font-semibold text-temple-maroon text-lg">Office Hours</h4>
+                  <h4 className="font-temple font-semibold text-orange-600 text-lg">Office Hours</h4>
                   <div className="space-y-2">
                     <p className="text-gray-600">9am to 6pm</p>
                     <p className="text-gray-600">Sunday closed</p>
@@ -522,7 +525,7 @@ const Index = () => {
               </div>
               
               <div className="space-y-4">
-                <h4 className="font-temple font-semibold text-temple-maroon text-lg">Office Address</h4>
+                <h4 className="font-temple font-semibold text-orange-600 text-lg">Office Address</h4>
                 <p className="text-gray-600">
                   Dhundasi Nagar Rd<br />
                   Sirsi, Karnataka 581401
@@ -545,6 +548,12 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Enquiry Form Modal */}
+      <EnquiryForm 
+        isOpen={isEnquiryFormOpen} 
+        onClose={() => setIsEnquiryFormOpen(false)} 
+      />
 
       {/* Floating WhatsApp Button - Fixed to viewport */}
       <div className="fixed bottom-6 right-6 z-[9999]">
