@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
 import Trips from "./pages/Trips";
 import TripDetail from "./pages/TripDetail";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -46,6 +47,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
                 <Route path="/trips" element={<Trips />} />
                 <Route path="/trip/:slug" element={<TripDetail />} />
                 <Route path="/admin-login" element={<AdminLogin />} />

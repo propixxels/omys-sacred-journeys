@@ -36,19 +36,18 @@ const Header = () => {
             >
               About Us
             </Link>
+            <Link 
+              to="/contact" 
+              className="text-gray-700 hover:text-temple-maroon transition-colors font-medium"
+            >
+              Contact Us
+            </Link>
             <a 
-              href="tel:+919876543210" 
+              href="tel:+917348869099" 
               className="flex items-center space-x-1 text-gray-700 hover:text-temple-maroon transition-colors font-medium"
             >
               <Phone className="w-4 h-4" />
-              <span>+91 98765 43210</span>
-            </a>
-            <a 
-              href="mailto:info@omytours.com" 
-              className="flex items-center space-x-1 text-gray-700 hover:text-temple-maroon transition-colors font-medium"
-            >
-              <Mail className="w-4 h-4" />
-              <span>Contact Us</span>
+              <span>+91 73488 69099</span>
             </a>
           </nav>
         </div>
