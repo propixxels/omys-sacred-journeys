@@ -71,8 +71,8 @@ const HeroSection = () => {
         ))}
       </div>
 
-      {/* Navigation arrows - hidden on mobile, visible on desktop */}
-      <div className="absolute top-1/2 transform -translate-y-1/2 left-8 z-20 hidden md:block">
+      {/* Navigation arrows - moved to bottom right */}
+      <div className="absolute bottom-8 right-8 flex space-x-2 z-20 hidden md:flex">
         <button
           onClick={prevSlide}
           className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
@@ -80,9 +80,6 @@ const HeroSection = () => {
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
-      </div>
-
-      <div className="absolute top-1/2 transform -translate-y-1/2 right-8 z-20 hidden md:block">
         <button
           onClick={nextSlide}
           className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
