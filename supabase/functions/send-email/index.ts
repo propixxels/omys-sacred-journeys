@@ -1,5 +1,4 @@
 
-
 // deno-lint-ignore-file no-explicit-any
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
@@ -42,118 +41,40 @@ async function verifyRecaptcha(token: string): Promise<boolean> {
   }
 }
 
-// Function to send email using SMTP
-async function sendEmailViaSMTP(emailData: any): Promise<any> {
-  const host = Deno.env.get("SMTP_HOST");
-  const port = Deno.env.get("SMTP_PORT");
-  const user = Deno.env.get("SMTP_USERNAME");
-  const pass = Deno.env.get("SMTP_PASSWORD");
+// Function to send email using SMTP2GO API
+async function sendEmailViaSMTP2GO(emailData: any): Promise<any> {
+  const apiKey = Deno.env.get("SMTP_PASSWORD"); // This should now be your API key
 
-  console.log("SMTP config:", { host, port, user: user ? "***" : "missing" });
+  if (!apiKey) {
+    throw new Error("SMTP2GO API key not configured");
+  }
 
-  // Create email payload for a generic SMTP API service
-  const emailPayload = {
-    from: emailData.from,
-    to: emailData.to,
-    subject: emailData.subject,
-    html: emailData.html,
-    text: emailData.text,
-  };
+  console.log("Using SMTP2GO API to send email");
 
-  console.log("Sending email with payload:", {
-    from: emailPayload.from,
-    to: emailPayload.to,
-    subject: emailPayload.subject
+  const response = await fetch("https://api.smtp2go.com/v3/email/send", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Smtp2go-Api-Key": apiKey,
+    },
+    body: JSON.stringify({
+      sender: emailData.from,
+      to: emailData.to,
+      subject: emailData.subject,
+      html_body: emailData.html,
+      text_body: emailData.text,
+    }),
   });
 
-  // Try different SMTP service APIs based on the host
-  if (host?.includes("smtp2go")) {
-    // SMTP2GO API
-    const response = await fetch("https://api.smtp2go.com/v3/email/send", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Smtp2go-Api-Key": pass!,
-      },
-      body: JSON.stringify({
-        sender: emailPayload.from,
-        to: emailPayload.to,
-        subject: emailPayload.subject,
-        html_body: emailPayload.html,
-        text_body: emailPayload.text,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("SMTP2GO API error:", response.status, errorText);
-      throw new Error(`SMTP2GO API error: ${response.status} - ${errorText}`);
-    }
-
-    return await response.json();
-  } else if (host?.includes("sendgrid") || host?.includes("smtp.sendgrid.net")) {
-    // SendGrid API
-    const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${pass}`,
-      },
-      body: JSON.stringify({
-        personalizations: [{
-          to: emailPayload.to.map((email: string) => ({ email })),
-        }],
-        from: { email: emailPayload.from },
-        subject: emailPayload.subject,
-        content: [
-          {
-            type: "text/html",
-            value: emailPayload.html || emailPayload.text,
-          },
-          {
-            type: "text/plain",
-            value: emailPayload.text || "",
-          }
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("SendGrid API error:", response.status, errorText);
-      throw new Error(`SendGrid API error: ${response.status} - ${errorText}`);
-    }
-
-    return { success: true, provider: "sendgrid" };
-  } else {
-    // Generic SMTP - use a simple email service or fallback
-    console.log("Using generic SMTP fallback");
-    
-    // For now, let's use a simple HTTP-based email service
-    // You might need to replace this with your actual SMTP service API
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${pass}`,
-      },
-      body: JSON.stringify({
-        from: emailPayload.from,
-        to: emailPayload.to,
-        subject: emailPayload.subject,
-        html: emailPayload.html,
-        text: emailPayload.text,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Email service API error:", response.status, errorText);
-      throw new Error(`Email service error: ${response.status} - ${errorText}`);
-    }
-
-    return await response.json();
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("SMTP2GO API error:", response.status, errorText);
+    throw new Error(`SMTP2GO API error: ${response.status} - ${errorText}`);
   }
+
+  const result = await response.json();
+  console.log("SMTP2GO API response:", result);
+  return result;
 }
 
 serve(async (req) => {
@@ -200,26 +121,15 @@ serve(async (req) => {
     }
   }
 
-  // Fetch SMTP creds and log if missing
-  const host = Deno.env.get("SMTP_HOST");
-  const port = Deno.env.get("SMTP_PORT");
-  const user = Deno.env.get("SMTP_USERNAME");
-  const pass = Deno.env.get("SMTP_PASSWORD");
-
-  if (!host || !port || !user || !pass) {
-    console.error("SMTP secret(s) missing", { host, port, user: user ? "***" : "missing", pass: pass ? "***" : "missing" });
-    return new Response(
-      JSON.stringify({ error: "SMTP credentials not configured" }),
-      { status: 401, headers: corsHeaders }
-    );
-  }
+  // Get sender email from environment
+  const fromEmail = Deno.env.get("SMTP_USERNAME") || "noreply@omytravels.in";
 
   // Create email content
   let emailContent: any = {};
 
   if (type === "contact" || type === "enquiry") {
     emailContent = {
-      from: user, // Use SMTP username as sender
+      from: fromEmail,
       to: ALL_DESTINATIONS,
       subject: type === "enquiry" ? "Enquiry Form Submission" : "Contact Form Submission",
       text: `
@@ -248,14 +158,14 @@ Message: ${message}
       );
     }
     emailContent = {
-      from: user,
+      from: fromEmail,
       to: ALL_DESTINATIONS,
       subject,
       html,
     };
   } else if (type === "booking") {
     emailContent = {
-      from: user,
+      from: fromEmail,
       to: ALL_DESTINATIONS,
       subject: subject || "New Booking Request",
       text: message || "A new booking was received.",
@@ -278,13 +188,13 @@ Message: ${message}
   }
 
   try {
-    console.log("Attempting to send email with SMTP transport");
+    console.log("Attempting to send email via SMTP2GO API");
     
-    const result = await sendEmailViaSMTP(emailContent);
-    console.log("Email sent successfully:", result);
+    const result = await sendEmailViaSMTP2GO(emailContent);
+    console.log("Email sent successfully via SMTP2GO:", result);
     
     return new Response(
-      JSON.stringify({ success: true, messageId: result.data?.id || result.id }),
+      JSON.stringify({ success: true, messageId: result.data?.email_id || result.email_id }),
       { status: 200, headers: corsHeaders }
     );
   } catch (err: any) {
@@ -295,4 +205,3 @@ Message: ${message}
     );
   }
 });
-
