@@ -6,7 +6,7 @@ const prefilledMessage = "Hi! I'm interested in your tour packages. Could you pl
 const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(prefilledMessage)}`;
 
 const WhatsappChatButton = () => (
-  <div className="fixed left-6 bottom-6 z-[9999]">
+  <div className="fixed right-6 bottom-6 z-[9999]">
     {/* Optional pulse animation */}
     <div className="absolute inset-0 w-14 h-14 bg-green-500 rounded-full animate-[ping_3s_ease-in-out_infinite] opacity-15 pointer-events-none"></div>
     <div className="absolute inset-0 w-14 h-14 bg-green-500 rounded-full animate-[pulse_3s_ease-in-out_infinite] opacity-10 pointer-events-none"></div>
@@ -27,3 +27,4 @@ const WhatsappChatButton = () => (
 );
 
 export default WhatsappChatButton;
+
