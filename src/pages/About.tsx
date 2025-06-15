@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Users, CheckCircle, Heart, Star, Phone, Mail, MapPin } from "lucide-react";
 
@@ -17,9 +16,6 @@ const About = () => {
         
         {/* Regular Overlay */}
         <div className="absolute inset-0 bg-black/40" />
-        
-        {/* Decorative Pattern Overlay */}
-        <div className="absolute inset-0 mandala-bg opacity-10" />
         
         {/* Content */}
         <div className="relative z-10 h-full flex items-center">
@@ -155,9 +151,6 @@ const About = () => {
         
         {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-orange-500/90 to-orange-600/90" />
-        
-        {/* Decorative Pattern Overlay */}
-        <div className="absolute inset-0 mandala-bg opacity-10" />
         
         {/* Content */}
         <div className="relative z-10 container mx-auto px-4 text-center text-white">

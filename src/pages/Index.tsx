@@ -202,9 +202,9 @@ const Index = () => {
       <QuickValuesBar />
       <AboutUsIntro />
 
-      {/* Featured Tours Section - With Improved Text Clipping */}
+      {/* Featured Tours Section - ONLY section with mandala background */}
       <section id="featured-tours" className="py-16 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 relative">
-        <div className="absolute inset-0 mandala-overlay opacity-5"></div>
+        <div className="absolute inset-0 mandala-bg"></div>
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12 animate-fade-in">
@@ -215,6 +215,8 @@ const Index = () => {
               Join thousands of travelers on these amazing journeys across India's most beautiful destinations
             </p>
           </div>
+
+          {/* ... keep existing code (tours rendering logic) */}
 
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -309,11 +311,9 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Why Choose Us */}
-      <section className="py-16 bg-gradient-to-br from-orange-50 to-amber-100 relative">
-        <div className="absolute inset-0 mandala-overlay opacity-5"></div>
-        
-        <div className="container mx-auto px-4 relative z-10">
+      {/* Why Choose Us - Removed mandala background */}
+      <section className="py-16 bg-gradient-to-br from-orange-50 to-amber-100">
+        <div className="container mx-auto px-4">
           <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-4xl font-temple font-bold text-orange-600 mb-4">
               Why Thousands Trust Omy Travels
@@ -380,22 +380,18 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Inspirational Quote */}
-      <section className="py-16 bg-gradient-to-r from-orange-500 to-orange-600 relative overflow-hidden">
-        <div className="absolute inset-0 mandala-overlay opacity-10"></div>
-        
-        <div className="container mx-auto px-4 text-center relative z-10">
+      {/* Inspirational Quote - Removed mandala background */}
+      <section className="py-16 bg-gradient-to-r from-orange-500 to-orange-600">
+        <div className="container mx-auto px-4 text-center">
           <blockquote className="text-3xl md:text-4xl font-temple font-medium text-white leading-relaxed">
             "Travel is not just a journey. It's a discovery of the incredible diversity and beauty of India."
           </blockquote>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-16 bg-gradient-to-br from-orange-50 to-amber-100 relative">
-        <div className="absolute inset-0 mandala-overlay opacity-5"></div>
-        
-        <div className="container mx-auto px-4 relative z-10">
+      {/* Testimonials - Removed mandala background */}
+      <section className="py-16 bg-gradient-to-br from-orange-50 to-amber-100">
+        <div className="container mx-auto px-4">
           <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-4xl font-temple font-bold text-orange-600 mb-4">
               What Our Travelers Say
@@ -430,11 +426,9 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Call to Action - UPDATED COLORS */}
-      <section className="py-16 bg-gradient-to-r from-orange-500 to-orange-600 relative overflow-hidden">
-        <div className="absolute inset-0 mandala-overlay opacity-10"></div>
-        
-        <div className="container mx-auto px-4 text-center relative z-10">
+      {/* Call to Action - Removed mandala background */}
+      <section className="py-16 bg-gradient-to-r from-orange-500 to-orange-600">
+        <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto space-y-6 text-white">
             <h2 className="text-4xl font-temple font-bold">
               Ready to Begin Your Adventure?
@@ -453,11 +447,9 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Newsletter & WhatsApp */}
-      <section className="py-16 bg-gradient-to-br from-orange-50 to-amber-100 relative">
-        <div className="absolute inset-0 mandala-overlay opacity-5"></div>
-        
-        <div className="container mx-auto px-4 relative z-10">
+      {/* Newsletter & WhatsApp - Removed mandala background */}
+      <section className="py-16 bg-gradient-to-br from-orange-50 to-amber-100">
+        <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <Card className="p-8 border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
