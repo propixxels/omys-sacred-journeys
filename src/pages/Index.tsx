@@ -10,6 +10,7 @@ import { TourData } from "@/types/tour";
 import HeroSection from "@/components/index/HeroSection";
 import QuickValuesBar from "@/components/index/QuickValuesBar";
 import AboutUsIntro from "@/components/index/AboutUsIntro";
+import NewsletterSignup from "@/components/newsletter/NewsletterSignup";
 
 const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -463,15 +464,7 @@ const Index = () => {
                 <p className="text-gray-600 mb-6">
                   Subscribe for special offers, early-bird discounts, and travel insights.
                 </p>
-                <div className="flex gap-3">
-                  <Input 
-                    placeholder="Your Email Address" 
-                    className="flex-1"
-                  />
-                  <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700">
-                    Subscribe
-                  </Button>
-                </div>
+                <NewsletterSignup />
               </Card>
 
               <Card className="p-8 border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
