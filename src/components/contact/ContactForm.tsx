@@ -102,8 +102,8 @@ const ContactForm = () => {
 
   return (
     <Card className="border-orange-200 shadow-lg">
-      <CardHeader>
-        <CardTitle className="text-2xl font-temple text-temple-maroon">
+      <CardHeader className="pb-6 pt-0">
+        <CardTitle className="text-3xl font-temple text-temple-maroon">
           Send us a Message
         </CardTitle>
       </CardHeader>
