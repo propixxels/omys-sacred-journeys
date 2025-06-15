@@ -15,8 +15,8 @@ const About = () => {
           }}
         />
         
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-temple-maroon/90 via-temple-maroon/70 to-transparent" />
+        {/* Regular Overlay */}
+        <div className="absolute inset-0 bg-black/40" />
         
         {/* Decorative Pattern Overlay */}
         <div className="absolute inset-0 mandala-bg opacity-10" />
