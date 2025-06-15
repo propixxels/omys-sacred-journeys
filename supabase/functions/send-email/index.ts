@@ -59,7 +59,7 @@ serve(async (req) => {
 
   if (type === "contact") {
     mailOptions = {
-      from: `"Omy Travels Contact Form" <${user}>`, // Use authenticated sender email
+      from: `"Omy Travels Contact Form" <connect@omytravels.in>`, // Fixed sender address
       replyTo: email, // Set reply-to as the user's email
       to: ALL_DESTINATIONS,
       subject: "Contact Form Submission",
@@ -89,7 +89,7 @@ Message: ${message}
       );
     }
     mailOptions = {
-      from: `"Omy Travels" <${user}>`, // Use authenticated sender email
+      from: `"Omy Travels" <connect@omytravels.in>`, // Fixed sender address
       to: ALL_DESTINATIONS,
       subject,
       html,
@@ -97,7 +97,7 @@ Message: ${message}
   } else if (type === "booking") {
     // Assume a booking payload with details similar to contact
     mailOptions = {
-      from: `"Omy Travels Booking" <${user}>`, // Use authenticated sender email
+      from: `"Omy Travels Booking" <connect@omytravels.in>`, // Fixed sender address
       replyTo: email || undefined, // Set reply-to if email provided
       to: ALL_DESTINATIONS,
       subject: subject || "New Booking Request",
