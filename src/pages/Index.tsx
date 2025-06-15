@@ -233,13 +233,13 @@ const Index = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {tours.map((tour) => (
                 <Card key={tour.id} className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 bg-white border-0 h-full flex flex-col">
-                  <div className="relative">
+                  <div className="relative overflow-hidden">
                     <img 
                       src={tour.image_url || "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"} 
                       alt={tour.name}
                       className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-all duration-500"></div>
                     
                     {tour.rating && tour.rating >= 4.5 && (
                       <Badge className="absolute top-3 left-3 bg-orange-500 text-white border-0">
