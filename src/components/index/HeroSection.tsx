@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -71,21 +70,21 @@ const HeroSection = () => {
         ))}
       </div>
 
-      {/* Navigation arrows - repositioned for better mobile display */}
-      <div className="absolute top-1/2 transform -translate-y-1/2 left-4 md:left-8 z-20">
+      {/* Navigation arrows - moved behind text with reduced opacity */}
+      <div className="absolute top-1/2 transform -translate-y-1/2 left-4 md:left-8 z-5">
         <button
           onClick={prevSlide}
-          className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
+          className="bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg opacity-60 hover:opacity-90"
           aria-label="Previous slide"
         >
           <ChevronLeft size={16} className="md:w-5 md:h-5" />
         </button>
       </div>
 
-      <div className="absolute top-1/2 transform -translate-y-1/2 right-4 md:right-8 z-20">
+      <div className="absolute top-1/2 transform -translate-y-1/2 right-4 md:right-8 z-5">
         <button
           onClick={nextSlide}
-          className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
+          className="bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 p-2 md:p-3 rounded-full transition-all duration-300 hover:scale-110 shadow-lg opacity-60 hover:opacity-90"
           aria-label="Next slide"
         >
           <ChevronRight size={16} className="md:w-5 md:h-5" />
