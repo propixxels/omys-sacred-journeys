@@ -32,7 +32,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div className="space-y-6 text-center md:text-left">
-            <h3 className="text-xl font-temple font-semibold text-white flex items-center justify-center md:justify-start space-x-2 border-b border-white/40 pb-2">
+            <h3 className="text-xl font-temple font-semibold text-white flex items-center justify-center md:justify-start space-x-2 border-b border-white/50 pb-2">
               <Home className="w-5 h-5" />
               <span>Quick Links</span>
             </h3>
@@ -57,7 +57,7 @@ const Footer = () => {
 
           {/* Tour Categories */}
           <div className="space-y-6 text-center md:text-left">
-            <h3 className="text-xl font-temple font-semibold text-white flex items-center justify-center md:justify-start space-x-2 border-b border-white/40 pb-2">
+            <h3 className="text-xl font-temple font-semibold text-white flex items-center justify-center md:justify-start space-x-2 border-b border-white/50 pb-2">
               <MapPin className="w-5 h-5" />
               <span>Tour Categories</span>
             </h3>
@@ -80,7 +80,7 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div className="space-y-6 text-center md:text-left">
-            <h3 className="text-xl font-temple font-semibold text-white flex items-center justify-center md:justify-start space-x-2 border-b border-white/40 pb-2">
+            <h3 className="text-xl font-temple font-semibold text-white flex items-center justify-center md:justify-start space-x-2 border-b border-white/50 pb-2">
               <Users className="w-5 h-5" />
               <span>Contact Us</span>
             </h3>
@@ -121,7 +121,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-white/40 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <div className="border-t border-white/50 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <p className="text-white text-sm font-medium text-center md:text-left">
             © 2025 Omy Travels. All rights reserved. Incredible journeys with expertise.
           </p>
@@ -132,7 +132,7 @@ const Footer = () => {
             </span>
             <div className="flex items-center space-x-6">
               {[
-                { name: "Instagram", url: "https://instagram.com/omytravels" },
+                { name: "Instagram", url: "https://www.instagram.com/omy_travels_and_tours/" },
                 { name: "Facebook", url: "https://facebook.com/omytravels" },
                 { name: "YouTube", url: "https://youtube.com/omytravels" }
               ].map((social) => (
