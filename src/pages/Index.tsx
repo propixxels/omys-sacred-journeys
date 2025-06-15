@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Clock, Calendar, MapPin, Star, ArrowUp, Users, Heart, Shield, Check } from "lucide-react";
+import { Clock, Calendar, MapPin, Star, ArrowUp, Users, Heart, Shield, Check, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { TourData } from "@/types/tour";
@@ -30,6 +30,13 @@ const Index = () => {
       subtitle: "Explore India's rich history and vibrant traditions"
     }
   ];
+
+  const openWhatsApp = () => {
+    const phoneNumber = "917348869099"; // Remove + and spaces for WhatsApp URL
+    const message = "Hi! I'm interested in your tour packages. Could you please provide more information?";
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
 
   // Fetch tours from database
   useEffect(() => {
@@ -735,9 +742,11 @@ const Index = () => {
       {/* Floating WhatsApp Button */}
       <div className="fixed bottom-6 right-6 z-50">
         <Button 
+          onClick={openWhatsApp}
           className="w-14 h-14 rounded-full bg-green-500 hover:bg-green-600 shadow-lg animate-gentle-bounce"
+          title="Chat with us on WhatsApp"
         >
-          <Users className="w-6 h-6 text-white" />
+          <MessageCircle className="w-6 h-6 text-white" />
         </Button>
       </div>
 
