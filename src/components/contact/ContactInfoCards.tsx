@@ -39,12 +39,12 @@ const contactDetails = [
 ];
 
 const ContactInfoCards = () => (
-  <div className="space-y-8">
+  <div className="space-y-6">
     <div>
       <h2 className="text-3xl font-temple font-bold text-temple-maroon mb-6">
         Get In Touch
       </h2>
-      <p className="text-gray-600 text-lg leading-relaxed mb-8">
+      <p className="text-gray-600 text-lg leading-relaxed mb-6">
         We're here to assist you with all your travel needs. 
         Reach out to us for personalized tour experiences and expert guidance for your perfect getaway.
       </p>
