@@ -90,7 +90,7 @@ const HeroSection = () => {
       </div>
 
       <div className="relative z-10 h-full flex items-center">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 lg:pl-20">
           <div className="max-w-4xl">
             <h1 className="text-4xl md:text-7xl font-temple font-bold text-left mb-4 md:mb-6 text-white drop-shadow-2xl">
               Incredible Journeys
