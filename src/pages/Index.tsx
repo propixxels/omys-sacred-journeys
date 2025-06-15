@@ -5,10 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Clock, Calendar, MapPin, Star, ArrowUp, Users, Heart, Shield, Check } from "lucide-react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { TourData } from "@/types/tour";
 
 const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [currentTourSlide, setCurrentTourSlide] = useState(0);
+  const [tours, setTours] = useState<TourData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const heroSlides = [
     {
@@ -28,50 +31,31 @@ const Index = () => {
     }
   ];
 
-  const upcomingTours = [
-    {
-      id: "kashi-yatra",
-      slug: "kashi-yatra",
-      title: "Kashi Yatra",
-      duration: "5 Days",
-      date: "26 July 2025",
-      destinations: "Varanasi • Sarnath • Prayagraj",
-      price: "₹12,499",
-      image: "https://images.unsplash.com/photo-1466442929976-97f336a657be?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
-      isPopular: true
-    },
-    {
-      id: "goa-beaches",
-      slug: "goa-beaches",
-      title: "Goa Beach Paradise",
-      duration: "4 Days",
-      date: "15 June 2025",
-      destinations: "North Goa • South Goa",
-      price: "₹8,999",
-      image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
-      isNew: true
-    },
-    {
-      id: "rajasthan-heritage",
-      slug: "rajasthan-heritage",
-      title: "Rajasthan Royal Heritage",
-      duration: "7 Days",
-      date: "10 August 2025",
-      destinations: "Jaipur • Udaipur • Jodhpur",
-      price: "₹18,999",
-      image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
-    },
-    {
-      id: "himalayan-adventure",
-      slug: "himalayan-adventure",
-      title: "Himalayan Adventure",
-      duration: "6 Days",
-      date: "20 September 2025",
-      destinations: "Manali • Rohtang • Solang Valley",
-      price: "₹16,999",
-      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
-    }
-  ];
+  // Fetch tours from database
+  useEffect(() => {
+    const fetchTours = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('tours')
+          .select('*')
+          .eq('isDraft', false)
+          .order('created_at', { ascending: false })
+          .limit(4);
+
+        if (error) {
+          console.error('Error fetching tours:', error);
+        } else {
+          setTours(data || []);
+        }
+      } catch (error) {
+        console.error('Error fetching tours:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTours();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -79,13 +63,6 @@ const Index = () => {
     }, 5000);
     return () => clearInterval(interval);
   }, [heroSlides.length]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTourSlide((prev) => (prev + 4) % upcomingTours.length);
-    }, 8000);
-    return () => clearInterval(interval);
-  }, [upcomingTours.length]);
 
   const testimonials = [
     {
@@ -143,6 +120,19 @@ const Index = () => {
       description: "Expert tour managers and round-the-clock assistance"
     }
   ];
+
+  const formatPrice = (price: number) => {
+    return `₹${price.toLocaleString()}`;
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-IN', { 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric' 
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-temple-cream">
@@ -295,101 +285,108 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Upcoming Tours Section */}
+      {/* Upcoming Tours Section - Now Dynamic */}
       <section id="upcoming-tours" className="py-16 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 relative">
         <div className="absolute inset-0 mandala-overlay opacity-5"></div>
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-4xl md:text-5xl font-temple font-bold text-temple-maroon mb-4">
-              Upcoming Tours & Adventures
+              Featured Tours & Adventures
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Join thousands of travelers on these amazing journeys across India's most beautiful destinations
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {upcomingTours.slice(currentTourSlide, currentTourSlide + 4).map((tour) => (
-              <Card key={tour.id} className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 bg-white border-0">
-                <div className="relative">
-                  <img 
-                    src={tour.image} 
-                    alt={tour.title}
-                    className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                  
-                  {tour.isPopular && (
-                    <Badge className="absolute top-3 left-3 bg-orange-500 text-white border-0">
-                      Popular
-                    </Badge>
-                  )}
-                  {tour.isNew && (
-                    <Badge className="absolute top-3 left-3 bg-green-500 text-white border-0">
-                      New
-                    </Badge>
-                  )}
-                  
-                  <div className="absolute bottom-3 left-3 text-white">
-                    <h3 className="font-temple font-bold text-lg">{tour.title}</h3>
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[...Array(4)].map((_, index) => (
+                <Card key={index} className="animate-pulse">
+                  <div className="h-48 bg-gray-200 rounded-t-2xl"></div>
+                  <CardContent className="p-6 space-y-4">
+                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : tours.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {tours.map((tour) => (
+                <Card key={tour.id} className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 bg-white border-0">
+                  <div className="relative">
+                    <img 
+                      src={tour.image_url || "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"} 
+                      alt={tour.name}
+                      className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    
+                    {tour.rating && tour.rating >= 4.5 && (
+                      <Badge className="absolute top-3 left-3 bg-orange-500 text-white border-0">
+                        Popular
+                      </Badge>
+                    )}
+                    
+                    <div className="absolute bottom-3 left-3 text-white">
+                      <h3 className="font-temple font-bold text-lg">{tour.name}</h3>
+                    </div>
                   </div>
-                </div>
-                
-                <CardContent className="p-6 space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center space-x-1 text-gray-600">
-                        <Clock className="w-4 h-4" />
-                        <span>{tour.duration}</span>
+                  
+                  <CardContent className="p-6 space-y-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center space-x-1 text-gray-600">
+                          <Clock className="w-4 h-4" />
+                          <span>{tour.duration}</span>
+                        </div>
+                        <div className="flex items-center space-x-1 text-gray-600">
+                          <Calendar className="w-4 h-4" />
+                          <span>{formatDate(tour.departure_date)}</span>
+                        </div>
                       </div>
-                      <div className="flex items-center space-x-1 text-gray-600">
-                        <Calendar className="w-4 h-4" />
-                        <span>{tour.date}</span>
+                      
+                      <div className="flex items-start space-x-1">
+                        <MapPin className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-gray-600">{tour.destinations}</span>
                       </div>
                     </div>
                     
-                    <div className="flex items-start space-x-1">
-                      <MapPin className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-gray-600">{tour.destinations}</span>
+                    <div className="flex items-center justify-between pt-4 border-t">
+                      <div className="text-2xl font-bold text-orange-600">{formatPrice(tour.cost)}</div>
+                      <Button 
+                        asChild
+                        className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105"
+                      >
+                        <Link to={`/trip/${tour.slug}`}>
+                          View Details
+                        </Link>
+                      </Button>
                     </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between pt-4 border-t">
-                    <div className="text-2xl font-bold text-orange-600">{tour.price}</div>
-                    <Button 
-                      asChild
-                      className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-2 rounded-lg transition-all duration-300 transform hover:scale-105"
-                    >
-                      <Link to={`/trip/${tour.slug}`}>
-                        View Details
-                      </Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-xl text-gray-600 mb-6">No tours available at the moment.</p>
+              <p className="text-gray-500">Please check back later for exciting new destinations!</p>
+            </div>
+          )}
 
-      {/* Add a "View All Trips" section before the testimonials */}
-      <section className="py-20 bg-gradient-to-r from-saffron-500 to-orange-500 relative overflow-hidden">
-        <div className="absolute inset-0 mandala-bg opacity-10"></div>
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-4xl font-temple font-bold text-white mb-6 drop-shadow-lg">
-            Discover More Amazing Destinations
-          </h2>
-          <p className="text-xl text-white mb-8 max-w-2xl mx-auto drop-shadow-md">
-            Explore our complete collection of tours across India - from heritage to adventure, beaches to mountains
-          </p>
-          <Button 
-            size="lg" 
-            className="bg-white text-saffron-600 hover:bg-saffron-50 font-semibold px-8 py-4 text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
-            asChild
-          >
-            <Link to="/trips">View All Trips</Link>
-          </Button>
+          {tours.length > 0 && (
+            <div className="text-center mt-12">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 text-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+                asChild
+              >
+                <Link to="/trips">View All Tours</Link>
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -526,7 +523,7 @@ const Index = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-4xl font-temple font-bold text-temple-maroon mb-4">
-              What Our Devotees Say
+              What Our Travelers Say
             </h2>
           </div>
 
