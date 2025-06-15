@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Phone, Mail, Star } from "lucide-react";
+import { Phone, Mail } from "lucide-react";
 
 const Header = () => {
   return (
@@ -8,14 +8,12 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-temple-maroon to-saffron-600 rounded-full flex items-center justify-center">
-              <Star className="text-2xl text-white" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-temple font-bold text-temple-maroon">
-                Omy Tours & Travels
-              </h1>
-              <p className="text-sm text-gray-600">Sacred Hindu Pilgrimages</p>
+            <div className="flex items-center">
+              <img 
+                src="/lovable-uploads/7efea016-f501-432e-9c33-3064bfb876b6.png" 
+                alt="Omy Travels & Tours" 
+                className="h-12 w-auto"
+              />
             </div>
           </Link>
           
