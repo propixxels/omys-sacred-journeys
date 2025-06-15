@@ -84,7 +84,9 @@
   }
 
   .mandala-bg {
-    background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f97316' fill-opacity='0.03'%3E%3Ccircle cx='60' cy='60' r='50'/%3E%3Ccircle cx='60' cy='60' r='35'/%3E%3Ccircle cx='60' cy='60' r='20'/%3E%3Cpath d='M60 30L70 50L90 40L80 60L100 70L80 80L90 100L70 90L60 110L50 90L30 100L40 80L20 70L40 60L30 40L50 50z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f97316' fill-opacity='0.02'%3E%3Ccircle cx='200' cy='200' r='150'/%3E%3Ccircle cx='200' cy='200' r='100'/%3E%3Ccircle cx='200' cy='200' r='50'/%3E%3Cpath d='M200 100L230 150L300 130L270 200L330 230L270 270L300 330L230 310L200 360L170 310L100 330L130 270L70 230L130 200L100 130L170 150z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-size: 800px 800px;
+    background-repeat: repeat;
   }
 
   @keyframes gentle-float {
@@ -127,7 +129,8 @@
     background-image: url('/lovable-uploads/9224665a-3020-4a03-9d34-e4d7523f8a73.png');
     background-repeat: no-repeat;
     background-position: center;
-    opacity: 0.05;
+    background-size: 600px 600px;
+    opacity: 0.03;
     animation: slow-spin 200s linear infinite;
   }
 }
