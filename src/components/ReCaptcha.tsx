@@ -17,8 +17,8 @@ const ReCaptcha = forwardRef<ReCaptchaRef, ReCaptchaProps>(
   ({ onVerify, onExpired, onError }, ref) => {
     const recaptchaRef = useRef<ReCAPTCHA>(null);
 
-    // Replace this with your actual Site Key
-    const SITE_KEY = "YOUR_RECAPTCHA_SITE_KEY_HERE";
+    // Your actual Site Key
+    const SITE_KEY = "6LcO-mErAAAAAGeAng-PWckhg8UfmOKGhT9Lpuh8";
 
     useImperativeHandle(ref, () => ({
       reset: () => {
