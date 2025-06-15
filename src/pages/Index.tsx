@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Clock, Calendar, MapPin, Star, ArrowUp, Users, Heart, Shield, Check, MessageCircle } from "lucide-react";
+import { Clock, Calendar, MapPin, Star, ArrowUp, Users, Heart, Shield, Check, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { TourData } from "@/types/tour";
@@ -743,10 +743,10 @@ const Index = () => {
       <div className="fixed bottom-6 right-6 z-50">
         <Button 
           onClick={openWhatsApp}
-          className="w-14 h-14 rounded-full bg-green-500 hover:bg-green-600 shadow-lg animate-gentle-bounce"
+          className="w-14 h-14 rounded-full bg-green-500 hover:bg-green-600 shadow-lg animate-[pulse_1.5s_ease-in-out_infinite]"
           title="Chat with us on WhatsApp"
         >
-          <MessageCircle className="w-6 h-6 text-white" />
+          <Phone className="w-6 h-6 text-white" />
         </Button>
       </div>
 
