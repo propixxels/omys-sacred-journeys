@@ -19,6 +19,7 @@ import NotFound from "./pages/NotFound";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PageTransition from "./components/PageTransition";
+import WhatsappChatButton from "@/components/WhatsappChatButton";
 
 const queryClient = new QueryClient();
 
@@ -81,6 +82,7 @@ const App = () => (
             </main>
             <Footer />
           </div>
+          <WhatsappChatButton />
         </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
