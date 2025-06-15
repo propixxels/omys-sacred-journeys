@@ -16,18 +16,18 @@ const Index = () => {
   const heroSlides = [
     {
       image: "https://images.unsplash.com/photo-1466442929976-97f336a657be?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80",
-      title: "Sacred Journey to Kashi",
-      subtitle: "Experience the divine energy of Varanasi"
+      title: "Discover India's Hidden Gems",
+      subtitle: "Experience breathtaking destinations across incredible India"
     },
     {
       image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80",
-      title: "Adventure in the Mountains",
-      subtitle: "Discover breathtaking landscapes and thrilling experiences"
+      title: "Adventure Awaits",
+      subtitle: "Discover thrilling experiences and unforgettable moments"
     },
     {
       image: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80",
       title: "Cultural Heritage Tours",
-      subtitle: "Explore India's rich history and traditions"
+      subtitle: "Explore India's rich history and vibrant traditions"
     }
   ];
 
@@ -44,8 +44,45 @@ const Index = () => {
 
         if (error) {
           console.error('Error fetching tours:', error);
-        } else {
-          setTours(data || []);
+        } else if (data) {
+          // Map database response to TourData interface
+          const mappedTours: TourData[] = data.map(tour => ({
+            id: tour.id,
+            name: tour.name,
+            duration: tour.duration,
+            transport_mode: tour.transport_mode,
+            destinations: tour.destinations,
+            departure_date: tour.departure_date,
+            cost: tour.cost,
+            cost_details: tour.cost_details || "",
+            description: tour.description || "",
+            slug: tour.slug || "",
+            image_url: tour.image_url || "",
+            rating: tour.rating,
+            pilgrims_count: tour.pilgrims_count,
+            next_departure: tour.next_departure || "",
+            highlights: Array.isArray(tour.highlights) ? tour.highlights : [],
+            itinerary: Array.isArray(tour.itinerary) ? tour.itinerary : [],
+            accommodation: typeof tour.accommodation === 'object' && tour.accommodation !== null 
+              ? tour.accommodation as any 
+              : { hotels: [], roomType: "", amenities: [] },
+            meals: typeof tour.meals === 'object' && tour.meals !== null 
+              ? tour.meals as any 
+              : { included: "", special: "", note: "" },
+            transport: typeof tour.transport === 'object' && tour.transport !== null 
+              ? tour.transport as any 
+              : { pickup: "", drop: "", vehicle: "", luggage: "" },
+            spiritualArrangements: Array.isArray(tour.spiritual_arrangements) ? tour.spiritual_arrangements : [],
+            inclusions: Array.isArray(tour.inclusions) ? tour.inclusions : [],
+            exclusions: Array.isArray(tour.exclusions) ? tour.exclusions : [],
+            pricing: typeof tour.pricing === 'object' && tour.pricing !== null 
+              ? tour.pricing as any 
+              : { doubleSharing: "", singleSupplement: "", child5to12: "", groupDiscount: "", earlyBird: "" },
+            gallery: Array.isArray(tour.gallery) ? tour.gallery : [],
+            isDraft: tour.isDraft || false
+          }));
+          
+          setTours(mappedTours);
         }
       } catch (error) {
         console.error('Error fetching tours:', error);
@@ -164,7 +201,7 @@ const Index = () => {
                 <span className="block text-temple-gold">Await You</span>
               </h1>
               <p className="text-lg md:text-2xl text-left mb-6 md:mb-8 text-white/90 max-w-2xl leading-relaxed drop-shadow-lg">
-                Discover India's diverse beauty - from sacred temples to pristine beaches, royal palaces to mountain adventures
+                Discover India's diverse beauty - from majestic temples to pristine beaches, royal palaces to mountain adventures
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
@@ -285,8 +322,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Upcoming Tours Section - Now Dynamic */}
-      <section id="upcoming-tours" className="py-16 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 relative">
+      {/* Featured Tours Section - Now Dynamic */}
+      <section id="featured-tours" className="py-16 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 relative">
         <div className="absolute inset-0 mandala-overlay opacity-5"></div>
         
         <div className="container mx-auto px-4 relative z-10">
@@ -399,7 +436,7 @@ const Index = () => {
                 Who We Are
               </h2>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Omy Travels is a trusted name in travel experiences across India. From sacred temples to pristine beaches, 
+                Omy Travels is a trusted name in travel experiences across India. From ancient temples to pristine beaches, 
                 royal heritage to mountain adventures - we curate diverse, comfortable, and memorable journeys for all types of travelers.
               </p>
               <p className="text-gray-600 leading-relaxed">
@@ -424,7 +461,7 @@ const Index = () => {
                 />
                 <img 
                   src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
-                  alt="Spiritual gathering"
+                  alt="Cultural gathering"
                   className="rounded-lg shadow-lg mt-8"
                 />
               </div>
