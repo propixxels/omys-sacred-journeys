@@ -7,6 +7,9 @@ import { Clock, Calendar, MapPin, Star, ArrowUp, Users, Heart, Shield, Check } f
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { TourData } from "@/types/tour";
+import HeroSection from "@/components/index/HeroSection";
+import QuickValuesBar from "@/components/index/QuickValuesBar";
+import AboutUsIntro from "@/components/index/AboutUsIntro";
 
 const Index = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -192,154 +195,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-temple-cream">
-      {/* Hero Section */}
-      <section className="relative h-[70vh] md:h-screen md:min-h-screen flex items-center overflow-hidden">
-        <div className="absolute inset-0">
-          {heroSlides.map((slide, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 transition-opacity duration-1000 ${
-                index === currentSlide ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              <img
-                src={slide.image}
-                alt={slide.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent"></div>
-            </div>
-          ))}
-        </div>
-        
-        <div className="relative z-10 h-full flex items-center">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl">
-              <h1 className="text-4xl md:text-7xl font-temple font-bold text-left mb-4 md:mb-6 text-white drop-shadow-2xl">
-                Incredible Journeys
-                <span className="block text-temple-gold">Await You</span>
-              </h1>
-              <p className="text-lg md:text-2xl text-left mb-6 md:mb-8 text-white/90 max-w-2xl leading-relaxed drop-shadow-lg">
-                Discover India's diverse beauty - from majestic temples to pristine beaches, royal palaces to mountain adventures
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button 
-                  size="lg" 
-                  className="btn-temple text-base md:text-lg px-6 md:px-8 py-3 md:py-4 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
-                  asChild
-                >
-                  <Link to="/trips">Explore All Tours</Link>
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30 text-base md:text-lg px-6 md:px-8 py-3 md:py-4 shadow-xl"
-                  asChild
-                >
-                  <Link to="/about">Learn More</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Slide Indicators */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
-          {heroSlides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentSlide ? "bg-orange-500 scale-125" : "bg-white/50"
-              }`}
-            />
-          ))}
-        </div>
-      </section>
-
-      {/* Quick Values Bar */}
-      <section className="bg-gradient-to-r from-orange-500 to-orange-600 py-4 overflow-hidden">
-        <div className="container mx-auto px-4">
-          {/* Desktop/Tablet View */}
-          <div className="hidden md:flex flex-wrap justify-center gap-8 text-white">
-            <div className="flex items-center space-x-2">
-              <Shield className="w-5 h-5" />
-              <span className="font-medium">100% Trusted by Travelers</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <MapPin className="w-5 h-5" />
-              <span className="font-medium">Comfortable AC Transport</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Heart className="w-5 h-5" />
-              <span className="font-medium">Quality Accommodations</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Users className="w-5 h-5" />
-              <span className="font-medium">Expert Local Guides</span>
-            </div>
-          </div>
-          
-          {/* Mobile Infinite Sliding View */}
-          <div className="md:hidden">
-            <div className="flex animate-[slide-left_15s_linear_infinite] text-white">
-              <div className="flex items-center space-x-8 whitespace-nowrap">
-                {/* First set */}
-                <div className="flex items-center space-x-2">
-                  <Shield className="w-4 h-4" />
-                  <span className="font-medium">100% Trusted by Travelers</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <MapPin className="w-4 h-4" />
-                  <span className="font-medium">Comfortable AC Transport</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Heart className="w-4 h-4" />
-                  <span className="font-medium">Quality Accommodations</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Users className="w-4 h-4" />
-                  <span className="font-medium">Expert Local Guides</span>
-                </div>
-                {/* Second set for seamless loop */}
-                <div className="flex items-center space-x-2">
-                  <Shield className="w-4 h-4" />
-                  <span className="font-medium">100% Trusted by Travelers</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <MapPin className="w-4 h-4" />
-                  <span className="font-medium">Comfortable AC Transport</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Heart className="w-4 h-4" />
-                  <span className="font-medium">Quality Accommodations</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Users className="w-4 h-4" />
-                  <span className="font-medium">Expert Local Guides</span>
-                </div>
-                {/* Third set for seamless loop */}
-                <div className="flex items-center space-x-2">
-                  <Shield className="w-4 h-4" />
-                  <span className="font-medium">100% Trusted by Travelers</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <MapPin className="w-4 h-4" />
-                  <span className="font-medium">Comfortable AC Transport</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Heart className="w-4 h-4" />
-                  <span className="font-medium">Quality Accommodations</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Users className="w-4 h-4" />
-                  <span className="font-medium">Expert Local Guides</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HeroSection />
+      <QuickValuesBar />
+      <AboutUsIntro />
 
       {/* Featured Tours Section - With Improved Text Clipping */}
       <section id="featured-tours" className="py-16 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 relative">
@@ -445,50 +303,6 @@ const Index = () => {
               </Button>
             </div>
           )}
-        </div>
-      </section>
-
-      {/* About Us Intro */}
-      <section className="py-16 bg-white relative">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6 animate-fade-in">
-              <h2 className="text-4xl font-temple font-bold text-temple-maroon">
-                Who We Are
-              </h2>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                Omy Travels is a trusted name in travel experiences across India. From ancient temples to pristine beaches, 
-                royal heritage to mountain adventures - we curate diverse, comfortable, and memorable journeys for all types of travelers.
-              </p>
-              <p className="text-gray-600 leading-relaxed">
-                Founded with passion for travel and dedication to service, our mission is to make India's incredible destinations 
-                accessible, enjoyable, and transformative for every traveler who journeys with us.
-              </p>
-              <Button 
-                asChild
-                variant="outline" 
-                className="border-orange-500 text-orange-600 hover:bg-orange-50 px-6 py-3"
-              >
-                <Link to="/about">Read Full Story</Link>
-              </Button>
-            </div>
-            
-            <div className="relative">
-              <div className="grid grid-cols-2 gap-4">
-                <img 
-                  src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
-                  alt="Temple"
-                  className="rounded-lg shadow-lg"
-                />
-                <img 
-                  src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
-                  alt="Cultural gathering"
-                  className="rounded-lg shadow-lg mt-8"
-                />
-              </div>
-              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full opacity-20 animate-gentle-bounce"></div>
-            </div>
-          </div>
         </div>
       </section>
 
