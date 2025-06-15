@@ -3,36 +3,36 @@ import { Mail, Phone, MapPin, Star, Clock, Home, Users, Heart } from "lucide-rea
 
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-br from-temple-maroon to-amber-900 text-white relative overflow-hidden">
+    <footer className="bg-[#ff602a] text-white relative overflow-hidden">
       {/* Footer Background Animation */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[slide-right_20s_ease-in-out_infinite]"></div>
       </div>
       
       <div className="container mx-auto px-4 py-16 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Company Info */}
-          <div className="space-y-6">
-            <div className="flex items-center space-x-3">
+          <div className="space-y-6 text-center md:text-left">
+            <div className="flex items-center justify-center md:justify-start space-x-3">
               <img 
                 src="/lovable-uploads/7efea016-f501-432e-9c33-3064bfb876b6.png" 
                 alt="Omy Travels & Tours" 
-                className="h-12 w-auto"
+                className="h-12 w-auto brightness-0 invert"
               />
             </div>
-            <p className="text-amber-100 leading-relaxed text-sm">
+            <p className="text-white/90 leading-relaxed text-sm">
               Sacred journeys across India with authentic spiritual experiences, 
               comfortable stays, and expert guidance since 2015.
             </p>
-            <div className="flex items-center space-x-2">
-              <Star className="w-5 h-5 text-amber-300 animate-pulse" />
-              <span className="text-amber-100 text-sm font-medium">Trusted by thousands of pilgrims</span>
+            <div className="flex items-center justify-center md:justify-start space-x-2">
+              <Star className="w-5 h-5 text-yellow-300 animate-pulse" />
+              <span className="text-white/90 text-sm font-medium">Trusted by thousands of pilgrims</span>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-6">
-            <h3 className="text-xl font-temple font-semibold text-amber-50 flex items-center space-x-2 border-b border-amber-700 pb-2">
+          <div className="space-y-6 text-center md:text-left">
+            <h3 className="text-xl font-temple font-semibold text-white flex items-center justify-center md:justify-start space-x-2 border-b border-white/30 pb-2">
               <Home className="w-5 h-5" />
               <span>Quick Links</span>
             </h3>
@@ -46,7 +46,7 @@ const Footer = () => {
                 <li key={link.name}>
                   <a 
                     href={link.href}
-                    className="text-amber-200 hover:text-amber-50 transition-colors duration-300 hover:underline text-sm font-medium block py-1"
+                    className="text-white/90 hover:text-white transition-colors duration-300 hover:underline text-sm font-medium block py-1"
                   >
                     {link.name}
                   </a>
@@ -56,8 +56,8 @@ const Footer = () => {
           </div>
 
           {/* Tour Categories */}
-          <div className="space-y-6">
-            <h3 className="text-xl font-temple font-semibold text-amber-50 flex items-center space-x-2 border-b border-amber-700 pb-2">
+          <div className="space-y-6 text-center md:text-left">
+            <h3 className="text-xl font-temple font-semibold text-white flex items-center justify-center md:justify-start space-x-2 border-b border-white/30 pb-2">
               <MapPin className="w-5 h-5" />
               <span>Tour Categories</span>
             </h3>
@@ -69,7 +69,7 @@ const Footer = () => {
                 <li key={category}>
                   <a 
                     href="/trips"
-                    className="text-amber-200 hover:text-amber-50 transition-colors duration-300 hover:underline text-sm font-medium block py-1"
+                    className="text-white/90 hover:text-white transition-colors duration-300 hover:underline text-sm font-medium block py-1"
                   >
                     {category}
                   </a>
@@ -79,41 +79,41 @@ const Footer = () => {
           </div>
 
           {/* Contact Info */}
-          <div className="space-y-6">
-            <h3 className="text-xl font-temple font-semibold text-amber-50 flex items-center space-x-2 border-b border-amber-700 pb-2">
+          <div className="space-y-6 text-center md:text-left">
+            <h3 className="text-xl font-temple font-semibold text-white flex items-center justify-center md:justify-start space-x-2 border-b border-white/30 pb-2">
               <Users className="w-5 h-5" />
               <span>Contact Us</span>
             </h3>
             <div className="space-y-4">
-              <div className="flex items-start space-x-3 group">
-                <Phone className="w-5 h-5 text-amber-300 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
-                <div>
-                  <p className="text-amber-50 font-medium">+91 73488 69099</p>
-                  <p className="text-xs text-amber-200">24/7 Yatra Support</p>
+              <div className="flex items-start justify-center md:justify-start space-x-3 group">
+                <Phone className="w-5 h-5 text-yellow-300 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
+                <div className="text-center md:text-left">
+                  <p className="text-white font-medium">+91 73488 69099</p>
+                  <p className="text-xs text-white/80">24/7 Yatra Support</p>
                 </div>
               </div>
               
-              <div className="flex items-start space-x-3 group">
-                <Mail className="w-5 h-5 text-amber-300 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
-                <div>
-                  <p className="text-amber-50 font-medium">connect@omytravels.com</p>
-                  <p className="text-xs text-amber-200">Quick Response</p>
+              <div className="flex items-start justify-center md:justify-start space-x-3 group">
+                <Mail className="w-5 h-5 text-yellow-300 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
+                <div className="text-center md:text-left">
+                  <p className="text-white font-medium">connect@omytravels.com</p>
+                  <p className="text-xs text-white/80">Quick Response</p>
                 </div>
               </div>
               
-              <div className="flex items-start space-x-3 group">
-                <MapPin className="w-5 h-5 text-amber-300 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
-                <div>
-                  <p className="text-amber-50 font-medium text-sm">Dhundasi Nagar Rd</p>
-                  <p className="text-amber-50 font-medium text-sm">Sirsi, Karnataka 581401</p>
+              <div className="flex items-start justify-center md:justify-start space-x-3 group">
+                <MapPin className="w-5 h-5 text-yellow-300 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
+                <div className="text-center md:text-left">
+                  <p className="text-white font-medium text-sm">Dhundasi Nagar Rd</p>
+                  <p className="text-white font-medium text-sm">Sirsi, Karnataka 581401</p>
                 </div>
               </div>
               
-              <div className="flex items-start space-x-3 group">
-                <Clock className="w-5 h-5 text-amber-300 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
-                <div>
-                  <p className="text-amber-50 font-medium">9am to 6pm</p>
-                  <p className="text-xs text-amber-200">Sunday closed</p>
+              <div className="flex items-start justify-center md:justify-start space-x-3 group">
+                <Clock className="w-5 h-5 text-yellow-300 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
+                <div className="text-center md:text-left">
+                  <p className="text-white font-medium">9am to 6pm</p>
+                  <p className="text-xs text-white/80">Sunday closed</p>
                 </div>
               </div>
             </div>
@@ -121,30 +121,32 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-amber-700/50 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-amber-200 text-sm font-medium">
+        <div className="border-t border-white/30 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+          <p className="text-white/90 text-sm font-medium text-center md:text-left">
             © 2025 Omy Travels. All rights reserved. Sacred journeys with devotion.
           </p>
-          <div className="flex items-center space-x-6 mt-4 md:mt-0">
-            <span className="text-amber-200 text-sm flex items-center space-x-2 font-medium">
-              <Heart className="w-4 h-4 animate-pulse text-amber-300" />
+          <div className="flex flex-col sm:flex-row items-center sm:space-x-6 space-y-2 sm:space-y-0">
+            <span className="text-white/90 text-sm flex items-center space-x-2 font-medium">
+              <Heart className="w-4 h-4 animate-pulse text-yellow-300" />
               <span>Follow us:</span>
             </span>
-            {[
-              { name: "Instagram", url: "https://instagram.com/omytravels" },
-              { name: "Facebook", url: "https://facebook.com/omytravels" },
-              { name: "YouTube", url: "https://youtube.com/omytravels" }
-            ].map((social) => (
-              <a 
-                key={social.name}
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-amber-200 hover:text-amber-50 transition-colors duration-300 text-sm hover:underline font-medium"
-              >
-                {social.name}
-              </a>
-            ))}
+            <div className="flex items-center space-x-6">
+              {[
+                { name: "Instagram", url: "https://instagram.com/omytravels" },
+                { name: "Facebook", url: "https://facebook.com/omytravels" },
+                { name: "YouTube", url: "https://youtube.com/omytravels" }
+              ].map((social) => (
+                <a 
+                  key={social.name}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/90 hover:text-white transition-colors duration-300 text-sm hover:underline font-medium"
+                >
+                  {social.name}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </div>
