@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,8 +16,9 @@ import EditTour from "./pages/EditTour";
 import AdminLogin from "./components/AdminLogin";
 import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import PageTransition from "./components/PageTransition";
 
 const queryClient = new QueryClient();
 
@@ -43,19 +43,19 @@ const App = () => (
           <ScrollToTop />
           <div className="min-h-screen flex flex-col">
             <Header />
-            <main className="flex-1">
+            <main className="flex-1 relative overflow-hidden">
               <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/trips" element={<Trips />} />
-                <Route path="/trip/:slug" element={<TripDetail />} />
-                <Route path="/admin-login" element={<AdminLogin />} />
+                <Route path="/" element={<PageTransition><Index /></PageTransition>} />
+                <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+                <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+                <Route path="/trips" element={<PageTransition><Trips /></PageTransition>} />
+                <Route path="/trip/:slug" element={<PageTransition><TripDetail /></PageTransition>} />
+                <Route path="/admin-login" element={<PageTransition><AdminLogin /></PageTransition>} />
                 <Route 
                   path="/admin" 
                   element={
                     <ProtectedRoute>
-                      <AdminDashboard />
+                      <PageTransition><AdminDashboard /></PageTransition>
                     </ProtectedRoute>
                   } 
                 />
@@ -63,7 +63,7 @@ const App = () => (
                   path="/add-tour" 
                   element={
                     <ProtectedRoute>
-                      <AddTour />
+                      <PageTransition><AddTour /></PageTransition>
                     </ProtectedRoute>
                   } 
                 />
@@ -71,12 +71,12 @@ const App = () => (
                   path="/edit-tour/:id" 
                   element={
                     <ProtectedRoute>
-                      <EditTour />
+                      <PageTransition><EditTour /></PageTransition>
                     </ProtectedRoute>
                   } 
                 />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
+                <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
               </Routes>
             </main>
             <Footer />
