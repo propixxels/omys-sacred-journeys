@@ -83,10 +83,14 @@
       radial-gradient(circle at 75% 75%, rgba(255, 215, 0, 0.1) 0%, transparent 50%);
   }
 
+  /* Reduced mandala usage - only for specific sections */
   .mandala-bg {
-    background-image: url("data:image/svg+xml,%3Csvg width='400' height='400' viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f97316' fill-opacity='0.02'%3E%3Ccircle cx='200' cy='200' r='150'/%3E%3Ccircle cx='200' cy='200' r='100'/%3E%3Ccircle cx='200' cy='200' r='50'/%3E%3Cpath d='M200 100L230 150L300 130L270 200L330 230L270 270L300 330L230 310L200 360L170 310L100 330L130 270L70 230L130 200L100 130L170 150z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    background-size: 800px 800px;
-    background-repeat: repeat;
+    background-image: 
+      radial-gradient(circle at 50% 50%, rgba(251, 146, 60, 0.05) 0%, transparent 70%),
+      radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.03) 0%, transparent 60%);
+    background-size: 400px 400px, 300px 300px;
+    background-repeat: no-repeat;
+    background-position: center, left bottom;
   }
 
   @keyframes gentle-float {
@@ -125,12 +129,13 @@
     @apply border-t-2 border-gradient-to-r from-transparent via-orange-300 to-transparent my-8;
   }
 
+  /* Single mandala overlay for homepage hero only */
   .mandala-overlay {
     background-image: url('/lovable-uploads/9224665a-3020-4a03-9d34-e4d7523f8a73.png');
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 600px 600px;
-    opacity: 0.03;
-    animation: slow-spin 200s linear infinite;
+    background-size: 800px 800px;
+    opacity: 0.02;
+    animation: slow-spin 300s linear infinite;
   }
 }
