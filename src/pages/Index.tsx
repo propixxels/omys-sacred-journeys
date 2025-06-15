@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -147,7 +148,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-temple-cream">
       {/* Hero Section */}
-      <section className="relative h-screen md:min-h-screen flex items-center overflow-hidden">
+      <section className="relative h-[70vh] md:h-screen md:min-h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0">
           {heroSlides.map((slide, index) => (
             <div
@@ -234,10 +235,11 @@ const Index = () => {
             </div>
           </div>
           
-          {/* Mobile Sliding View */}
+          {/* Mobile Infinite Sliding View */}
           <div className="md:hidden">
-            <div className="flex animate-[slide-left_20s_linear_infinite] text-white">
+            <div className="flex animate-[slide-left_15s_linear_infinite] text-white">
               <div className="flex items-center space-x-8 whitespace-nowrap">
+                {/* First set */}
                 <div className="flex items-center space-x-2">
                   <Shield className="w-4 h-4" />
                   <span className="font-medium">100% Trusted Pilgrim-Rated</span>
@@ -254,7 +256,24 @@ const Index = () => {
                   <Users className="w-4 h-4" />
                   <span className="font-medium">Experienced Spiritual Guides</span>
                 </div>
-                {/* Duplicate for seamless loop */}
+                {/* Second set for seamless loop */}
+                <div className="flex items-center space-x-2">
+                  <Shield className="w-4 h-4" />
+                  <span className="font-medium">100% Trusted Pilgrim-Rated</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <MapPin className="w-4 h-4" />
+                  <span className="font-medium">Comfortable AC Transport</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Heart className="w-4 h-4" />
+                  <span className="font-medium">Authentic Veg Meals</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Users className="w-4 h-4" />
+                  <span className="font-medium">Experienced Spiritual Guides</span>
+                </div>
+                {/* Third set for seamless loop */}
                 <div className="flex items-center space-x-2">
                   <Shield className="w-4 h-4" />
                   <span className="font-medium">100% Trusted Pilgrim-Rated</span>
