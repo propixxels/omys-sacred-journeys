@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -205,15 +204,15 @@ const Trips = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-2xl">
               <h1 className="text-5xl md:text-6xl font-temple font-bold text-white mb-6 leading-tight">
-                Sacred Pilgrimage Tours
+                Explore India's Wonders
               </h1>
               <p className="text-xl md:text-2xl text-orange-100 mb-8 leading-relaxed">
-                Embark on transformative spiritual journeys across India's most revered destinations with expert guidance and comfortable accommodations
+                Discover incredible destinations across India with our carefully curated tours featuring comfortable accommodations, expert guides, and unforgettable experiences
               </p>
               <div className="flex flex-wrap gap-6 text-orange-100 mb-8">
                 <div className="flex items-center gap-2">
                   <Star className="w-5 h-5 text-temple-gold" />
-                  <span>Expert Spiritual Guides</span>
+                  <span>Expert Local Guides</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Users className="w-5 h-5 text-temple-gold" />
@@ -234,7 +233,7 @@ const Trips = () => {
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-12 -mt-8 relative z-20">
           <div className="mb-6">
             <h2 className="text-2xl font-temple font-semibold text-temple-maroon mb-2">
-              Find Your Perfect Pilgrimage
+              Find Your Perfect Tour
             </h2>
             <p className="text-gray-600">Use the filters below to discover tours that match your preferences</p>
           </div>
@@ -243,7 +242,7 @@ const Trips = () => {
           <div className="relative mb-6">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <Input
-              placeholder="Search destinations, tour names, or spiritual sites..."
+              placeholder="Search destinations, tour names, or attractions..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-12 h-12 text-lg border-2 border-gray-200 focus:border-saffron-400"
