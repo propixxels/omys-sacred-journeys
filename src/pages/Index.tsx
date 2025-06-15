@@ -45,7 +45,7 @@ const Index = () => {
         if (error) {
           console.error('Error fetching tours:', error);
         } else if (data) {
-          // Map database response to TourData interface
+          // Map database response to TourData interface with proper type casting
           const mappedTours: TourData[] = data.map(tour => ({
             id: tour.id,
             name: tour.name,
@@ -61,24 +61,36 @@ const Index = () => {
             rating: tour.rating,
             pilgrims_count: tour.pilgrims_count,
             next_departure: tour.next_departure || "",
-            highlights: Array.isArray(tour.highlights) ? tour.highlights : [],
-            itinerary: Array.isArray(tour.itinerary) ? tour.itinerary : [],
+            highlights: Array.isArray(tour.highlights) 
+              ? (tour.highlights as string[])
+              : [],
+            itinerary: Array.isArray(tour.itinerary) 
+              ? (tour.itinerary as { day: number; title: string; activities: string[] }[])
+              : [],
             accommodation: typeof tour.accommodation === 'object' && tour.accommodation !== null 
-              ? tour.accommodation as any 
+              ? tour.accommodation as { hotels: string[]; roomType: string; amenities: string[] }
               : { hotels: [], roomType: "", amenities: [] },
             meals: typeof tour.meals === 'object' && tour.meals !== null 
-              ? tour.meals as any 
+              ? tour.meals as { included: string; special: string; note: string }
               : { included: "", special: "", note: "" },
             transport: typeof tour.transport === 'object' && tour.transport !== null 
-              ? tour.transport as any 
+              ? tour.transport as { pickup: string; drop: string; vehicle: string; luggage: string }
               : { pickup: "", drop: "", vehicle: "", luggage: "" },
-            spiritualArrangements: Array.isArray(tour.spiritual_arrangements) ? tour.spiritual_arrangements : [],
-            inclusions: Array.isArray(tour.inclusions) ? tour.inclusions : [],
-            exclusions: Array.isArray(tour.exclusions) ? tour.exclusions : [],
+            spiritualArrangements: Array.isArray(tour.spiritual_arrangements) 
+              ? (tour.spiritual_arrangements as string[])
+              : [],
+            inclusions: Array.isArray(tour.inclusions) 
+              ? (tour.inclusions as string[])
+              : [],
+            exclusions: Array.isArray(tour.exclusions) 
+              ? (tour.exclusions as string[])
+              : [],
             pricing: typeof tour.pricing === 'object' && tour.pricing !== null 
-              ? tour.pricing as any 
+              ? tour.pricing as { doubleSharing: string; singleSupplement: string; child5to12: string; groupDiscount: string; earlyBird: string }
               : { doubleSharing: "", singleSupplement: "", child5to12: "", groupDiscount: "", earlyBird: "" },
-            gallery: Array.isArray(tour.gallery) ? tour.gallery : [],
+            gallery: Array.isArray(tour.gallery) 
+              ? (tour.gallery as string[])
+              : [],
             isDraft: tour.isDraft || false
           }));
           
