@@ -5,18 +5,37 @@ import { Shield, Users, CheckCircle, Heart, Star, Phone, Mail, MapPin } from "lu
 const About = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-temple-cream">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-temple-maroon to-saffron-600 text-white py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-6xl font-temple font-bold mb-6">
-            Discover India With Us
-          </h1>
-          <p className="text-xl md:text-2xl max-w-4xl mx-auto leading-relaxed">
-            At Omy Travels, we believe every journey is an opportunity to explore, learn, and create memories. 
-            Founded with passion for travel and dedication to service, our mission is to make India's incredible destinations accessible, comfortable, and unforgettable for every traveler.
-          </p>
+      {/* Standardized Hero Section */}
+      <div className="relative h-[600px] overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1482938289607-e9573fc25ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')`
+          }}
+        />
+        
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-temple-maroon/90 via-temple-maroon/70 to-transparent" />
+        
+        {/* Decorative Pattern Overlay */}
+        <div className="absolute inset-0 mandala-bg opacity-10" />
+        
+        {/* Content */}
+        <div className="relative z-10 h-full flex items-center">
+          <div className="container mx-auto px-4">
+            <div className="max-w-2xl">
+              <h1 className="text-5xl md:text-6xl font-temple font-bold text-white mb-6 leading-tight">
+                Discover India With Us
+              </h1>
+              <p className="text-xl md:text-2xl text-orange-100 mb-8 leading-relaxed">
+                At Omy Travels, we believe every journey is an opportunity to explore, learn, and create memories. 
+                Founded with passion for travel and dedication to service, our mission is to make India's incredible destinations accessible, comfortable, and unforgettable for every traveler.
+              </p>
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
 
       {/* Who We Are */}
       <section className="py-16 bg-white">

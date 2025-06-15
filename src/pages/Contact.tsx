@@ -28,22 +28,38 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-temple-maroon to-orange-800 text-white py-20">
-        <div className="absolute inset-0 mandala-bg opacity-10"></div>
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-temple font-bold mb-6">
-              Contact Us
-            </h1>
-            <p className="text-xl md:text-2xl text-orange-200 leading-relaxed">
-              Get in touch with us for your next travel adventure. We're here to help you plan 
-              the perfect journey across incredible India.
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-temple-cream">
+      {/* Standardized Hero Section */}
+      <div className="relative h-[600px] overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1426604966848-d7adac402bff?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')`
+          }}
+        />
+        
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-temple-maroon/90 via-temple-maroon/70 to-transparent" />
+        
+        {/* Decorative Pattern Overlay */}
+        <div className="absolute inset-0 mandala-bg opacity-10" />
+        
+        {/* Content */}
+        <div className="relative z-10 h-full flex items-center">
+          <div className="container mx-auto px-4">
+            <div className="max-w-2xl">
+              <h1 className="text-5xl md:text-6xl font-temple font-bold text-white mb-6 leading-tight">
+                Contact Us
+              </h1>
+              <p className="text-xl md:text-2xl text-orange-100 mb-8 leading-relaxed">
+                Get in touch with us for your next travel adventure. We're here to help you plan 
+                the perfect journey across incredible India.
+              </p>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Contact Information and Form */}
       <section className="py-16">

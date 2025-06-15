@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -183,28 +184,46 @@ const Trips = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-temple-cream">
-      {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-temple-maroon via-orange-800 to-temple-maroon py-20 px-4 overflow-hidden">
-        <div className="absolute inset-0 mandala-bg opacity-10"></div>
-        <div className="relative z-10 container mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-temple font-bold text-white mb-6">
-            Sacred Pilgrimage Tours
-          </h1>
-          <p className="text-xl md:text-2xl text-orange-100 max-w-3xl mx-auto mb-8">
-            Embark on transformative spiritual journeys across India's most revered destinations with expert guidance and comfortable accommodations
-          </p>
-          <div className="flex flex-wrap justify-center gap-6 text-orange-100">
-            <div className="flex items-center gap-2">
-              <Star className="w-5 h-5 text-temple-gold" />
-              <span>Expert Spiritual Guides</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Users className="w-5 h-5 text-temple-gold" />
-              <span>Small Group Tours</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-temple-gold" />
-              <span>Authentic Experiences</span>
+      {/* Standardized Hero Section */}
+      <div className="relative h-[600px] overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')`
+          }}
+        />
+        
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-temple-maroon/90 via-temple-maroon/70 to-transparent" />
+        
+        {/* Decorative Pattern Overlay */}
+        <div className="absolute inset-0 mandala-bg opacity-10" />
+        
+        {/* Content */}
+        <div className="relative z-10 h-full flex items-center">
+          <div className="container mx-auto px-4">
+            <div className="max-w-2xl">
+              <h1 className="text-5xl md:text-6xl font-temple font-bold text-white mb-6 leading-tight">
+                Sacred Pilgrimage Tours
+              </h1>
+              <p className="text-xl md:text-2xl text-orange-100 mb-8 leading-relaxed">
+                Embark on transformative spiritual journeys across India's most revered destinations with expert guidance and comfortable accommodations
+              </p>
+              <div className="flex flex-wrap gap-6 text-orange-100 mb-8">
+                <div className="flex items-center gap-2">
+                  <Star className="w-5 h-5 text-temple-gold" />
+                  <span>Expert Spiritual Guides</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users className="w-5 h-5 text-temple-gold" />
+                  <span>Small Group Tours</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-temple-gold" />
+                  <span>Authentic Experiences</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
