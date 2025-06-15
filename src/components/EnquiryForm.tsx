@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Users, Phone, Mail, MessageSquare } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ReCaptcha, { ReCaptchaRef } from "./ReCaptcha";
 
 interface EnquiryFormProps {
   isOpen: boolean;
@@ -15,6 +16,7 @@ interface EnquiryFormProps {
 
 const EnquiryForm: React.FC<EnquiryFormProps> = ({ isOpen, onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     mobile: '',
@@ -22,6 +24,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({ isOpen, onClose }) => {
     message: ''
   });
   const { toast } = useToast();
+  const recaptchaRef = useRef<ReCaptchaRef>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -31,31 +34,68 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({ isOpen, onClose }) => {
     }));
   };
 
+  const handleRecaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!recaptchaToken) {
+      toast({
+        title: "reCAPTCHA Required",
+        description: "Please complete the reCAPTCHA verification.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      // Here you would typically send the data to your backend
-      console.log('Enquiry form data:', formData);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast({
-        title: "Enquiry Submitted Successfully!",
-        description: "We'll get back to you within 24 hours.",
-      });
-      
-      // Reset form and close
-      setFormData({ name: '', mobile: '', email: '', message: '' });
-      onClose();
-    } catch (error) {
+      const response = await fetch(
+        "https://kcwybfzphlrsnxxfhvpq.functions.supabase.co/send-email",
+        {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            type: "enquiry",
+            name: formData.name,
+            email: formData.email,
+            phone: formData.mobile,
+            message: formData.message,
+            recaptchaToken: recaptchaToken,
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        toast({
+          title: "Enquiry Submitted Successfully!",
+          description: "We'll get back to you within 24 hours.",
+        });
+        
+        // Reset form and close
+        setFormData({ name: '', mobile: '', email: '', message: '' });
+        setRecaptchaToken(null);
+        recaptchaRef.current?.reset();
+        onClose();
+      } else {
+        throw new Error(result.error || "Failed to submit enquiry");
+      }
+    } catch (error: any) {
+      console.error("Enquiry submission error:", error);
       toast({
         title: "Error",
-        description: "Failed to submit enquiry. Please try again.",
+        description: error.message || "Failed to submit enquiry. Please try again.",
         variant: "destructive",
       });
+      recaptchaRef.current?.reset();
+      setRecaptchaToken(null);
     } finally {
       setIsSubmitting(false);
     }
@@ -137,6 +177,13 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({ isOpen, onClose }) => {
             />
           </div>
 
+          <ReCaptcha
+            ref={recaptchaRef}
+            onVerify={handleRecaptchaChange}
+            onExpired={() => setRecaptchaToken(null)}
+            onError={() => setRecaptchaToken(null)}
+          />
+
           <div className="flex gap-3 pt-4">
             <Button
               type="button"
@@ -148,7 +195,7 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({ isOpen, onClose }) => {
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !recaptchaToken}
               className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white"
             >
               {isSubmitting ? "Submitting..." : "Submit Enquiry"}

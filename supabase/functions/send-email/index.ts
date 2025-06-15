@@ -14,6 +14,34 @@ const ALL_DESTINATIONS = [
   "omytravelsweb@gmail.com"
 ];
 
+// Function to verify reCAPTCHA
+async function verifyRecaptcha(token: string): Promise<boolean> {
+  const secretKey = Deno.env.get("RECAPTCHA_SECRET_KEY");
+  
+  if (!secretKey) {
+    console.error("RECAPTCHA_SECRET_KEY not found");
+    return false;
+  }
+
+  try {
+    const response = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: `secret=${secretKey}&response=${token}`,
+    });
+
+    const result = await response.json();
+    console.log("reCAPTCHA verification result:", result);
+    
+    return result.success === true;
+  } catch (error) {
+    console.error("reCAPTCHA verification error:", error);
+    return false;
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -29,7 +57,34 @@ serve(async (req) => {
     );
   }
 
-  const { type, name, email, phone, message, to, subject, html } = reqBody;
+  const { type, name, email, phone, message, to, subject, html, recaptchaToken } = reqBody;
+
+  // Handle reCAPTCHA verification requests
+  if (type === "verify-recaptcha") {
+    if (!recaptchaToken) {
+      return new Response(
+        JSON.stringify({ success: false, error: "No reCAPTCHA token provided" }),
+        { status: 400, headers: corsHeaders }
+      );
+    }
+
+    const isValid = await verifyRecaptcha(recaptchaToken);
+    return new Response(
+      JSON.stringify({ success: isValid }),
+      { status: isValid ? 200 : 400, headers: corsHeaders }
+    );
+  }
+
+  // Verify reCAPTCHA for all other email types (except newsletter which handles its own verification)
+  if (type !== "newsletter" && recaptchaToken) {
+    const isValidRecaptcha = await verifyRecaptcha(recaptchaToken);
+    if (!isValidRecaptcha) {
+      return new Response(
+        JSON.stringify({ success: false, error: "reCAPTCHA verification failed" }),
+        { status: 400, headers: corsHeaders }
+      );
+    }
+  }
 
   // Fetch SMTP creds and log if missing
   const host = Deno.env.get("SMTP_HOST");
@@ -45,7 +100,7 @@ serve(async (req) => {
     );
   }
 
-  const transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransporter({
     host,
     port: parseInt(port ?? "2525"),
     secure: false,
@@ -57,14 +112,14 @@ serve(async (req) => {
 
   let mailOptions: Record<string, any> = {};
 
-  if (type === "contact") {
+  if (type === "contact" || type === "enquiry") {
     mailOptions = {
       from: `"Omy Travels Contact Form" <connect@omytravels.in>`, // Fixed sender address
       replyTo: email, // Set reply-to as the user's email
       to: ALL_DESTINATIONS,
-      subject: "Contact Form Submission",
+      subject: type === "enquiry" ? "Enquiry Form Submission" : "Contact Form Submission",
       text: `
-New contact form submission:
+New ${type} form submission:
 
 Name: ${name}
 Email: ${email}
@@ -72,7 +127,7 @@ Phone: ${phone}
 Message: ${message}
       `,
       html: `
-        <h2>New contact form submission</h2>
+        <h2>New ${type} form submission</h2>
         <ul>
           <li><b>Name:</b> ${name}</li>
           <li><b>Email:</b> ${email}</li>

@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
+import ReCaptcha, { ReCaptchaRef } from "../ReCaptcha";
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -17,9 +18,25 @@ const ContactForm = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCaptchaRef>(null);
+
+  const handleRecaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!recaptchaToken) {
+      toast({
+        title: "reCAPTCHA Required",
+        description: "Please complete the reCAPTCHA verification.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     setSent(false);
     
@@ -39,6 +56,7 @@ const ContactForm = () => {
             email: formData.email,
             phone: formData.phone,
             message: formData.message,
+            recaptchaToken: recaptchaToken,
           }),
         }
       );
@@ -54,6 +72,8 @@ const ContactForm = () => {
           description: "Thank you for contacting us. We'll get back to you shortly.",
         });
         setFormData({ name: '', email: '', phone: '', message: '' });
+        setRecaptchaToken(null);
+        recaptchaRef.current?.reset();
       } else {
         throw new Error(res?.error || "Unable to send message.");
       }
@@ -64,6 +84,8 @@ const ContactForm = () => {
         description: err?.message ?? "Unknown error",
         variant: "destructive",
       });
+      recaptchaRef.current?.reset();
+      setRecaptchaToken(null);
     } finally {
       setIsSubmitting(false);
     }
@@ -139,10 +161,18 @@ const ContactForm = () => {
                 placeholder="Tell us about your travel plans and preferences..."
               />
             </div>
+            
+            <ReCaptcha
+              ref={recaptchaRef}
+              onVerify={handleRecaptchaChange}
+              onExpired={() => setRecaptchaToken(null)}
+              onError={() => setRecaptchaToken(null)}
+            />
+            
             <Button
               type="submit"
               className="w-full bg-gradient-to-r from-temple-maroon to-orange-700 hover:from-temple-maroon/90 hover:to-orange-700/90"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !recaptchaToken}
             >
               <Send className="w-4 h-4 mr-2" />
               {isSubmitting ? "Sending..." : "Send Message"}

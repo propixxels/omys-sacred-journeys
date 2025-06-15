@@ -1,11 +1,12 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import ReCaptcha, { ReCaptchaRef } from "./ReCaptcha";
 
 interface BookingFormProps {
   tourId: string;
@@ -21,13 +22,50 @@ const BookingForm = ({ tourId, tourName, onClose }: BookingFormProps) => {
     numberOfPeople: 1
   });
   const [loading, setLoading] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   const { toast } = useToast();
+  const recaptchaRef = useRef<ReCaptchaRef>(null);
+
+  const handleRecaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!recaptchaToken) {
+      toast({
+        title: "reCAPTCHA Required",
+        description: "Please complete the reCAPTCHA verification.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
+      // First, verify reCAPTCHA
+      const recaptchaResponse = await fetch(
+        "https://kcwybfzphlrsnxxfhvpq.functions.supabase.co/send-email",
+        {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            type: "verify-recaptcha",
+            recaptchaToken: recaptchaToken,
+          }),
+        }
+      );
+
+      const recaptchaResult = await recaptchaResponse.json();
+      
+      if (!recaptchaResponse.ok || !recaptchaResult.success) {
+        throw new Error("reCAPTCHA verification failed");
+      }
+
       const { error } = await supabase
         .from('bookings')
         .insert({
@@ -40,18 +78,40 @@ const BookingForm = ({ tourId, tourName, onClose }: BookingFormProps) => {
 
       if (error) throw error;
 
+      // Send booking notification email
+      await fetch(
+        "https://kcwybfzphlrsnxxfhvpq.functions.supabase.co/send-email",
+        {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            type: "booking",
+            subject: "New Booking Request",
+            name: formData.customerName,
+            email: formData.email,
+            phone: formData.mobileNumber,
+            message: `Tour: ${tourName}\nNumber of People: ${formData.numberOfPeople}`,
+          }),
+        }
+      );
+
       toast({
         title: "Booking Request Submitted!",
         description: "We will call you shortly to confirm your booking and collect payment.",
       });
 
       onClose();
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Booking submission error:", error);
       toast({
         title: "Error",
-        description: "Failed to submit booking request. Please try again.",
+        description: error.message || "Failed to submit booking request. Please try again.",
         variant: "destructive"
       });
+      recaptchaRef.current?.reset();
+      setRecaptchaToken(null);
     } finally {
       setLoading(false);
     }
@@ -112,8 +172,19 @@ const BookingForm = ({ tourId, tourName, onClose }: BookingFormProps) => {
             />
           </div>
           
+          <ReCaptcha
+            ref={recaptchaRef}
+            onVerify={handleRecaptchaChange}
+            onExpired={() => setRecaptchaToken(null)}
+            onError={() => setRecaptchaToken(null)}
+          />
+          
           <div className="flex space-x-2 pt-4">
-            <Button type="submit" className="btn-temple flex-1" disabled={loading}>
+            <Button 
+              type="submit" 
+              className="btn-temple flex-1" 
+              disabled={loading || !recaptchaToken}
+            >
               {loading ? 'Submitting...' : 'Submit Booking Request'}
             </Button>
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">
