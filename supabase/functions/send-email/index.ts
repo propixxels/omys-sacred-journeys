@@ -45,7 +45,7 @@ serve(async (req) => {
     );
   }
 
-  const transporter = nodemailer.createTransporter({
+  const transporter = nodemailer.createTransport({
     host,
     port: parseInt(port ?? "2525"),
     secure: false,
