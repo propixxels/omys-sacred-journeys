@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -93,7 +94,7 @@ const HeroSection = () => {
 
       <div className="relative z-10 h-full flex items-center">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl ml-8 md:ml-16">
+          <div className="max-w-4xl">
             <h1 className="text-4xl md:text-7xl font-temple font-bold text-left mb-4 md:mb-6 text-white drop-shadow-2xl">
               Incredible Journeys
               <span className="block text-temple-gold">Await You</span>
@@ -101,7 +102,7 @@ const HeroSection = () => {
             <p className="text-lg md:text-2xl text-left mb-6 md:mb-8 text-white/90 max-w-2xl leading-relaxed drop-shadow-lg">
               Discover India's diverse beauty - from majestic temples to pristine beaches, royal palaces to mountain adventures
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-start">
               <Button 
                 size="lg" 
                 className="btn-temple text-base md:text-lg px-6 md:px-8 py-3 md:py-4 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300"
