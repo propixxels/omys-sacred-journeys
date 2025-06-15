@@ -22,12 +22,17 @@ const ContactForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setSent(false);
+    
+    console.log("Submitting contact form with data:", formData);
+    
     try {
       const resp = await fetch(
         "https://kcwybfzphlrsnxxfhvpq.functions.supabase.co/send-email",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({
             type: "contact",
             name: formData.name,
@@ -37,7 +42,11 @@ const ContactForm = () => {
           }),
         }
       );
+      
+      console.log("Response status:", resp.status);
       const res = await resp.json();
+      console.log("Response data:", res);
+      
       if (resp.ok && res.success) {
         setSent(true);
         toast({
@@ -49,6 +58,7 @@ const ContactForm = () => {
         throw new Error(res?.error || "Unable to send message.");
       }
     } catch (err: any) {
+      console.error("Contact form submission error:", err);
       toast({
         title: "Failed to send",
         description: err?.message ?? "Unknown error",
