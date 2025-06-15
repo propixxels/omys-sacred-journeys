@@ -143,13 +143,25 @@ const About = () => {
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="py-16 bg-gradient-to-br from-temple-maroon to-saffron-600 text-white">
-        <div className="container mx-auto px-4 text-center">
+      {/* Contact Section with Beautiful Background */}
+      <section className="relative py-16 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80')`
+          }}
+        />
+        
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-temple-maroon/90 to-saffron-600/90" />
+        
+        {/* Decorative Pattern Overlay */}
+        <div className="absolute inset-0 mandala-bg opacity-10" />
+        
+        {/* Content */}
+        <div className="relative z-10 container mx-auto px-4 text-center text-white">
           <div className="max-w-2xl mx-auto">
-            <div className="w-16 h-16 bg-temple-gold rounded-full flex items-center justify-center mx-auto mb-6">
-              <span className="text-temple-maroon font-bold text-xl font-sanskrit">ॐ</span>
-            </div>
             <h2 className="text-3xl font-temple font-bold mb-2">Omy Travels</h2>
             <p className="text-xl mb-4">India's Most Trusted Travel Partner</p>
             <p className="text-lg italic mb-8">"Your journey, our expertise."</p>
