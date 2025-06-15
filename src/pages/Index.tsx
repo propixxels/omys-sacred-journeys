@@ -334,7 +334,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Featured Tours Section - Now Dynamic */}
+      {/* Featured Tours Section - With Improved Text Clipping */}
       <section id="featured-tours" className="py-16 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 relative">
         <div className="absolute inset-0 mandala-overlay opacity-5"></div>
         
@@ -364,7 +364,7 @@ const Index = () => {
           ) : tours.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {tours.map((tour) => (
-                <Card key={tour.id} className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 bg-white border-0">
+                <Card key={tour.id} className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 bg-white border-0 h-full flex flex-col">
                   <div className="relative">
                     <img 
                       src={tour.image_url || "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"} 
@@ -380,12 +380,12 @@ const Index = () => {
                     )}
                     
                     <div className="absolute bottom-3 left-3 text-white">
-                      <h3 className="font-temple font-bold text-lg">{tour.name}</h3>
+                      <h3 className="font-temple font-bold text-lg line-clamp-2">{tour.name}</h3>
                     </div>
                   </div>
                   
-                  <CardContent className="p-6 space-y-4">
-                    <div className="space-y-2">
+                  <CardContent className="p-6 space-y-4 flex-grow flex flex-col">
+                    <div className="space-y-2 flex-grow">
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center space-x-1 text-gray-600">
                           <Clock className="w-4 h-4" />
@@ -399,11 +399,13 @@ const Index = () => {
                       
                       <div className="flex items-start space-x-1">
                         <MapPin className="w-4 h-4 text-orange-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-gray-600">{tour.destinations}</span>
+                        <span className="text-sm text-gray-600 line-clamp-2 leading-relaxed" title={tour.destinations}>
+                          {tour.destinations}
+                        </span>
                       </div>
                     </div>
                     
-                    <div className="flex items-center justify-between pt-4 border-t">
+                    <div className="flex items-center justify-between pt-4 border-t mt-auto">
                       <div className="text-2xl font-bold text-orange-600">{formatPrice(tour.cost)}</div>
                       <Button 
                         asChild
