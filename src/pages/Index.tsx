@@ -1,9 +1,10 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Clock, Calendar, MapPin, Star, ArrowUp, Users, Heart, Shield, Check, Phone } from "lucide-react";
+import { Clock, Calendar, MapPin, Star, ArrowUp, Users, Heart, Shield, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { TourData } from "@/types/tour";
@@ -743,10 +744,14 @@ const Index = () => {
       <div className="fixed bottom-6 right-6 z-50">
         <Button 
           onClick={openWhatsApp}
-          className="w-14 h-14 rounded-full bg-green-500 hover:bg-green-600 shadow-lg animate-[pulse_1.5s_ease-in-out_infinite]"
+          className="w-14 h-14 rounded-full bg-transparent hover:bg-transparent shadow-lg animate-[pulse_1.5s_ease-in-out_infinite] p-0"
           title="Chat with us on WhatsApp"
         >
-          <Phone className="w-6 h-6 text-white" />
+          <img 
+            src="/lovable-uploads/8acb597e-cc8e-447a-89e7-75d37af60313.png" 
+            alt="WhatsApp" 
+            className="w-full h-full object-contain"
+          />
         </Button>
       </div>
 
