@@ -1,7 +1,6 @@
 
 // deno-lint-ignore-file no-explicit-any
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import nodemailer from "npm:nodemailer@6.9.11";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -100,22 +99,12 @@ serve(async (req) => {
     );
   }
 
-  const transporter = nodemailer.createTransporter({
-    host,
-    port: parseInt(port ?? "2525"),
-    secure: false,
-    auth: {
-      user,
-      pass,
-    },
-  });
-
-  let mailOptions: Record<string, any> = {};
+  // Create email content
+  let emailContent: any = {};
 
   if (type === "contact" || type === "enquiry") {
-    mailOptions = {
-      from: `"Omy Travels Contact Form" <connect@omytravels.in>`, // Fixed sender address
-      replyTo: email, // Set reply-to as the user's email
+    emailContent = {
+      from: user, // Use SMTP username as sender
       to: ALL_DESTINATIONS,
       subject: type === "enquiry" ? "Enquiry Form Submission" : "Contact Form Submission",
       text: `
@@ -143,17 +132,15 @@ Message: ${message}
         { status: 400, headers: corsHeaders }
       );
     }
-    mailOptions = {
-      from: `"Omy Travels" <connect@omytravels.in>`, // Fixed sender address
+    emailContent = {
+      from: user,
       to: ALL_DESTINATIONS,
       subject,
       html,
     };
   } else if (type === "booking") {
-    // Assume a booking payload with details similar to contact
-    mailOptions = {
-      from: `"Omy Travels Booking" <connect@omytravels.in>`, // Fixed sender address
-      replyTo: email || undefined, // Set reply-to if email provided
+    emailContent = {
+      from: user,
       to: ALL_DESTINATIONS,
       subject: subject || "New Booking Request",
       text: message || "A new booking was received.",
@@ -176,23 +163,39 @@ Message: ${message}
   }
 
   try {
-    console.log("Attempting to send email with options:", { 
-      from: mailOptions.from,
-      to: mailOptions.to,
-      subject: mailOptions.subject 
-    });
+    console.log("Attempting to send email with SMTP transport");
     
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully:", info.messageId);
+    // Use fetch to send email via SMTP service
+    const response = await fetch(`https://api.smtp2go.com/v3/email/send`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Smtp2go-Api-Key': pass, // Use SMTP password as API key
+      },
+      body: JSON.stringify({
+        sender: emailContent.from,
+        to: emailContent.to,
+        subject: emailContent.subject,
+        html_body: emailContent.html,
+        text_body: emailContent.text,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`SMTP API error: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log("Email sent successfully:", result);
     
     return new Response(
-      JSON.stringify({ success: true, messageId: info.messageId }),
+      JSON.stringify({ success: true, messageId: result.data?.id }),
       { status: 200, headers: corsHeaders }
     );
-  } catch (err) {
+  } catch (err: any) {
     console.error("Email send error:", err);
     return new Response(
-      JSON.stringify({ success: false, error: err.message }),
+      JSON.stringify({ success: false, error: err?.message }),
       { status: 500, headers: corsHeaders }
     );
   }
