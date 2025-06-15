@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,13 +18,13 @@ const Index = () => {
     },
     {
       image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80",
-      title: "Mahakaleshwar Darshan",
-      subtitle: "Witness the divine Bhasma Aarti in Ujjain"
+      title: "Adventure in the Mountains",
+      subtitle: "Discover breathtaking landscapes and thrilling experiences"
     },
     {
       image: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80",
-      title: "Char Dham Yatra",
-      subtitle: "Complete your spiritual journey"
+      title: "Cultural Heritage Tours",
+      subtitle: "Explore India's rich history and traditions"
     }
   ];
 
@@ -42,35 +41,35 @@ const Index = () => {
       isPopular: true
     },
     {
-      id: "ujjain-darshan",
-      slug: "ujjain-darshan",
-      title: "Ujjain Mahakaleshwar",
-      duration: "3 Days",
+      id: "goa-beaches",
+      slug: "goa-beaches",
+      title: "Goa Beach Paradise",
+      duration: "4 Days",
       date: "15 June 2025",
-      destinations: "Ujjain • Omkareshwar",
+      destinations: "North Goa • South Goa",
       price: "₹8,999",
-      image: "https://images.unsplash.com/photo-1500673922987-e212871fec22?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
+      image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
       isNew: true
     },
     {
-      id: "dwarka-somnath",
-      slug: "dwarka-somnath",
-      title: "Dwarka Somnath Yatra",
-      duration: "6 Days",
+      id: "rajasthan-heritage",
+      slug: "rajasthan-heritage",
+      title: "Rajasthan Royal Heritage",
+      duration: "7 Days",
       date: "10 August 2025",
-      destinations: "Dwarka • Somnath • Bet Dwarka",
-      price: "₹15,999",
-      image: "https://images.unsplash.com/photo-1472396961693-142e6e269027?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+      destinations: "Jaipur • Udaipur • Jodhpur",
+      price: "₹18,999",
+      image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
     },
     {
-      id: "badrinath-kedarnath",
-      slug: "badrinath-kedarnath",
-      title: "Do Dham Yatra",
-      duration: "8 Days",
+      id: "himalayan-adventure",
+      slug: "himalayan-adventure",
+      title: "Himalayan Adventure",
+      duration: "6 Days",
       date: "20 September 2025",
-      destinations: "Badrinath • Kedarnath",
-      price: "₹22,999",
-      image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
+      destinations: "Manali • Rohtang • Solang Valley",
+      price: "₹16,999",
+      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80"
     }
   ];
 
@@ -93,21 +92,21 @@ const Index = () => {
       name: "Priya Sharma",
       city: "Mumbai",
       rating: 5,
-      comment: "Absolutely divine experience! Every detail was perfectly arranged.",
+      comment: "Absolutely amazing experience! Every detail was perfectly arranged and the destinations were breathtaking.",
       image: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80"
     },
     {
       name: "Rajesh Kumar",
       city: "Delhi",
       rating: 5,
-      comment: "The spiritual guidance and comfortable journey made it unforgettable.",
+      comment: "Professional service with excellent guides and comfortable accommodations. Highly recommended!",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80"
     },
     {
       name: "Meera Patel",
       city: "Ahmedabad",
       rating: 5,
-      comment: "Professional service with deep respect for traditions. Highly recommended!",
+      comment: "From adventure trips to cultural tours, they offer the best travel experiences in India!",
       image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80"
     }
   ];
@@ -115,8 +114,8 @@ const Index = () => {
   const whyChooseUs = [
     {
       icon: Heart,
-      title: "Spiritually Guided Tours",
-      description: "Expert priests and spiritual guides accompany every journey"
+      title: "Expert Guided Tours",
+      description: "Professional tour guides and local experts for authentic experiences"
     },
     {
       icon: Shield,
@@ -125,13 +124,13 @@ const Index = () => {
     },
     {
       icon: MapPin,
-      title: "Handpicked Sacred Sites",
-      description: "Authentic pilgrimage destinations with VIP darshan arrangements"
+      title: "Handpicked Destinations",
+      description: "Carefully selected locations covering heritage, adventure, and leisure"
     },
     {
       icon: Calendar,
-      title: "Scheduled Departures",
-      description: "Regular group departures with fixed dates and transparent pricing"
+      title: "Flexible Departures",
+      description: "Multiple departure dates with customizable itineraries"
     },
     {
       icon: Users,
@@ -171,11 +170,11 @@ const Index = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl">
               <h1 className="text-4xl md:text-7xl font-temple font-bold text-left mb-4 md:mb-6 text-white drop-shadow-2xl">
-                Sacred Journeys
+                Incredible Journeys
                 <span className="block text-temple-gold">Await You</span>
               </h1>
               <p className="text-lg md:text-2xl text-left mb-6 md:mb-8 text-white/90 max-w-2xl leading-relaxed drop-shadow-lg">
-                Experience divine darshan across India's most sacred temples with comfortable stays and expert guidance
+                Discover India's diverse beauty - from sacred temples to pristine beaches, royal palaces to mountain adventures
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button 
@@ -219,7 +218,7 @@ const Index = () => {
           <div className="hidden md:flex flex-wrap justify-center gap-8 text-white">
             <div className="flex items-center space-x-2">
               <Shield className="w-5 h-5" />
-              <span className="font-medium">100% Trusted Pilgrim-Rated</span>
+              <span className="font-medium">100% Trusted by Travelers</span>
             </div>
             <div className="flex items-center space-x-2">
               <MapPin className="w-5 h-5" />
@@ -227,11 +226,11 @@ const Index = () => {
             </div>
             <div className="flex items-center space-x-2">
               <Heart className="w-5 h-5" />
-              <span className="font-medium">Authentic Veg Meals</span>
+              <span className="font-medium">Quality Accommodations</span>
             </div>
             <div className="flex items-center space-x-2">
               <Users className="w-5 h-5" />
-              <span className="font-medium">Experienced Spiritual Guides</span>
+              <span className="font-medium">Expert Local Guides</span>
             </div>
           </div>
           
@@ -242,7 +241,7 @@ const Index = () => {
                 {/* First set */}
                 <div className="flex items-center space-x-2">
                   <Shield className="w-4 h-4" />
-                  <span className="font-medium">100% Trusted Pilgrim-Rated</span>
+                  <span className="font-medium">100% Trusted by Travelers</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <MapPin className="w-4 h-4" />
@@ -250,16 +249,16 @@ const Index = () => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <Heart className="w-4 h-4" />
-                  <span className="font-medium">Authentic Veg Meals</span>
+                  <span className="font-medium">Quality Accommodations</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Users className="w-4 h-4" />
-                  <span className="font-medium">Experienced Spiritual Guides</span>
+                  <span className="font-medium">Expert Local Guides</span>
                 </div>
                 {/* Second set for seamless loop */}
                 <div className="flex items-center space-x-2">
                   <Shield className="w-4 h-4" />
-                  <span className="font-medium">100% Trusted Pilgrim-Rated</span>
+                  <span className="font-medium">100% Trusted by Travelers</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <MapPin className="w-4 h-4" />
@@ -267,16 +266,16 @@ const Index = () => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <Heart className="w-4 h-4" />
-                  <span className="font-medium">Authentic Veg Meals</span>
+                  <span className="font-medium">Quality Accommodations</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Users className="w-4 h-4" />
-                  <span className="font-medium">Experienced Spiritual Guides</span>
+                  <span className="font-medium">Expert Local Guides</span>
                 </div>
                 {/* Third set for seamless loop */}
                 <div className="flex items-center space-x-2">
                   <Shield className="w-4 h-4" />
-                  <span className="font-medium">100% Trusted Pilgrim-Rated</span>
+                  <span className="font-medium">100% Trusted by Travelers</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <MapPin className="w-4 h-4" />
@@ -284,11 +283,11 @@ const Index = () => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <Heart className="w-4 h-4" />
-                  <span className="font-medium">Authentic Veg Meals</span>
+                  <span className="font-medium">Quality Accommodations</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Users className="w-4 h-4" />
-                  <span className="font-medium">Experienced Spiritual Guides</span>
+                  <span className="font-medium">Expert Local Guides</span>
                 </div>
               </div>
             </div>
@@ -296,17 +295,17 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Upcoming Yatras Section */}
-      <section id="upcoming-yatras" className="py-16 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 relative">
+      {/* Upcoming Tours Section */}
+      <section id="upcoming-tours" className="py-16 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 relative">
         <div className="absolute inset-0 mandala-overlay opacity-5"></div>
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-4xl md:text-5xl font-temple font-bold text-temple-maroon mb-4">
-              Upcoming Sacred Pilgrimage Tours
+              Upcoming Tours & Adventures
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Join thousands of devotees on these blessed journeys to India's most sacred destinations
+              Join thousands of travelers on these amazing journeys across India's most beautiful destinations
             </p>
           </div>
 
@@ -379,10 +378,10 @@ const Index = () => {
         <div className="absolute inset-0 mandala-bg opacity-10"></div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-4xl font-temple font-bold text-white mb-6 drop-shadow-lg">
-            Discover More Sacred Destinations
+            Discover More Amazing Destinations
           </h2>
           <p className="text-xl text-white mb-8 max-w-2xl mx-auto drop-shadow-md">
-            Explore our complete collection of pilgrimage tours across India
+            Explore our complete collection of tours across India - from heritage to adventure, beaches to mountains
           </p>
           <Button 
             size="lg" 
@@ -403,12 +402,12 @@ const Index = () => {
                 Who We Are
               </h2>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Omy Travels is a trusted name in spiritual journeys across India. From Kashi to Rameshwaram, 
-                we curate deeply devotional, safe, and comfortable yatras for seekers of all ages.
+                Omy Travels is a trusted name in travel experiences across India. From sacred temples to pristine beaches, 
+                royal heritage to mountain adventures - we curate diverse, comfortable, and memorable journeys for all types of travelers.
               </p>
               <p className="text-gray-600 leading-relaxed">
-                Founded with devotion and care, our mission is to make India's sacred journeys accessible, 
-                meaningful, and transformative for every pilgrim who travels with us.
+                Founded with passion for travel and dedication to service, our mission is to make India's incredible destinations 
+                accessible, enjoyable, and transformative for every traveler who journeys with us.
               </p>
               <Button 
                 asChild
@@ -448,7 +447,7 @@ const Index = () => {
               Why Thousands Trust Omy Travels
             </h2>
             <p className="text-xl text-gray-600">
-              Experience the difference of traveling with India's most trusted pilgrimage specialist
+              Experience the difference of traveling with India's most trusted tour specialist
             </p>
           </div>
 
@@ -477,7 +476,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-4xl font-temple font-bold text-temple-maroon mb-4">
-              Your Pilgrimage in 3 Simple Steps
+              Your Journey in 3 Simple Steps
             </h2>
           </div>
 
@@ -486,8 +485,8 @@ const Index = () => {
               <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto">
                 <MapPin className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-xl font-temple font-semibold text-temple-maroon">Choose Your Yatra</h3>
-              <p className="text-gray-600">Browse tours, check dates & pricing to find your perfect pilgrimage</p>
+              <h3 className="text-xl font-temple font-semibold text-temple-maroon">Choose Your Tour</h3>
+              <p className="text-gray-600">Browse destinations, check dates & pricing to find your perfect getaway</p>
             </div>
             
             <div className="text-center space-y-4">
@@ -495,15 +494,15 @@ const Index = () => {
                 <Check className="w-10 h-10 text-white" />
               </div>
               <h3 className="text-xl font-temple font-semibold text-temple-maroon">Book & Pay Securely</h3>
-              <p className="text-gray-600">50% advance booking with multiple secure payment options</p>
+              <p className="text-gray-600">Easy booking with flexible payment options and instant confirmation</p>
             </div>
             
             <div className="text-center space-y-4">
               <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mx-auto">
                 <Heart className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-xl font-temple font-semibold text-temple-maroon">Depart & Experience</h3>
-              <p className="text-gray-600">Receive Yatra kit, enjoy guided darshans, return home blessed</p>
+              <h3 className="text-xl font-temple font-semibold text-temple-maroon">Travel & Explore</h3>
+              <p className="text-gray-600">Receive travel kit, enjoy guided tours, create unforgettable memories</p>
             </div>
           </div>
         </div>
@@ -515,7 +514,7 @@ const Index = () => {
         
         <div className="container mx-auto px-4 text-center relative z-10">
           <blockquote className="text-3xl md:text-4xl font-temple font-medium text-white leading-relaxed">
-            "Yatra is not a trip. It is a journey of the soul towards the Divine."
+            "Travel is not just a journey. It's a discovery of the incredible diversity and beauty of India."
           </blockquote>
         </div>
       </section>
@@ -566,10 +565,10 @@ const Index = () => {
         <div className="container mx-auto px-4 text-center relative z-10">
           <div className="max-w-3xl mx-auto space-y-6 text-white">
             <h2 className="text-4xl font-temple font-bold">
-              Ready to Begin Your Yatra?
+              Ready to Begin Your Adventure?
             </h2>
             <p className="text-xl">
-              Let us know your interest — we'll guide you personally through your spiritual journey.
+              Let us know your travel interests — we'll guide you personally through your perfect journey.
             </p>
             <Button 
               className="bg-white text-temple-maroon hover:bg-orange-50 text-lg px-8 py-4 h-auto transition-all duration-300 transform hover:scale-105"
@@ -593,7 +592,7 @@ const Index = () => {
                   Stay Updated
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  Subscribe for special offers, early-bird discounts, and spiritual insights.
+                  Subscribe for special offers, early-bird discounts, and travel insights.
                 </p>
                 <div className="flex gap-3">
                   <Input 
@@ -611,7 +610,7 @@ const Index = () => {
                   WhatsApp Updates
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  Join our WhatsApp community for instant updates on yatra schedules and offers.
+                  Join our WhatsApp community for instant updates on tour schedules and offers.
                 </p>
                 <Button 
                   className="w-full bg-green-600 hover:bg-green-700 text-white"

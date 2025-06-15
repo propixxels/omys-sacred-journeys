@@ -9,11 +9,11 @@ const About = () => {
       <section className="relative bg-gradient-to-br from-temple-maroon to-saffron-600 text-white py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-5xl md:text-6xl font-temple font-bold mb-6">
-            Walk the Sacred Path With Us
+            Discover India With Us
           </h1>
           <p className="text-xl md:text-2xl max-w-4xl mx-auto leading-relaxed">
-            At Omy Travels, we believe every step on a pilgrimage is a step closer to the divine. 
-            Founded with devotion and care, our mission is to make India's sacred journeys accessible, safe, and soul-stirring for every seeker.
+            At Omy Travels, we believe every journey is an opportunity to explore, learn, and create memories. 
+            Founded with passion for travel and dedication to service, our mission is to make India's incredible destinations accessible, comfortable, and unforgettable for every traveler.
           </p>
         </div>
       </section>
@@ -27,15 +27,15 @@ const About = () => {
             </h2>
             <div className="text-lg text-gray-700 leading-relaxed space-y-6">
               <p>
-                We are a team of spiritual travel planners, cultural experts, and service professionals 
-                who are passionate about India's rich religious heritage. From temple town guides to 
-                pooja coordinators, our crew is handpicked to ensure authentic rituals, comfortable stays, 
+                We are a team of passionate travel planners, local experts, and service professionals 
+                who are dedicated to showcasing India's incredible diversity. From heritage tours to adventure expeditions, 
+                beach getaways to mountain retreats, our crew is handpicked to ensure authentic experiences, comfortable stays, 
                 and seamless travel.
               </p>
               <p>
-                Whether you're a first-time pilgrim or a lifelong devotee, our curated tours take you 
-                through the most powerful and ancient sites in Hindu Dharma—with full respect to tradition 
-                and modern travel comforts.
+                Whether you're seeking spiritual journeys, cultural immersion, thrilling adventures, or relaxing holidays, 
+                our curated tours take you through India's most beautiful and exciting destinations—with full attention to 
+                your comfort and modern travel conveniences.
               </p>
             </div>
           </div>
@@ -53,28 +53,28 @@ const About = () => {
             {[
               {
                 icon: <Heart className="w-8 h-8 text-saffron-600" />,
-                title: "Handcrafted Pilgrimages",
-                description: "Not just tourism, we offer spiritual experiences"
+                title: "Handcrafted Experiences",
+                description: "Not just tours, we offer immersive travel experiences"
               },
               {
                 icon: <Users className="w-8 h-8 text-saffron-600" />,
-                title: "Trusted by 2,000+ Yatris",
+                title: "Trusted by 2,000+ Travelers",
                 description: "With 4.8★ average Google rating"
               },
               {
                 icon: <CheckCircle className="w-8 h-8 text-saffron-600" />,
                 title: "All-Inclusive Packages",
-                description: "Stay, darshan, transport, and pooja rituals included"
+                description: "Stay, sightseeing, transport, and meals included"
               },
               {
                 icon: <Shield className="w-8 h-8 text-saffron-600" />,
                 title: "Local Experts",
-                description: "Priests, guides, and drivers who know the spiritual pulse"
+                description: "Professional guides and drivers who know the local culture"
               },
               {
                 icon: <Star className="w-8 h-8 text-saffron-600" />,
-                title: "Senior-Friendly Tours",
-                description: "Wheelchair help, low-walking itineraries, medical support"
+                title: "Comfortable Travel",
+                description: "Quality accommodations, AC transport, and assistance for all ages"
               }
             ].map((feature, index) => (
               <Card key={index} className="card-temple text-center">
@@ -93,7 +93,7 @@ const About = () => {
 
           <div className="text-center mt-12">
             <blockquote className="text-2xl font-temple text-temple-maroon italic">
-              "When tradition meets trust, the journey becomes sacred."
+              "When expertise meets passion, the journey becomes extraordinary."
             </blockquote>
           </div>
         </div>
@@ -108,7 +108,7 @@ const About = () => {
                 Our Vision
               </h3>
               <p className="text-lg text-gray-700 leading-relaxed">
-                To rekindle faith and spiritual curiosity through culturally rich and well-supported pilgrimages.
+                To be India's most trusted travel partner, creating memorable journeys that connect travelers with the country's rich heritage, natural beauty, and diverse cultures.
               </p>
             </div>
             
@@ -117,7 +117,7 @@ const About = () => {
                 Our Promise
               </h3>
               <p className="text-lg text-gray-700 leading-relaxed">
-                You focus on prayer, peace, and experience. We'll take care of everything else.
+                You focus on creating memories and enjoying experiences. We'll take care of all the planning, logistics, and comfort.
               </p>
             </div>
           </div>
@@ -132,17 +132,17 @@ const About = () => {
               <span className="text-temple-maroon font-bold text-xl font-sanskrit">ॐ</span>
             </div>
             <h2 className="text-3xl font-temple font-bold mb-2">Omy Travels</h2>
-            <p className="text-xl mb-4">India's Most Trusted Hindu Pilgrimage Partner</p>
-            <p className="text-lg italic mb-8">"Your journey, our devotion."</p>
+            <p className="text-xl mb-4">India's Most Trusted Travel Partner</p>
+            <p className="text-lg italic mb-8">"Your journey, our expertise."</p>
             
             <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-8">
               <div className="flex items-center space-x-2">
                 <Phone className="w-5 h-5" />
-                <span>+91 98765 43210</span>
+                <span>+91 73488 69099</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="w-5 h-5" />
-                <span>support@omytravels.in</span>
+                <span>connect@omytravels.com</span>
               </div>
             </div>
           </div>

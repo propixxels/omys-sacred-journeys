@@ -21,12 +21,12 @@ const Footer = () => {
               />
             </div>
             <p className="text-white/90 leading-relaxed text-sm">
-              Sacred journeys across India with authentic spiritual experiences, 
+              Incredible journeys across India with authentic travel experiences, 
               comfortable stays, and expert guidance since 2015.
             </p>
             <div className="flex items-center justify-center md:justify-start space-x-2">
               <Star className="w-5 h-5 text-yellow-300 animate-pulse" />
-              <span className="text-white/90 text-sm font-medium">Trusted by thousands of pilgrims</span>
+              <span className="text-white/90 text-sm font-medium">Trusted by thousands of travelers</span>
             </div>
           </div>
 
@@ -63,8 +63,8 @@ const Footer = () => {
             </h3>
             <ul className="space-y-3">
               {[
-                "North India Yatras", "South India Yatras", "Chaturmas Special", 
-                "Pitru Paksha", "Kashi Yatra", "Ujjain Darshan"
+                "Heritage Tours", "Adventure Trips", "Beach Holidays", 
+                "Mountain Retreats", "Cultural Experiences", "Wildlife Tours"
               ].map((category) => (
                 <li key={category}>
                   <a 
@@ -89,7 +89,7 @@ const Footer = () => {
                 <Phone className="w-5 h-5 text-yellow-300 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
                 <div className="text-center md:text-left">
                   <p className="text-white font-medium">+91 73488 69099</p>
-                  <p className="text-xs text-white/80">24/7 Yatra Support</p>
+                  <p className="text-xs text-white/80">24/7 Travel Support</p>
                 </div>
               </div>
               
@@ -123,7 +123,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-white/30 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <p className="text-white/90 text-sm font-medium text-center md:text-left">
-            © 2025 Omy Travels. All rights reserved. Sacred journeys with devotion.
+            © 2025 Omy Travels. All rights reserved. Incredible journeys with expertise.
           </p>
           <div className="flex flex-col sm:flex-row items-center sm:space-x-6 space-y-2 sm:space-y-0">
             <span className="text-white/90 text-sm flex items-center space-x-2 font-medium">

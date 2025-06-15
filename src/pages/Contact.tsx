@@ -38,8 +38,8 @@ const Contact = () => {
               Contact Us
             </h1>
             <p className="text-xl md:text-2xl text-orange-200 leading-relaxed">
-              Get in touch with us for your spiritual journey. We're here to help you plan 
-              the perfect pilgrimage experience.
+              Get in touch with us for your next travel adventure. We're here to help you plan 
+              the perfect journey across incredible India.
             </p>
           </div>
         </div>
@@ -56,8 +56,8 @@ const Contact = () => {
                   Get In Touch
                 </h2>
                 <p className="text-gray-600 text-lg leading-relaxed mb-8">
-                  We're here to assist you with all your spiritual travel needs. 
-                  Reach out to us for personalized pilgrimage experiences and expert guidance.
+                  We're here to assist you with all your travel needs. 
+                  Reach out to us for personalized tour experiences and expert guidance for your perfect getaway.
                 </p>
               </div>
 
@@ -73,7 +73,7 @@ const Contact = () => {
                       <div>
                         <h3 className="font-semibold text-temple-maroon mb-1">Phone</h3>
                         <p className="text-gray-700 font-medium">+91 73488 69099</p>
-                        <p className="text-sm text-gray-500">24/7 Yatra Support</p>
+                        <p className="text-sm text-gray-500">24/7 Travel Support</p>
                       </div>
                     </div>
                   </CardContent>
@@ -188,7 +188,7 @@ const Contact = () => {
                         onChange={handleChange}
                         required
                         className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                        placeholder="Tell us about your pilgrimage plans..."
+                        placeholder="Tell us about your travel plans and preferences..."
                       />
                     </div>
                     
@@ -215,7 +215,7 @@ const Contact = () => {
               Find Us
             </h2>
             <p className="text-gray-600 text-lg">
-              Visit our office in Sirsi, Karnataka for personalized consultation
+              Visit our office in Sirsi, Karnataka for personalized travel consultation
             </p>
           </div>
           
