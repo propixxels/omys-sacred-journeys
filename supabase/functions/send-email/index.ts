@@ -43,7 +43,7 @@ async function verifyRecaptcha(token: string): Promise<boolean> {
 
 // Function to send email using SMTP2GO API
 async function sendEmailViaSMTP2GO(emailData: any): Promise<any> {
-  const apiKey = Deno.env.get("SMTP_PASSWORD"); // This should now be your API key
+  const apiKey = Deno.env.get("SMTP_PASSWORD");
 
   if (!apiKey) {
     throw new Error("SMTP2GO API key not configured");
@@ -121,8 +121,8 @@ serve(async (req) => {
     }
   }
 
-  // Get sender email from environment
-  const fromEmail = Deno.env.get("SMTP_USERNAME") || "noreply@omytravels.in";
+  // Fixed sender email format - ensure it's a proper email address
+  const fromEmail = "noreply@omytravels.in";
 
   // Create email content
   let emailContent: any = {};
