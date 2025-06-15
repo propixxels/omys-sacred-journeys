@@ -52,7 +52,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative h-[70vh] md:h-screen md:min-h-screen flex items-center overflow-hidden">
+    <section className="relative h-[60vh] md:h-[80vh] flex items-center overflow-hidden">
       <div className="absolute inset-0">
         {heroSlides.map((slide, index) => (
           <div
@@ -71,8 +71,8 @@ const HeroSection = () => {
         ))}
       </div>
 
-      {/* Navigation arrows positioned at bottom right */}
-      <div className="absolute bottom-20 md:bottom-24 right-4 md:right-8 z-20 flex gap-2">
+      {/* Navigation arrows positioned to avoid overlaps */}
+      <div className="absolute bottom-32 md:bottom-20 left-1/2 transform -translate-x-1/2 md:left-auto md:right-20 md:transform-none z-20 flex gap-2">
         {/* Left Arrow */}
         <button
           onClick={prevSlide}
