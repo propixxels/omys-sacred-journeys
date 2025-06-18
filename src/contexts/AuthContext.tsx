@@ -111,8 +111,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }
         }
         
-        // Set loading to false after processing auth state change
-        if (mounted) {
+        // Only set loading to false after initial auth setup is complete
+        if (mounted && event !== 'INITIAL_SESSION') {
           setLoading(false);
         }
       }
@@ -125,12 +125,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []); // Empty dependency array to prevent re-initialization
+  }, []);
 
   const signIn = async (email: string, password: string) => {
     try {
       console.log('Attempting to sign in with:', email);
-      setLoading(true);
       
       const { error } = await supabase.auth.signInWithPassword({
         email,
@@ -142,8 +141,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (err) {
       console.error('Sign in error:', err);
       return { error: err };
-    } finally {
-      // Don't set loading to false here as the auth state change will handle it
     }
   };
 

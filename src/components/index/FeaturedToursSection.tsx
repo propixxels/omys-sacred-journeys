@@ -11,11 +11,15 @@ import { TourData } from "@/types/tour";
 const FeaturedToursSection = () => {
   const [tours, setTours] = useState<TourData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch tours from database
   useEffect(() => {
     const fetchTours = async () => {
       try {
+        setError(null);
+        console.log('Fetching featured tours...');
+        
         const { data, error } = await supabase
           .from('tours')
           .select('*')
@@ -25,7 +29,9 @@ const FeaturedToursSection = () => {
 
         if (error) {
           console.error('Error fetching tours:', error);
+          setError('Failed to load tours');
         } else if (data) {
+          console.log('Tours fetched successfully:', data.length);
           // Map database response to TourData interface with proper type casting
           const mappedTours: TourData[] = data.map(tour => ({
             id: tour.id,
@@ -79,6 +85,7 @@ const FeaturedToursSection = () => {
         }
       } catch (error) {
         console.error('Error fetching tours:', error);
+        setError('Failed to load tours');
       } finally {
         setIsLoading(false);
       }
@@ -99,6 +106,30 @@ const FeaturedToursSection = () => {
       year: 'numeric' 
     });
   };
+
+  if (error) {
+    return (
+      <section id="featured-tours" className="py-16 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 relative">
+        <div className="absolute inset-0 mandala-bg"></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-12 animate-fade-in">
+            <h2 className="text-4xl md:text-5xl font-temple font-bold text-orange-600 mb-4">
+              Featured Tours & Adventures
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Join thousands of travelers on these amazing journeys across India's most beautiful destinations
+            </p>
+          </div>
+
+          <div className="text-center py-12">
+            <p className="text-xl text-red-600 mb-6">{error}</p>
+            <p className="text-gray-500">Please try refreshing the page or contact support if the issue persists.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="featured-tours" className="py-16 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 relative">
