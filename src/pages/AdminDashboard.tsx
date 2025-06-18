@@ -1,22 +1,28 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2, Users, Calendar, MapPin, Star, Eye, LogOut, Plane, Bus, Loader, Archive } from "lucide-react";
+import { Plus, Edit, Trash2, Users, Calendar, MapPin, Star, Eye, LogOut, Plane, Bus, Loader, Archive, Phone, Mail, CreditCard, FileText } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import BookingEditor from "@/components/BookingEditor";
+import BookingFilters, { BookingFilters as BookingFiltersType } from "@/components/BookingFilters";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Tour = Tables<'tours'>;
 
 type Booking = Tables<'bookings'> & {
   tours: {
+    id: string;
     name: string;
+    cost: number;
+    destinations: string;
+    departure_date: string;
   };
 };
 
@@ -26,14 +32,21 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [tours, setTours] = useState<Tour[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [filteredBookings, setFilteredBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [showDrafts, setShowDrafts] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [showBookingEditor, setShowBookingEditor] = useState(false);
 
   useEffect(() => {
     fetchTours();
     fetchBookings();
   }, [showDrafts]);
+
+  useEffect(() => {
+    setFilteredBookings(bookings);
+  }, [bookings]);
 
   const fetchTours = async () => {
     try {
@@ -65,7 +78,13 @@ const AdminDashboard = () => {
         .from('bookings')
         .select(`
           *,
-          tours!inner (name)
+          tours!inner (
+            id,
+            name,
+            cost,
+            destinations,
+            departure_date
+          )
         `)
         .order('booking_date', { ascending: false });
 
@@ -169,13 +188,17 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleUpdateBookingStatus = async (bookingId: string, newStatus: string) => {
+  const handleQuickStatusUpdate = async (bookingId: string, newStatus: string) => {
     setActionLoading(`booking-${bookingId}`);
 
     try {
       const { error } = await supabase
         .from('bookings')
-        .update({ status: newStatus })
+        .update({ 
+          status: newStatus,
+          last_modified_by: 'Admin',
+          last_modified_at: new Date().toISOString()
+        })
         .eq('id', bookingId);
 
       if (error) throw error;
@@ -197,11 +220,58 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleFiltersChange = (filters: BookingFiltersType) => {
+    let filtered = [...bookings];
+
+    // Search filter
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase();
+      filtered = filtered.filter(booking => 
+        booking.customer_name?.toLowerCase().includes(searchLower) ||
+        booking.email?.toLowerCase().includes(searchLower) ||
+        booking.mobile_number?.includes(filters.search)
+      );
+    }
+
+    // Status filter
+    if (filters.status) {
+      filtered = filtered.filter(booking => booking.status === filters.status);
+    }
+
+    // Payment status filter
+    if (filters.paymentStatus) {
+      filtered = filtered.filter(booking => booking.payment_status === filters.paymentStatus);
+    }
+
+    // Date range filter
+    if (filters.dateFrom) {
+      filtered = filtered.filter(booking => 
+        new Date(booking.booking_date) >= new Date(filters.dateFrom)
+      );
+    }
+    if (filters.dateTo) {
+      filtered = filtered.filter(booking => 
+        new Date(booking.booking_date) <= new Date(filters.dateTo)
+      );
+    }
+
+    setFilteredBookings(filtered);
+  };
+
+  const openBookingEditor = (booking: Booking) => {
+    setSelectedBooking(booking);
+    setShowBookingEditor(true);
+  };
+
+  const closeBookingEditor = () => {
+    setSelectedBooking(null);
+    setShowBookingEditor(false);
+  };
+
   const totalRevenue = bookings
     .filter(booking => booking.status === 'confirmed')
     .reduce((sum, booking) => {
-      const tour = tours.find(t => t.id === booking.tour_id);
-      return sum + (tour ? tour.cost * booking.number_of_people : 0);
+      return sum + ((booking.payment_amount || 0) - (booking.discount_amount || 0));
     }, 0);
 
   const totalBookings = bookings.length;
@@ -456,105 +526,204 @@ const AdminDashboard = () => {
             </div>
           </TabsContent>
 
-          {/* Bookings Tab */}
+          {/* Enhanced Bookings Tab */}
           <TabsContent value="bookings" className="space-y-6">
-            {bookings.length === 0 ? (
+            <BookingFilters 
+              onFiltersChange={handleFiltersChange}
+              totalCount={bookings.length}
+              filteredCount={filteredBookings.length}
+            />
+
+            {filteredBookings.length === 0 ? (
               <div className="text-center py-12">
                 <div className="w-24 h-24 bg-saffron-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Users className="w-12 h-12 text-saffron-600" />
                 </div>
                 <h3 className="text-xl font-temple font-semibold text-gray-700 mb-2">
-                  No bookings yet
+                  {bookings.length === 0 ? 'No bookings yet' : 'No bookings match your filters'}
                 </h3>
                 <p className="text-gray-600">
-                  Bookings will appear here once customers start booking tours.
+                  {bookings.length === 0 
+                    ? 'Bookings will appear here once customers start booking tours.'
+                    : 'Try adjusting your search criteria or filters.'
+                  }
                 </p>
               </div>
             ) : (
-              <div className="grid gap-4">
-                {bookings.map((booking) => (
-                  <Card key={booking.id} className="card-temple">
-                    <CardContent className="p-6">
-                      <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-center">
-                        <div>
-                          <h3 className="font-temple font-semibold text-temple-maroon">
-                            {booking.customer_name}
-                          </h3>
-                          <p className="text-sm text-gray-600">{booking.email}</p>
-                          <p className="text-sm text-gray-600">{booking.mobile_number}</p>
-                        </div>
-
-                        <div>
-                          <p className="font-medium">{booking.tours.name}</p>
-                          <p className="text-sm text-gray-600">
-                            {booking.number_of_people} person{booking.number_of_people > 1 ? 's' : ''}
-                          </p>
-                        </div>
-
-                        <div>
-                          <p className="text-sm text-gray-600">Booking Date</p>
-                          <p className="font-medium">
-                            {new Date(booking.booking_date).toLocaleDateString()}
-                          </p>
-                        </div>
-
-                        <div>
-                          <Badge 
-                            variant={booking.status === 'confirmed' ? 'default' : booking.status === 'cancelled' ? 'destructive' : 'secondary'}
-                            className={
-                              booking.status === 'confirmed' 
-                                ? 'bg-green-500 hover:bg-green-600' 
-                                : booking.status === 'cancelled'
-                                ? 'bg-red-500 hover:bg-red-600'
-                                : 'bg-yellow-500 hover:bg-yellow-600 text-white'
-                            }
-                          >
-                            {booking.status}
-                          </Badge>
-                        </div>
-
-                        <div className="col-span-2 flex space-x-2">
-                          {booking.status === 'pending' && (
-                            <>
-                              <Button 
-                                size="sm" 
-                                className="btn-temple"
-                                onClick={() => handleUpdateBookingStatus(booking.id, 'confirmed')}
-                                disabled={actionLoading === `booking-${booking.id}`}
+              <Card className="card-temple">
+                <CardHeader>
+                  <CardTitle>Booking Management</CardTitle>
+                  <CardDescription>
+                    Comprehensive booking management with enhanced features
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Customer</TableHead>
+                        <TableHead>Tour</TableHead>
+                        <TableHead>Details</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Payment</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredBookings.map((booking) => (
+                        <TableRow key={booking.id}>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="font-medium">{booking.customer_name}</div>
+                              <div className="text-sm text-gray-600 flex items-center space-x-2">
+                                <Mail className="w-3 h-3" />
+                                <span>{booking.email}</span>
+                              </div>
+                              <div className="text-sm text-gray-600 flex items-center space-x-2">
+                                <Phone className="w-3 h-3" />
+                                <span>{booking.mobile_number}</span>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="font-medium">{booking.tours.name}</div>
+                              <div className="text-sm text-gray-600">
+                                {booking.tours.destinations}
+                              </div>
+                              <div className="text-sm text-gray-600">
+                                Departure: {new Date(booking.tours.departure_date).toLocaleDateString()}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="flex items-center space-x-1">
+                                <Users className="w-3 h-3" />
+                                <span>{booking.number_of_people} person{booking.number_of_people > 1 ? 's' : ''}</span>
+                              </div>
+                              <div className="text-sm text-gray-600">
+                                Booked: {new Date(booking.booking_date).toLocaleDateString()}
+                              </div>
+                              {booking.special_requests && (
+                                <div className="text-sm text-blue-600">
+                                  Special requests noted
+                                </div>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge 
+                              variant={
+                                booking.status === 'confirmed' ? 'default' : 
+                                booking.status === 'cancelled' ? 'destructive' : 
+                                booking.status === 'completed' ? 'secondary' : 'outline'
+                              }
+                              className={
+                                booking.status === 'confirmed' 
+                                  ? 'bg-green-500 hover:bg-green-600' 
+                                  : booking.status === 'cancelled'
+                                  ? 'bg-red-500 hover:bg-red-600'
+                                  : booking.status === 'completed'
+                                  ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                                  : 'bg-yellow-500 hover:bg-yellow-600 text-white'
+                              }
+                            >
+                              {booking.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <Badge 
+                                variant={
+                                  booking.payment_status === 'paid' ? 'default' : 
+                                  booking.payment_status === 'partial' ? 'secondary' : 'outline'
+                                }
+                                className={
+                                  booking.payment_status === 'paid' 
+                                    ? 'bg-green-500 hover:bg-green-600' 
+                                    : booking.payment_status === 'partial'
+                                    ? 'bg-orange-500 hover:bg-orange-600 text-white'
+                                    : 'bg-red-500 hover:bg-red-600 text-white'
+                                }
                               >
-                                {actionLoading === `booking-${booking.id}` ? (
-                                  <Loader className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  'Confirm'
-                                )}
-                              </Button>
+                                <CreditCard className="w-3 h-3 mr-1" />
+                                {booking.payment_status || 'pending'}
+                              </Badge>
+                              {booking.payment_amount > 0 && (
+                                <div className="text-sm font-medium">
+                                  ₹{booking.payment_amount?.toLocaleString()}
+                                </div>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex space-x-1">
                               <Button 
                                 size="sm" 
                                 variant="outline"
-                                className="text-red-600 hover:bg-red-50"
-                                onClick={() => handleUpdateBookingStatus(booking.id, 'cancelled')}
-                                disabled={actionLoading === `booking-${booking.id}`}
+                                onClick={() => openBookingEditor(booking)}
                               >
-                                {actionLoading === `booking-${booking.id}` ? (
-                                  <Loader className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  'Cancel'
-                                )}
+                                <Edit className="w-3 h-3" />
                               </Button>
-                            </>
-                          )}
-                          <Button size="sm" variant="outline">
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                              
+                              {booking.status === 'pending' && (
+                                <>
+                                  <Button 
+                                    size="sm" 
+                                    className="btn-temple"
+                                    onClick={() => handleQuickStatusUpdate(booking.id, 'confirmed')}
+                                    disabled={actionLoading === `booking-${booking.id}`}
+                                  >
+                                    {actionLoading === `booking-${booking.id}` ? (
+                                      <Loader className="w-3 h-3 animate-spin" />
+                                    ) : (
+                                      'Confirm'
+                                    )}
+                                  </Button>
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline"
+                                    className="text-red-600 hover:bg-red-50"
+                                    onClick={() => handleQuickStatusUpdate(booking.id, 'cancelled')}
+                                    disabled={actionLoading === `booking-${booking.id}`}
+                                  >
+                                    {actionLoading === `booking-${booking.id}` ? (
+                                      <Loader className="w-3 h-3 animate-spin" />
+                                    ) : (
+                                      'Cancel'
+                                    )}
+                                  </Button>
+                                </>
+                              )}
+                              
+                              {booking.internal_notes && (
+                                <Badge variant="outline" className="text-xs">
+                                  <FileText className="w-3 h-3" />
+                                </Badge>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
             )}
           </TabsContent>
         </Tabs>
+
+        {/* Booking Editor Modal */}
+        <BookingEditor
+          booking={selectedBooking}
+          isOpen={showBookingEditor}
+          onClose={closeBookingEditor}
+          onUpdate={() => {
+            fetchBookings();
+            closeBookingEditor();
+          }}
+        />
       </div>
     </div>
   );

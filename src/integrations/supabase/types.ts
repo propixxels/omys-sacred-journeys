@@ -33,37 +33,146 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_notes: {
+        Row: {
+          booking_id: string | null
+          created_at: string | null
+          created_by: string | null
+          id: string
+          note: string
+          note_type: string | null
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          note: string
+          note_type?: string | null
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          note?: string
+          note_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_notes_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      booking_payments: {
+        Row: {
+          amount: number
+          booking_id: string | null
+          created_at: string | null
+          id: string
+          notes: string | null
+          payment_date: string | null
+          payment_method: string | null
+          reference_number: string | null
+        }
+        Insert: {
+          amount: number
+          booking_id?: string | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          payment_date?: string | null
+          payment_method?: string | null
+          reference_number?: string | null
+        }
+        Update: {
+          amount?: number
+          booking_id?: string | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          payment_date?: string | null
+          payment_method?: string | null
+          reference_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_payments_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookings: {
         Row: {
           booking_date: string
+          booking_source: string | null
           customer_name: string
+          dietary_requirements: string | null
+          discount_amount: number | null
           email: string
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
           id: string
+          internal_notes: string | null
+          last_modified_at: string | null
+          last_modified_by: string | null
           mobile_number: string
           notes: string | null
           number_of_people: number
+          payment_amount: number | null
+          payment_status: string | null
+          special_requests: string | null
           status: string
           tour_id: string
         }
         Insert: {
           booking_date?: string
+          booking_source?: string | null
           customer_name: string
+          dietary_requirements?: string | null
+          discount_amount?: number | null
           email: string
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
           id?: string
+          internal_notes?: string | null
+          last_modified_at?: string | null
+          last_modified_by?: string | null
           mobile_number: string
           notes?: string | null
           number_of_people?: number
+          payment_amount?: number | null
+          payment_status?: string | null
+          special_requests?: string | null
           status?: string
           tour_id: string
         }
         Update: {
           booking_date?: string
+          booking_source?: string | null
           customer_name?: string
+          dietary_requirements?: string | null
+          discount_amount?: number | null
           email?: string
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
           id?: string
+          internal_notes?: string | null
+          last_modified_at?: string | null
+          last_modified_by?: string | null
           mobile_number?: string
           notes?: string | null
           number_of_people?: number
+          payment_amount?: number | null
+          payment_status?: string | null
+          special_requests?: string | null
           status?: string
           tour_id?: string
         }
