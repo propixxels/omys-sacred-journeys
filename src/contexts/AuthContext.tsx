@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [initialAuthCheck, setInitialAuthCheck] = useState(false);
 
   const checkAdminStatus = async (userEmail: string) => {
     try {
@@ -46,6 +45,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     let mounted = true;
+    let authSubscription: any = null;
 
     const initializeAuth = async () => {
       try {
@@ -79,59 +79,66 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.error('Error initializing auth:', err);
       } finally {
         if (mounted) {
-          setInitialAuthCheck(true);
           setLoading(false);
         }
       }
     };
 
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', event, session);
-        
-        if (!mounted) return;
-        
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user?.email) {
-          try {
-            const adminStatus = await checkAdminStatus(session.user.email);
-            if (mounted) {
-              setIsAdmin(adminStatus);
+    // Set up auth state listener ONCE
+    const setupAuthListener = () => {
+      authSubscription = supabase.auth.onAuthStateChange(
+        async (event, session) => {
+          console.log('Auth state changed:', event, session?.user?.email || 'no user');
+          
+          if (!mounted) return;
+          
+          // Update session and user state
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          // Check admin status for new session
+          if (session?.user?.email) {
+            try {
+              const adminStatus = await checkAdminStatus(session.user.email);
+              if (mounted) {
+                setIsAdmin(adminStatus);
+              }
+            } catch (err) {
+              console.error('Error checking admin status on auth change:', err);
+              if (mounted) {
+                setIsAdmin(false);
+              }
             }
-          } catch (err) {
-            console.error('Error checking admin status on auth change:', err);
+          } else {
             if (mounted) {
               setIsAdmin(false);
             }
           }
-        } else {
+          
+          // Always set loading to false after handling auth state change
           if (mounted) {
-            setIsAdmin(false);
+            setLoading(false);
           }
         }
-        
-        // Set loading to false after any auth event if initial check is complete
-        if (mounted && initialAuthCheck) {
-          setLoading(false);
-        }
-      }
-    );
+      );
+    };
 
-    // Initialize auth
+    // Initialize everything
+    setupAuthListener();
     initializeAuth();
 
     return () => {
       mounted = false;
-      subscription.unsubscribe();
+      if (authSubscription?.data?.subscription) {
+        authSubscription.data.subscription.unsubscribe();
+      }
     };
-  }, [initialAuthCheck]);
+  }, []); // Empty dependency array to prevent re-runs
 
   const signIn = async (email: string, password: string) => {
     try {
       console.log('Attempting to sign in with:', email);
+      setLoading(true);
       
       const { error } = await supabase.auth.signInWithPassword({
         email,
@@ -143,6 +150,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (err) {
       console.error('Sign in error:', err);
       return { error: err };
+    } finally {
+      // Don't set loading to false here - let onAuthStateChange handle it
     }
   };
 
