@@ -100,7 +100,7 @@ const BookingFilters = ({ onFiltersChange, totalCount, filteredCount }: BookingF
                 <SelectValue placeholder="All statuses" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All statuses</SelectItem>
+                <SelectItem value="all">All statuses</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
                 <SelectItem value="confirmed">Confirmed</SelectItem>
                 <SelectItem value="cancelled">Cancelled</SelectItem>
@@ -117,7 +117,7 @@ const BookingFilters = ({ onFiltersChange, totalCount, filteredCount }: BookingF
                 <SelectValue placeholder="All payments" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All payments</SelectItem>
+                <SelectItem value="all">All payments</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
                 <SelectItem value="partial">Partial</SelectItem>
                 <SelectItem value="paid">Paid</SelectItem>

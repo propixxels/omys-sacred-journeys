@@ -234,12 +234,12 @@ const AdminDashboard = () => {
     }
 
     // Status filter
-    if (filters.status) {
+    if (filters.status && filters.status !== 'all') {
       filtered = filtered.filter(booking => booking.status === filters.status);
     }
 
     // Payment status filter
-    if (filters.paymentStatus) {
+    if (filters.paymentStatus && filters.paymentStatus !== 'all') {
       filtered = filtered.filter(booking => booking.payment_status === filters.paymentStatus);
     }
 
