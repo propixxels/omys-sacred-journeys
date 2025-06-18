@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,9 +14,10 @@ const FeaturedToursSection = () => {
 
   // Fetch tours from database
   useEffect(() => {
+    let mounted = true;
+    
     const fetchTours = async () => {
       try {
-        setError(null);
         console.log('Fetching featured tours...');
         
         const { data, error } = await supabase
@@ -26,6 +26,8 @@ const FeaturedToursSection = () => {
           .eq('isDraft', false)
           .order('created_at', { ascending: false })
           .limit(4);
+
+        if (!mounted) return; // Prevent state updates if component unmounted
 
         if (error) {
           console.error('Error fetching tours:', error);
@@ -83,20 +85,30 @@ const FeaturedToursSection = () => {
           }));
           
           setTours(mappedTours);
+          setError(null);
         } else {
           console.log('No tours found');
           setTours([]);
+          setError(null);
         }
       } catch (error) {
         console.error('Error fetching tours:', error);
-        setError('Failed to load tours');
-        setTours([]);
+        if (mounted) {
+          setError('Failed to load tours');
+          setTours([]);
+        }
       } finally {
-        setIsLoading(false);
+        if (mounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchTours();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const formatPrice = (price: number) => {
