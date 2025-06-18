@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [initialAuthCheck, setInitialAuthCheck] = useState(false);
 
   const checkAdminStatus = async (userEmail: string) => {
     try {
@@ -78,6 +79,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         console.error('Error initializing auth:', err);
       } finally {
         if (mounted) {
+          setInitialAuthCheck(true);
           setLoading(false);
         }
       }
@@ -111,8 +113,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }
         }
         
-        // Only set loading to false after initial auth setup is complete
-        if (mounted && event !== 'INITIAL_SESSION') {
+        // Set loading to false after any auth event if initial check is complete
+        if (mounted && initialAuthCheck) {
           setLoading(false);
         }
       }
@@ -125,7 +127,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [initialAuthCheck]);
 
   const signIn = async (email: string, password: string) => {
     try {

@@ -9,6 +9,8 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { isAdmin, loading } = useAuth();
 
+  console.log('ProtectedRoute - loading:', loading, 'isAdmin:', isAdmin);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-saffron-50 to-temple-cream">
@@ -21,6 +23,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }
 
   if (!isAdmin) {
+    console.log('User is not admin, redirecting to login');
     return <Navigate to="/admin-login" replace />;
   }
 

@@ -18,6 +18,7 @@ const FeaturedToursSection = () => {
     const fetchTours = async () => {
       try {
         setError(null);
+        setIsLoading(true);
         console.log('Fetching featured tours...');
         
         const { data, error } = await supabase
@@ -30,6 +31,7 @@ const FeaturedToursSection = () => {
         if (error) {
           console.error('Error fetching tours:', error);
           setError('Failed to load tours');
+          setTours([]);
         } else if (data) {
           console.log('Tours fetched successfully:', data.length);
           // Map database response to TourData interface with proper type casting
@@ -82,10 +84,13 @@ const FeaturedToursSection = () => {
           }));
           
           setTours(mappedTours);
+        } else {
+          setTours([]);
         }
       } catch (error) {
         console.error('Error fetching tours:', error);
         setError('Failed to load tours');
+        setTours([]);
       } finally {
         setIsLoading(false);
       }
