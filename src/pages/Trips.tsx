@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -378,20 +379,23 @@ const Trips = () => {
                   <div className="absolute inset-0 mandala-bg opacity-20"></div>
                 )}
                 <div className="absolute inset-0 bg-black/20"></div>
-                <div className="relative z-10 p-6 text-white">
+                <div className="absolute top-4 left-4">
                   <Badge 
                     variant="secondary" 
-                    className="mb-2 bg-white/20 text-white border-white/30"
+                    className="bg-white/20 text-white border-white/30 backdrop-blur-sm"
                   >
                     {tour.transport_mode}
                   </Badge>
-                  <h3 className="text-xl font-temple font-bold mb-2">{tour.name}</h3>
-                  <p className="text-sm opacity-90">{tour.duration}</p>
                 </div>
               </div>
 
               <CardContent className="p-6">
                 <div className="space-y-4">
+                  {/* Tour Title - Moved outside image area */}
+                  <h3 className="text-xl font-temple font-bold text-temple-maroon line-clamp-2 leading-tight">
+                    {tour.name}
+                  </h3>
+
                   <div className="flex items-start space-x-2">
                     <MapPin className="w-5 h-5 text-saffron-600 mt-0.5 flex-shrink-0" />
                     <p className="text-gray-700 line-clamp-2">{tour.destinations}</p>
