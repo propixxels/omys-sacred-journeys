@@ -74,16 +74,41 @@ export const useTourEditor = (tourId?: string) => {
 
       if (data) {
         const safeParseArray = (field: any): any[] => {
-          if (Array.isArray(field)) return field;
+          if (Array.isArray(field)) return field.length > 0 ? field : [""];
           if (typeof field === 'string') {
             try {
               const parsed = JSON.parse(field);
-              return Array.isArray(parsed) ? parsed : [];
+              return Array.isArray(parsed) && parsed.length > 0 ? parsed : [""];
             } catch {
-              return [];
+              return [""];
             }
           }
-          return [];
+          return [""];
+        };
+
+        const safeParseItinerary = (field: any): { day: number; title: string; activities: string[] }[] => {
+          if (Array.isArray(field) && field.length > 0) {
+            return field.map(item => ({
+              day: item.day || 1,
+              title: item.title || "",
+              activities: Array.isArray(item.activities) && item.activities.length > 0 ? item.activities : [""]
+            }));
+          }
+          if (typeof field === 'string') {
+            try {
+              const parsed = JSON.parse(field);
+              if (Array.isArray(parsed) && parsed.length > 0) {
+                return parsed.map(item => ({
+                  day: item.day || 1,
+                  title: item.title || "",
+                  activities: Array.isArray(item.activities) && item.activities.length > 0 ? item.activities : [""]
+                }));
+              }
+            } catch {
+              // fallback to default
+            }
+          }
+          return [{ day: 1, title: "", activities: [""] }];
         };
 
         const safeParseObject = (field: any, defaultValue: any): any => {
@@ -97,6 +122,15 @@ export const useTourEditor = (tourId?: string) => {
             }
           }
           return defaultValue;
+        };
+
+        const safeParseAccommodation = (field: any) => {
+          const parsed = safeParseObject(field, { hotels: [""], roomType: "", amenities: [""] });
+          return {
+            hotels: Array.isArray(parsed.hotels) && parsed.hotels.length > 0 ? parsed.hotels : [""],
+            roomType: parsed.roomType || "",
+            amenities: Array.isArray(parsed.amenities) && parsed.amenities.length > 0 ? parsed.amenities : [""]
+          };
         };
 
         setTourData({
@@ -115,15 +149,15 @@ export const useTourEditor = (tourId?: string) => {
           pilgrims_count: data.pilgrims_count,
           next_departure: data.next_departure || "",
           highlights: safeParseArray(data.highlights),
-          itinerary: safeParseArray(data.itinerary),
-          accommodation: safeParseObject(data.accommodation, { hotels: [], roomType: "", amenities: [] }),
+          itinerary: safeParseItinerary(data.itinerary),
+          accommodation: safeParseAccommodation(data.accommodation),
           meals: safeParseObject(data.meals, { included: "", special: "", note: "" }),
           transport: safeParseObject(data.transport, { pickup: "", drop: "", vehicle: "", luggage: "" }),
           spiritualArrangements: safeParseArray(data.spiritual_arrangements),
           inclusions: safeParseArray(data.inclusions),
           exclusions: safeParseArray(data.exclusions),
           pricing: safeParseObject(data.pricing, { doubleSharing: "", singleSupplement: "", child5to12: "", groupDiscount: "", earlyBird: "" }),
-          gallery: safeParseArray(data.gallery || []),
+          gallery: Array.isArray(data.gallery) ? data.gallery : [],
           isDraft: data.isDraft || false
         });
       }
