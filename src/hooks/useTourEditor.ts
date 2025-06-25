@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -133,6 +132,23 @@ export const useTourEditor = (tourId?: string) => {
           };
         };
 
+        const safeParseGallery = (field: any): string[] => {
+          if (Array.isArray(field)) {
+            return field.filter(item => typeof item === 'string' && item.trim() !== '');
+          }
+          if (typeof field === 'string') {
+            try {
+              const parsed = JSON.parse(field);
+              if (Array.isArray(parsed)) {
+                return parsed.filter(item => typeof item === 'string' && item.trim() !== '');
+              }
+            } catch {
+              // fallback to empty array
+            }
+          }
+          return [];
+        };
+
         setTourData({
           id: data.id,
           name: data.name || "",
@@ -157,7 +173,7 @@ export const useTourEditor = (tourId?: string) => {
           inclusions: safeParseArray(data.inclusions),
           exclusions: safeParseArray(data.exclusions),
           pricing: safeParseObject(data.pricing, { doubleSharing: "", singleSupplement: "", child5to12: "", groupDiscount: "", earlyBird: "" }),
-          gallery: Array.isArray(data.gallery) ? data.gallery : [],
+          gallery: safeParseGallery(data.gallery),
           isDraft: data.isDraft || false
         });
       }
