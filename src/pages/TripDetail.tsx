@@ -1,3 +1,4 @@
+
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -9,12 +10,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Calendar, Clock, MapPin, Users, Star, Check, X, Phone, Mail, Image as ImageIcon } from "lucide-react";
 import BookingForm from "@/components/BookingForm";
 import { useTripDetails } from "@/hooks/useTripDetails";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const TripDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedGalleryImage, setSelectedGalleryImage] = useState<string | null>(null);
+  const isMobile = useIsMobile();
   
   const { tripDetails: trip, loading, error } = useTripDetails(slug || '');
 
@@ -443,13 +446,13 @@ const TripDetail = () => {
                   className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg py-6 transition-all duration-300 transform hover:scale-105"
                   onClick={() => setIsBookingOpen(true)}
                 >
-                  Book This Yatra
+                  Book Now
                 </Button>
 
                 <div className="text-center space-y-2">
                   <p className="text-sm text-gray-600">Secure payment • 50% advance</p>
                   <div className="flex justify-center space-x-2">
-                    {["Razorpay", "UPI", "Cards"].map((method) => (
+                    {["UPI", "Cash", "Cards"].map((method) => (
                       <Badge key={method} variant="outline" className="text-xs">
                         {method}
                       </Badge>
@@ -500,12 +503,24 @@ const TripDetail = () => {
         </div>
       </div>
 
+      {/* Mobile Sticky Book Now Button */}
+      {isMobile && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50 shadow-lg">
+          <Button 
+            className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg py-4 transition-all duration-300"
+            onClick={() => setIsBookingOpen(true)}
+          >
+            Book Now
+          </Button>
+        </div>
+      )}
+
       {/* Booking Dialog */}
       <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="font-temple text-temple-maroon">
-              Book Your Pilgrimage
+              Book Your Journey
             </DialogTitle>
           </DialogHeader>
           <BookingForm

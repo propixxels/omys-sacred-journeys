@@ -120,7 +120,6 @@ const BookingForm = ({ tourId, tourName, onClose }: BookingFormProps) => {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle className="font-temple text-temple-maroon">Book Your Journey</CardTitle>
         <CardDescription>{tourName}</CardDescription>
       </CardHeader>
       <CardContent>
