@@ -1,5 +1,3 @@
-
-
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -504,21 +502,6 @@ const TripDetail = () => {
         </div>
       </div>
 
-      {/* Mobile Sticky Book Now Button */}
-      {isMobile && (
-        <div 
-          className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg"
-          style={{ zIndex: 9999, position: 'fixed' }}
-        >
-          <Button 
-            className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg py-4 transition-all duration-300"
-            onClick={() => setIsBookingOpen(true)}
-          >
-            Book Now
-          </Button>
-        </div>
-      )}
-
       {/* Booking Dialog */}
       <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
         <DialogContent className="sm:max-w-md">
@@ -559,4 +542,3 @@ const TripDetail = () => {
 };
 
 export default TripDetail;
-
