@@ -12,24 +12,24 @@ interface Slide {
 
 const heroSlides: Slide[] = [
   {
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-    title: "Sacred Kashi Darshan",
-    subtitle: "Experience the spiritual heart of India at the holy city of Varanasi"
+    image: "/lovable-uploads/2a6ac881-f42d-4425-b012-5a8a6b2eb405.png",
+    title: "Kashmir Valley Paradise",
+    subtitle: "Experience the breathtaking beauty of Dal Lake and snow-capped mountains"
   },
   {
-    image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-    title: "Divine Kedarnath Yatra",
-    subtitle: "Journey to the sacred Himalayan temple of Lord Shiva"
+    image: "/lovable-uploads/4a3e3a77-7138-41d9-9ace-0be679cf17b1.png",
+    title: "Himalayan Cable Car Adventure",
+    subtitle: "Soar above the snow-covered peaks and valleys of the mighty Himalayas"
   },
   {
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-    title: "Kodachadri Hill Trek",
-    subtitle: "Discover the pristine beauty of Western Ghats peaks"
+    image: "/lovable-uploads/572bb5b4-4dfe-4a34-a028-22fd25e6982e.png",
+    title: "Sacred Temple Heritage",
+    subtitle: "Discover ancient temples and spiritual heritage across India"
   },
   {
-    image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-    title: "Kumta Om Beach Bliss",
-    subtitle: "Relax at the serene beaches of Karnataka's coastline"
+    image: "/lovable-uploads/403044bc-1455-4904-b5da-f626095cc624.png",
+    title: "Coastal Paradise Retreat",
+    subtitle: "Relax at pristine beaches and tropical backwaters of South India"
   }
 ];
 
