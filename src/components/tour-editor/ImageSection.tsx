@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { TourData } from "@/types/tour";
-import { uploadToCloudinary } from "@/utils/imageUpload";
+import { uploadToSupabaseStorage } from "@/utils/imageUpload";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 
@@ -24,7 +24,7 @@ const ImageSection = ({ tourData, onUpdate }: ImageSectionProps) => {
 
     try {
       setUploading(true);
-      const imageUrl = await uploadToCloudinary(file);
+      const imageUrl = await uploadToSupabaseStorage(file);
       
       if (isMainImage) {
         onUpdate({ image_url: imageUrl });
@@ -37,6 +37,7 @@ const ImageSection = ({ tourData, onUpdate }: ImageSectionProps) => {
         description: "Image uploaded successfully!"
       });
     } catch (error) {
+      console.error('Upload error:', error);
       toast({
         title: "Error",
         description: "Failed to upload image",
