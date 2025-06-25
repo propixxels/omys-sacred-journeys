@@ -29,13 +29,13 @@ const AboutUsIntro = () => (
         <div className="relative">
           <div className="grid grid-cols-2 gap-4">
             <img 
-              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
-              alt="Temple"
+              src="/lovable-uploads/4feb4f58-15a9-4299-9bb8-4489cc721530.png"
+              alt="Taj Mahal through ornate archway"
               className="rounded-lg shadow-lg"
             />
             <img 
-              src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
-              alt="Cultural gathering"
+              src="/lovable-uploads/b7af6d52-1221-455c-aff3-82751d40b460.png"
+              alt="Pristine mountain lake landscape"
               className="rounded-lg shadow-lg mt-8"
             />
           </div>
