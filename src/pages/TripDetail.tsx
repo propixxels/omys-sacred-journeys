@@ -161,7 +161,7 @@ const TripDetail = () => {
                 <div className="flex items-center space-x-6 text-sm text-gray-500">
                   <div className="flex items-center space-x-1">
                     <Users className="w-4 h-4" />
-                    <span>{trip.pilgrims_count || 0} pilgrims joined</span>
+                    <span>{trip.pilgrims_count || 0} people joined</span>
                   </div>
                   <div className="flex items-center space-x-1">
                     <Star className="w-4 h-4 text-orange-400 fill-current" />
