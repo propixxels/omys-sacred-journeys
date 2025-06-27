@@ -119,7 +119,7 @@ const TripDetail = () => {
                   <span>Next Departure: {trip.next_departure ? formatDate(trip.next_departure) : formatDate(trip.departure_date)}</span>
                 </div>
                 <div className="text-2xl font-bold text-orange-300">
-                  ₹{trip.cost.toLocaleString()} per pilgrim
+                  ₹{trip.cost.toLocaleString()} per person
                 </div>
               </div>
               <Button 
