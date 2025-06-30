@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,6 +17,64 @@ const TripsWithTabs = () => {
   useEffect(() => {
     fetchTrips();
   }, []);
+
+  const transformTourData = (tour: any): TourData => {
+    const safeParseArray = (field: any): any[] => {
+      if (Array.isArray(field)) return field;
+      if (typeof field === 'string') {
+        try {
+          const parsed = JSON.parse(field);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      }
+      return [];
+    };
+
+    const safeParseObject = (field: any, defaultValue: any): any => {
+      if (field && typeof field === 'object' && !Array.isArray(field)) return field;
+      if (typeof field === 'string') {
+        try {
+          const parsed = JSON.parse(field);
+          return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : defaultValue;
+        } catch {
+          return defaultValue;
+        }
+      }
+      return defaultValue;
+    };
+
+    return {
+      id: tour.id,
+      name: tour.name,
+      duration: tour.duration,
+      transport_mode: tour.transport_mode,
+      destinations: tour.destinations,
+      departure_date: tour.departure_date,
+      cost: tour.cost,
+      cost_details: tour.cost_details || '',
+      description: tour.description || '',
+      slug: tour.slug || '',
+      image_url: tour.image_url || '',
+      rating: tour.rating,
+      pilgrims_count: tour.pilgrims_count,
+      next_departure: tour.next_departure || '',
+      highlights: safeParseArray(tour.highlights),
+      itinerary: safeParseArray(tour.itinerary),
+      accommodation: safeParseObject(tour.accommodation, { hotels: [], roomType: '', amenities: [] }),
+      meals: safeParseObject(tour.meals, { included: '', special: '', note: '' }),
+      transport: safeParseObject(tour.transport, { pickup: '', drop: '', vehicle: '', luggage: '' }),
+      spiritualArrangements: safeParseArray(tour.spiritual_arrangements),
+      inclusions: safeParseArray(tour.inclusions),
+      exclusions: safeParseArray(tour.exclusions),
+      pricing: safeParseObject(tour.pricing, { doubleSharing: '', singleSupplement: '', child5to12: '', groupDiscount: '', earlyBird: '' }),
+      gallery: safeParseArray(tour.gallery),
+      isDraft: tour.isDraft || false,
+      trip_type: tour.trip_type as 'domestic' | 'international' || 'domestic',
+      total_capacity: tour.total_capacity || 50
+    };
+  };
 
   const fetchTrips = async () => {
     try {
@@ -43,8 +100,8 @@ const TripsWithTabs = () => {
 
       if (internationalError) throw internationalError;
 
-      setDomesticTrips(domestic || []);
-      setInternationalTrips(international || []);
+      setDomesticTrips((domestic || []).map(transformTourData));
+      setInternationalTrips((international || []).map(transformTourData));
     } catch (error) {
       console.error('Error fetching trips:', error);
     } finally {

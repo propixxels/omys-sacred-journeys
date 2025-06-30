@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -178,7 +177,7 @@ export const useTourEditor = (tourId?: string) => {
           pricing: safeParseObject(data.pricing, { doubleSharing: "", singleSupplement: "", child5to12: "", groupDiscount: "", earlyBird: "" }),
           gallery: safeParseGallery(data.gallery),
           isDraft: data.isDraft || false,
-          trip_type: data.trip_type || 'domestic',
+          trip_type: (data.trip_type as 'domestic' | 'international') || 'domestic',
           total_capacity: data.total_capacity || 50
         });
       }

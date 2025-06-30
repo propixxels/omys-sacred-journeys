@@ -50,6 +50,8 @@ interface TripDetails {
     earlyBird: string | null;
   };
   gallery: string[];
+  trip_type: 'domestic' | 'international';
+  total_capacity: number;
 }
 
 export const useTripDetails = (slug: string) => {
@@ -145,7 +147,9 @@ export const useTripDetails = (slug: string) => {
           inclusions: safeParseArray(tour.inclusions),
           exclusions: safeParseArray(tour.exclusions),
           pricing: safeParseObject(tour.pricing, { doubleSharing: '', singleSupplement: null, child5to12: null, groupDiscount: null, earlyBird: null }),
-          gallery: safeParseArray(tour.gallery || [])
+          gallery: safeParseArray(tour.gallery || []),
+          trip_type: (tour.trip_type as 'domestic' | 'international') || 'domestic',
+          total_capacity: tour.total_capacity || 50
         };
 
         console.log('Processed trip data:', tripData);
