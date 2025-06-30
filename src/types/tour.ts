@@ -44,4 +44,6 @@ export interface TourData {
   };
   gallery: string[];
   isDraft: boolean;
+  trip_type: 'domestic' | 'international';
+  total_capacity: number;
 }

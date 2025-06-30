@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Calendar, Clock, MapPin, Users, Star, Check, X, Phone, Mail, Image as ImageIcon } from "lucide-react";
 import BookingForm from "@/components/BookingForm";
 import { useTripDetails } from "@/hooks/useTripDetails";
+import { useBookingsCount } from "@/hooks/useBookingsCount";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const TripDetail = () => {
@@ -19,6 +20,7 @@ const TripDetail = () => {
   const isMobile = useIsMobile();
   
   const { tripDetails: trip, loading, error } = useTripDetails(slug || '');
+  const { confirmedBookingsCount } = useBookingsCount(trip?.id);
 
   if (loading) {
     return (
@@ -91,6 +93,8 @@ const TripDetail = () => {
       year: 'numeric'
     });
   };
+
+  const remainingSeats = (trip.total_capacity || 0) - confirmedBookingsCount;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
@@ -166,6 +170,11 @@ const TripDetail = () => {
                   <div className="flex items-center space-x-1">
                     <Star className="w-4 h-4 text-orange-400 fill-current" />
                     <span>{trip.rating || 0} rating</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Badge variant={remainingSeats > 10 ? "default" : remainingSeats > 0 ? "secondary" : "destructive"}>
+                      {remainingSeats > 0 ? `${remainingSeats} seats available` : 'Fully booked'}
+                    </Badge>
                   </div>
                 </div>
               </CardContent>
@@ -428,6 +437,21 @@ const TripDetail = () => {
 
                 <Separator />
 
+                {/* Availability Info */}
+                <div className="space-y-2">
+                  <div className="bg-blue-50 p-3 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-blue-800">Available Seats</span>
+                      <Badge variant={remainingSeats > 10 ? "default" : remainingSeats > 0 ? "secondary" : "destructive"}>
+                        {remainingSeats > 0 ? remainingSeats : 'Sold Out'}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-blue-600 mt-1">
+                      Total capacity: {trip.total_capacity || 0} | Confirmed: {confirmedBookingsCount}
+                    </p>
+                  </div>
+                </div>
+
                 <div className="space-y-2">
                   {trip.pricing.groupDiscount && (
                     <div className="bg-green-100 p-3 rounded-lg">
@@ -444,8 +468,9 @@ const TripDetail = () => {
                 <Button 
                   className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg py-6 transition-all duration-300 transform hover:scale-105"
                   onClick={() => setIsBookingOpen(true)}
+                  disabled={remainingSeats <= 0}
                 >
-                  Book Now
+                  {remainingSeats > 0 ? 'Book Now' : 'Fully Booked'}
                 </Button>
 
                 <div className="text-center space-y-2">

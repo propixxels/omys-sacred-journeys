@@ -50,7 +50,7 @@ const BasicInformationSection = ({ tourData, onUpdate }: BasicInformationSection
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <Label htmlFor="cost">Cost (₹) *</Label>
             <Input
@@ -62,6 +62,31 @@ const BasicInformationSection = ({ tourData, onUpdate }: BasicInformationSection
             />
           </div>
           <div>
+            <Label htmlFor="trip_type">Trip Type *</Label>
+            <Select 
+              value={tourData.trip_type} 
+              onValueChange={(value: 'domestic' | 'international') => onUpdate({ trip_type: value })}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="domestic">Domestic</SelectItem>
+                <SelectItem value="international">International</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="total_capacity">Total Capacity *</Label>
+            <Input
+              id="total_capacity"
+              type="number"
+              value={tourData.total_capacity}
+              onChange={(e) => onUpdate({ total_capacity: parseInt(e.target.value) || 0 })}
+              placeholder="e.g., 50"
+            />
+          </div>
+          <div>
             <Label htmlFor="departure_date">Departure Date *</Label>
             <Input
               id="departure_date"
@@ -70,6 +95,9 @@ const BasicInformationSection = ({ tourData, onUpdate }: BasicInformationSection
               onChange={(e) => onUpdate({ departure_date: e.target.value })}
             />
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="next_departure">Next Departure</Label>
             <Input
@@ -77,19 +105,6 @@ const BasicInformationSection = ({ tourData, onUpdate }: BasicInformationSection
               type="date"
               value={tourData.next_departure}
               onChange={(e) => onUpdate({ next_departure: e.target.value })}
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <Label htmlFor="destinations">Destinations</Label>
-            <Textarea
-              id="destinations"
-              value={tourData.destinations}
-              onChange={(e) => onUpdate({ destinations: e.target.value })}
-              placeholder="List of destinations"
-              rows={3}
             />
           </div>
           <div>
@@ -108,6 +123,19 @@ const BasicInformationSection = ({ tourData, onUpdate }: BasicInformationSection
                 <SelectItem value="car">Car</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="destinations">Destinations</Label>
+            <Textarea
+              id="destinations"
+              value={tourData.destinations}
+              onChange={(e) => onUpdate({ destinations: e.target.value })}
+              placeholder="List of destinations"
+              rows={3}
+            />
           </div>
           <div>
             <Label htmlFor="cost_details">Cost Details</Label>

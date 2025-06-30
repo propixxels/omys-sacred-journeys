@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -46,7 +47,9 @@ const DEFAULT_TOUR_DATA: TourData = {
     earlyBird: ""
   },
   gallery: [],
-  isDraft: false
+  isDraft: false,
+  trip_type: 'domestic',
+  total_capacity: 50
 };
 
 export const useTourEditor = (tourId?: string) => {
@@ -174,7 +177,9 @@ export const useTourEditor = (tourId?: string) => {
           exclusions: safeParseArray(data.exclusions),
           pricing: safeParseObject(data.pricing, { doubleSharing: "", singleSupplement: "", child5to12: "", groupDiscount: "", earlyBird: "" }),
           gallery: safeParseGallery(data.gallery),
-          isDraft: data.isDraft || false
+          isDraft: data.isDraft || false,
+          trip_type: data.trip_type || 'domestic',
+          total_capacity: data.total_capacity || 50
         });
       }
     } catch (error) {
@@ -236,7 +241,9 @@ export const useTourEditor = (tourId?: string) => {
         exclusions: tourData.exclusions.filter(e => e.trim()),
         pricing: tourData.pricing,
         gallery: tourData.gallery.filter(img => img.trim()),
-        isDraft: isDraft
+        isDraft: isDraft,
+        trip_type: tourData.trip_type,
+        total_capacity: tourData.total_capacity
       };
 
       if (tourId) {

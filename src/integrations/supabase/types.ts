@@ -236,8 +236,10 @@ export type Database = {
           rating: number | null
           slug: string | null
           spiritual_arrangements: Json | null
+          total_capacity: number | null
           transport: Json | null
           transport_mode: string
+          trip_type: string | null
           updated_at: string
         }
         Insert: {
@@ -265,8 +267,10 @@ export type Database = {
           rating?: number | null
           slug?: string | null
           spiritual_arrangements?: Json | null
+          total_capacity?: number | null
           transport?: Json | null
           transport_mode: string
+          trip_type?: string | null
           updated_at?: string
         }
         Update: {
@@ -294,8 +298,10 @@ export type Database = {
           rating?: number | null
           slug?: string | null
           spiritual_arrangements?: Json | null
+          total_capacity?: number | null
           transport?: Json | null
           transport_mode?: string
+          trip_type?: string | null
           updated_at?: string
         }
         Relationships: []
