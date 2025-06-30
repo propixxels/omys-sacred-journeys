@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -245,14 +244,22 @@ const TripsWithTabs = () => {
       </div>
 
       <Tabs defaultValue="domestic" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 mb-8">
-          <TabsTrigger value="domestic" className="text-lg">
-            Domestic Trips ({filteredDomesticTrips.length})
-          </TabsTrigger>
-          <TabsTrigger value="international" className="text-lg">
-            International Trips ({filteredInternationalTrips.length})
-          </TabsTrigger>
-        </TabsList>
+        <div className="flex justify-center mb-8">
+          <TabsList className="inline-flex h-12 items-center justify-center rounded-lg bg-orange-100 p-1 text-orange-600 shadow-sm">
+            <TabsTrigger 
+              value="domestic" 
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-6 py-2 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:shadow-sm"
+            >
+              Domestic Trips ({filteredDomesticTrips.length})
+            </TabsTrigger>
+            <TabsTrigger 
+              value="international" 
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-6 py-2 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:shadow-sm"
+            >
+              International Trips ({filteredInternationalTrips.length})
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="domestic">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -263,7 +270,7 @@ const TripsWithTabs = () => {
             ) : (
               <div className="col-span-full text-center py-12">
                 <h3 className="text-xl font-semibold text-gray-600 mb-2">No domestic trips available</h3>
-                <p className="text-gray-500">Check back soon for new domestic pilgrimage tours!</p>
+                <p className="text-gray-500">Check back soon for new domestic tour packages!</p>
               </div>
             )}
           </div>
@@ -278,7 +285,7 @@ const TripsWithTabs = () => {
             ) : (
               <div className="col-span-full text-center py-12">
                 <h3 className="text-xl font-semibold text-gray-600 mb-2">No international trips available</h3>
-                <p className="text-gray-500">Check back soon for new international pilgrimage tours!</p>
+                <p className="text-gray-500">Check back soon for new international tour packages!</p>
               </div>
             )}
           </div>
