@@ -8,7 +8,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Clock, MapPin, Users, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { TourData } from "@/types/tour";
-import BookingFilters, { BookingFilters as FilterTypes } from "@/components/BookingFilters";
+import TripFilters from "./TripFilters";
+
+interface TripFilters {
+  search: string;
+  destination: string;
+  duration: string;
+  priceRange: string;
+  dateFrom: string;
+  dateTo: string;
+}
 
 const TripsWithTabs = () => {
   const navigate = useNavigate();
@@ -118,7 +127,7 @@ const TripsWithTabs = () => {
     }
   };
 
-  const handleFiltersChange = (filters: FilterTypes) => {
+  const handleFiltersChange = (filters: TripFilters) => {
     const filterTrips = (trips: TourData[]) => {
       return trips.filter(trip => {
         const matchesSearch = !filters.search || 
@@ -126,13 +135,29 @@ const TripsWithTabs = () => {
           trip.destinations.toLowerCase().includes(filters.search.toLowerCase()) ||
           trip.description.toLowerCase().includes(filters.search.toLowerCase());
 
+        const matchesDestination = !filters.destination || 
+          trip.destinations.toLowerCase().includes(filters.destination.toLowerCase());
+
+        const matchesDuration = !filters.duration || 
+          trip.duration.toLowerCase().includes(filters.duration.toLowerCase());
+
         const matchesDateFrom = !filters.dateFrom || 
           new Date(trip.departure_date) >= new Date(filters.dateFrom);
 
         const matchesDateTo = !filters.dateTo || 
           new Date(trip.departure_date) <= new Date(filters.dateTo);
 
-        return matchesSearch && matchesDateFrom && matchesDateTo;
+        let matchesPrice = true;
+        if (filters.priceRange) {
+          const [min, max] = filters.priceRange.split('-').map(Number);
+          if (max) {
+            matchesPrice = trip.cost >= min && trip.cost <= max;
+          } else {
+            matchesPrice = trip.cost >= min;
+          }
+        }
+
+        return matchesSearch && matchesDestination && matchesDuration && matchesDateFrom && matchesDateTo && matchesPrice;
       });
     };
 
@@ -149,70 +174,51 @@ const TripsWithTabs = () => {
   };
 
   const TripCard = ({ trip }: { trip: TourData }) => (
-    <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl overflow-hidden">
-      <div className="relative overflow-hidden">
+    <Card className="group overflow-hidden transition-all duration-300 hover:shadow-lg bg-white rounded-lg border border-gray-200">
+      <div className="relative">
         <img 
           src={trip.image_url || "https://images.unsplash.com/photo-1466442929976-97f336a657be?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"}
           alt={trip.name}
-          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-48 object-cover"
         />
-        <div className="absolute top-4 right-4">
-          <Badge className="bg-gradient-to-r from-orange-500 to-orange-600 text-white border-0">
-            ₹{trip.cost.toLocaleString()}
-          </Badge>
-        </div>
-        <div className="absolute top-4 left-4">
-          <Badge className="bg-orange-600 text-white">
-            {trip.trip_type === 'domestic' ? 'Domestic' : 'International'}
+        <div className="absolute top-3 left-3">
+          <Badge className="bg-orange-500 text-white text-xs px-2 py-1 rounded">
+            Popular
           </Badge>
         </div>
       </div>
       
-      <CardHeader className="pb-2">
-        <CardTitle className="font-temple text-temple-maroon group-hover:text-orange-600 transition-colors line-clamp-2">
+      <CardContent className="p-4">
+        <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-1">
           {trip.name}
-        </CardTitle>
-        <div className="flex items-center space-x-4 text-sm text-gray-600">
-          <div className="flex items-center">
-            <Clock className="w-4 h-4 mr-1 text-orange-600" />
-            <span>{trip.duration}</span>
-          </div>
-          <div className="flex items-center">
-            <MapPin className="w-4 h-4 mr-1 text-orange-600" />
-            <span className="truncate">{trip.destinations}</span>
-          </div>
-        </div>
-      </CardHeader>
-
-      <CardContent className="space-y-4">
-        <p className="text-gray-600 text-sm line-clamp-2">{trip.description}</p>
+        </h3>
         
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="flex items-center space-x-2">
-            <Calendar className="w-4 h-4 text-orange-600" />
-            <span>{formatDate(trip.next_departure || trip.departure_date)}</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Users className="w-4 h-4 text-orange-600" />
-            <span>{trip.pilgrims_count || 0} joined</span>
-          </div>
+        <div className="flex items-center text-sm text-gray-600 mb-2">
+          <Clock className="w-4 h-4 mr-1" />
+          <span>{trip.duration}</span>
         </div>
-
-        {trip.rating && trip.rating > 0 && (
-          <div className="flex items-center space-x-1">
-            {[...Array(Math.floor(trip.rating))].map((_, i) => (
-              <Star key={i} className="w-4 h-4 text-orange-400 fill-current" />
-            ))}
-            <span className="text-sm text-gray-600 ml-2">{trip.rating}/5</span>
+        
+        <div className="flex items-center text-sm text-gray-600 mb-3">
+          <Calendar className="w-4 h-4 mr-1" />
+          <span>{formatDate(trip.next_departure || trip.departure_date)}</span>
+        </div>
+        
+        <div className="flex items-center text-sm text-gray-600 mb-4">
+          <MapPin className="w-4 h-4 mr-1" />
+          <span className="line-clamp-1">{trip.destinations}</span>
+        </div>
+        
+        <div className="flex items-center justify-between">
+          <div className="text-xl font-bold text-orange-600">
+            ₹{trip.cost.toLocaleString()}
           </div>
-        )}
-
-        <Button 
-          onClick={() => navigate(`/trip/${trip.slug}`)}
-          className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white transition-all duration-300"
-        >
-          View Details
-        </Button>
+          <Button 
+            onClick={() => navigate(`/trip/${trip.slug}`)}
+            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded text-sm"
+          >
+            View Details
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
@@ -231,7 +237,7 @@ const TripsWithTabs = () => {
     <div className="container mx-auto px-4 py-8">
       {/* Filters Section */}
       <div className="mb-8">
-        <BookingFilters
+        <TripFilters
           onFiltersChange={handleFiltersChange}
           totalCount={domesticTrips.length + internationalTrips.length}
           filteredCount={filteredDomesticTrips.length + filteredInternationalTrips.length}
@@ -249,7 +255,7 @@ const TripsWithTabs = () => {
         </TabsList>
 
         <TabsContent value="domestic">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDomesticTrips.length > 0 ? (
               filteredDomesticTrips.map((trip) => (
                 <TripCard key={trip.id} trip={trip} />
@@ -264,7 +270,7 @@ const TripsWithTabs = () => {
         </TabsContent>
 
         <TabsContent value="international">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredInternationalTrips.length > 0 ? (
               filteredInternationalTrips.map((trip) => (
                 <TripCard key={trip.id} trip={trip} />

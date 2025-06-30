@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -132,53 +131,44 @@ const FeaturedToursSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {featuredTours.map((tour) => (
-            <Card key={tour.id} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl overflow-hidden">
-              <div className="relative overflow-hidden">
+            <Card key={tour.id} className="group overflow-hidden transition-all duration-300 hover:shadow-lg bg-white rounded-lg border border-gray-200">
+              <div className="relative">
                 <img 
                   src={tour.image_url || "https://images.unsplash.com/photo-1466442929976-97f336a657be?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"} 
                   alt={tour.name}
-                  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-48 object-cover"
                 />
-                <div className="absolute top-4 right-4">
-                  <Badge className="bg-gradient-to-r from-orange-500 to-orange-600 text-white border-0">
-                    ₹{tour.cost.toLocaleString()}
+                <div className="absolute top-3 left-3">
+                  <Badge className="bg-orange-500 text-white text-xs px-2 py-1 rounded">
+                    Popular
                   </Badge>
                 </div>
               </div>
               
-              <CardHeader className="pb-2">
-                <CardTitle className="font-temple text-temple-maroon group-hover:text-orange-600 transition-colors">
+              <CardContent className="p-4">
+                <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-1">
                   {tour.name}
-                </CardTitle>
-                <CardDescription className="text-gray-600 line-clamp-2">
-                  {tour.destinations}
-                </CardDescription>
-              </CardHeader>
-              
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="flex items-center space-x-2">
-                    <Clock className="w-4 h-4 text-orange-600" />
-                    <span>{tour.duration}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="w-4 h-4 text-orange-600" />
-                    <span>{formatDate(tour.departure_date)}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <MapPin className="w-4 h-4 text-orange-600" />
-                    <span>{tour.transport_mode}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Users className="w-4 h-4 text-orange-600" />
-                    <span>{tour.pilgrims_count || 0} joined</span>
-                  </div>
+                </h3>
+                
+                <div className="flex items-center text-sm text-gray-600 mb-2">
+                  <Clock className="w-4 h-4 mr-1" />
+                  <span>{tour.duration}</span>
+                </div>
+                
+                <div className="flex items-center text-sm text-gray-600 mb-3">
+                  <Calendar className="w-4 h-4 mr-1" />
+                  <span>{formatDate(tour.departure_date)}</span>
+                </div>
+                
+                <div className="flex items-center text-sm text-gray-600 mb-4">
+                  <MapPin className="w-4 h-4 mr-1" />
+                  <span className="line-clamp-1">{tour.destinations}</span>
                 </div>
                 
                 {tour.rating && tour.rating > 0 && (
-                  <div className="flex items-center space-x-1">
+                  <div className="flex items-center space-x-1 mb-4">
                     {[...Array(Math.floor(tour.rating))].map((_, i) => (
                       <Star key={i} className="w-4 h-4 text-orange-400 fill-current" />
                     ))}
@@ -186,12 +176,17 @@ const FeaturedToursSection = () => {
                   </div>
                 )}
                 
-                <Button 
-                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white transition-all duration-300"
-                  onClick={() => navigate(`/trip/${tour.slug || tour.id}`)}
-                >
-                  View Details
-                </Button>
+                <div className="flex items-center justify-between">
+                  <div className="text-xl font-bold text-orange-600">
+                    ₹{tour.cost.toLocaleString()}
+                  </div>
+                  <Button 
+                    onClick={() => navigate(`/trip/${tour.slug || tour.id}`)}
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded text-sm"
+                  >
+                    View Details
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           ))}
