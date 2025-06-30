@@ -152,7 +152,7 @@ const FeaturedToursSection = () => {
                 <CardTitle className="font-temple text-temple-maroon group-hover:text-orange-600 transition-colors">
                   {tour.name}
                 </CardTitle>
-                <CardDescription className="text-gray-600">
+                <CardDescription className="text-gray-600 line-clamp-2">
                   {tour.destinations}
                 </CardDescription>
               </CardHeader>
