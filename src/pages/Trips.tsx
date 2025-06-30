@@ -61,47 +61,51 @@ const Trips = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="min-h-screen bg-gradient-to-br from-saffron-50 to-orange-50">
         {/* Hero Section */}
-        <section className="relative py-20 bg-gradient-to-r from-blue-600 to-indigo-700 overflow-hidden">
-          <div className="absolute inset-0">
-            <img 
-              src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
-              alt="Travel destinations"
-              className="w-full h-full object-cover opacity-30"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 to-indigo-700/80"></div>
-          </div>
-          <div className="container mx-auto px-4 text-center relative z-10">
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              Explore Amazing Destinations
-            </h1>
-            <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto mb-8">
-              Discover incredible places and create unforgettable memories with our carefully crafted tour packages across India and beyond
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 mb-8">
-              <div className="flex items-center text-white">
-                <MapPin className="w-5 h-5 mr-2" />
-                <span>100+ Destinations</span>
-              </div>
-              <div className="flex items-center text-white">
-                <Clock className="w-5 h-5 mr-2" />
-                <span>Expert Guided Tours</span>
-              </div>
-              <div className="flex items-center text-white">
-                <Star className="w-5 h-5 mr-2" />
-                <span>4.8/5 Rating</span>
+        <div className="relative h-[600px] overflow-hidden">
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')`
+            }}
+          />
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 mandala-bg opacity-10" />
+          <div className="relative z-10 h-full flex items-center">
+            <div className="container mx-auto px-4">
+              <div className="max-w-3xl">
+                <h1 className="text-5xl md:text-6xl font-temple font-bold text-white mb-6 leading-tight">
+                  Explore Amazing Destinations
+                </h1>
+                <p className="text-xl md:text-2xl text-orange-100 mb-8 leading-relaxed">
+                  Discover incredible places and create unforgettable memories with our carefully crafted tour packages across India and beyond
+                </p>
+                <div className="flex flex-wrap justify-start gap-6 mb-8">
+                  <div className="flex items-center text-white">
+                    <MapPin className="w-5 h-5 mr-2" />
+                    <span>100+ Destinations</span>
+                  </div>
+                  <div className="flex items-center text-white">
+                    <Clock className="w-5 h-5 mr-2" />
+                    <span>Expert Guided Tours</span>
+                  </div>
+                  <div className="flex items-center text-white">
+                    <Star className="w-5 h-5 mr-2" />
+                    <span>4.8/5 Rating</span>
+                  </div>
+                </div>
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-lg px-8 py-4"
+                  asChild
+                >
+                  <a href="#tours">Explore Tours</a>
+                </Button>
               </div>
             </div>
-            <Button 
-              size="lg" 
-              className="bg-white text-blue-600 hover:bg-blue-50 text-lg px-8 py-4"
-              asChild
-            >
-              <a href="#tours">Explore Tours</a>
-            </Button>
           </div>
-        </section>
+        </div>
 
         {/* Tours Section */}
         <section id="tours" className="py-8">
@@ -112,7 +116,7 @@ const Trips = () => {
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4">
+              <h2 className="text-3xl md:text-4xl font-temple font-bold text-orange-600 mb-4">
                 What Our Travelers Say
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
@@ -121,11 +125,11 @@ const Trips = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {testimonials.map((testimonial, index) => (
-                <Card key={index} className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+                <Card key={index} className="card-temple">
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <div>
-                        <CardTitle className="text-lg font-semibold text-blue-600">
+                        <CardTitle className="text-lg font-semibold text-orange-600">
                           {testimonial.name}
                         </CardTitle>
                         <p className="text-sm text-gray-600">{testimonial.location}</p>
@@ -139,7 +143,7 @@ const Trips = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-gray-700 mb-2">"{testimonial.comment}"</p>
-                    <p className="text-sm text-blue-600 font-medium">{testimonial.tour}</p>
+                    <p className="text-sm text-orange-600 font-medium">{testimonial.tour}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -148,10 +152,10 @@ const Trips = () => {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-16 bg-gradient-to-br from-blue-50 to-indigo-50">
+        <section className="py-16 bg-gradient-to-br from-saffron-50 to-orange-50">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4">
+              <h2 className="text-3xl md:text-4xl font-temple font-bold text-orange-600 mb-4">
                 Frequently Asked Questions
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
@@ -162,7 +166,7 @@ const Trips = () => {
               <Accordion type="single" collapsible className="w-full">
                 {faqs.map((faq, index) => (
                   <AccordionItem key={index} value={`item-${index}`}>
-                    <AccordionTrigger className="text-left font-semibold text-blue-600">
+                    <AccordionTrigger className="text-left font-semibold text-orange-600">
                       {faq.question}
                     </AccordionTrigger>
                     <AccordionContent className="text-gray-700">
@@ -179,7 +183,7 @@ const Trips = () => {
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4">
+              <h2 className="text-3xl md:text-4xl font-temple font-bold text-orange-600 mb-4">
                 Need Help Planning Your Trip?
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
@@ -187,37 +191,37 @@ const Trips = () => {
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              <Card className="text-center border-blue-200 hover:shadow-lg transition-shadow">
+              <Card className="text-center card-temple">
                 <CardContent className="p-6">
-                  <Phone className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-blue-600 mb-2">Call Us</h3>
+                  <Phone className="w-12 h-12 text-orange-600 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-orange-600 mb-2">Call Us</h3>
                   <p className="text-gray-600 mb-4">Speak with our travel experts</p>
-                  <p className="text-blue-600 font-semibold">+91 73488 69099</p>
+                  <p className="text-orange-600 font-semibold">+91 73488 69099</p>
                 </CardContent>
               </Card>
               
-              <Card className="text-center border-blue-200 hover:shadow-lg transition-shadow">
+              <Card className="text-center card-temple">
                 <CardContent className="p-6">
-                  <Mail className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-blue-600 mb-2">Email Us</h3>
+                  <Mail className="w-12 h-12 text-orange-600 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-orange-600 mb-2">Email Us</h3>
                   <p className="text-gray-600 mb-4">Get detailed information</p>
-                  <p className="text-blue-600 font-semibold">connect@omytravels.in</p>
+                  <p className="text-orange-600 font-semibold">connect@omytravels.in</p>
                 </CardContent>
               </Card>
               
-              <Card className="text-center border-blue-200 hover:shadow-lg transition-shadow">
+              <Card className="text-center card-temple">
                 <CardContent className="p-6">
-                  <MessageCircle className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-blue-600 mb-2">WhatsApp</h3>
+                  <MessageCircle className="w-12 h-12 text-orange-600 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-orange-600 mb-2">WhatsApp</h3>
                   <p className="text-gray-600 mb-4">Quick chat support</p>
-                  <p className="text-blue-600 font-semibold">+91 73488 69099</p>
+                  <p className="text-orange-600 font-semibold">+91 73488 69099</p>
                 </CardContent>
               </Card>
             </div>
             <div className="text-center mt-8">
               <Button 
                 size="lg" 
-                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-4"
+                className="btn-temple px-8 py-4"
                 asChild
               >
                 <Link to="/contact">Get In Touch</Link>
