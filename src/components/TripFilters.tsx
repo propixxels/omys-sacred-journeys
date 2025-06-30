@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter, X, MapPin, Clock, Calendar, IndianRupee } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface TripFiltersProps {
   onFiltersChange: (filters: TripFilters) => void;
@@ -32,6 +33,34 @@ const TripFilters = ({ onFiltersChange, totalCount, filteredCount }: TripFilters
     dateFrom: '',
     dateTo: ''
   });
+
+  const [destinations, setDestinations] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetchDestinations();
+  }, []);
+
+  const fetchDestinations = async () => {
+    try {
+      const { data: tours, error } = await supabase
+        .from('tours')
+        .select('destinations')
+        .eq('isDraft', false);
+
+      if (error) throw error;
+
+      const uniqueDestinations = new Set<string>();
+      tours?.forEach(tour => {
+        // Split destinations by comma and add each one
+        const destList = tour.destinations.split(',').map(dest => dest.trim());
+        destList.forEach(dest => uniqueDestinations.add(dest));
+      });
+
+      setDestinations(Array.from(uniqueDestinations).sort());
+    } catch (error) {
+      console.error('Error fetching destinations:', error);
+    }
+  };
 
   const handleFilterChange = (key: keyof TripFilters, value: string) => {
     const newFilters = { ...filters, [key]: value };
@@ -108,14 +137,11 @@ const TripFilters = ({ onFiltersChange, totalCount, filteredCount }: TripFilters
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Any destination</SelectItem>
-                <SelectItem value="rajasthan">Rajasthan</SelectItem>
-                <SelectItem value="kerala">Kerala</SelectItem>
-                <SelectItem value="goa">Goa</SelectItem>
-                <SelectItem value="himachal">Himachal Pradesh</SelectItem>
-                <SelectItem value="uttarakhand">Uttarakhand</SelectItem>
-                <SelectItem value="kashmir">Kashmir</SelectItem>
-                <SelectItem value="agra">Agra</SelectItem>
-                <SelectItem value="mumbai">Mumbai</SelectItem>
+                {destinations.map((destination) => (
+                  <SelectItem key={destination} value={destination.toLowerCase()}>
+                    {destination}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

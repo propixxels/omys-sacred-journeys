@@ -192,7 +192,7 @@ const Trips = () => {
                   <Phone className="w-12 h-12 text-blue-600 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold text-blue-600 mb-2">Call Us</h3>
                   <p className="text-gray-600 mb-4">Speak with our travel experts</p>
-                  <p className="text-blue-600 font-semibold">+91 9876543210</p>
+                  <p className="text-blue-600 font-semibold">+91 73488 69099</p>
                 </CardContent>
               </Card>
               
@@ -201,7 +201,7 @@ const Trips = () => {
                   <Mail className="w-12 h-12 text-blue-600 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold text-blue-600 mb-2">Email Us</h3>
                   <p className="text-gray-600 mb-4">Get detailed information</p>
-                  <p className="text-blue-600 font-semibold">info@travelcompany.com</p>
+                  <p className="text-blue-600 font-semibold">connect@omytravels.in</p>
                 </CardContent>
               </Card>
               
@@ -210,7 +210,7 @@ const Trips = () => {
                   <MessageCircle className="w-12 h-12 text-blue-600 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold text-blue-600 mb-2">WhatsApp</h3>
                   <p className="text-gray-600 mb-4">Quick chat support</p>
-                  <p className="text-blue-600 font-semibold">+91 9876543210</p>
+                  <p className="text-blue-600 font-semibold">+91 73488 69099</p>
                 </CardContent>
               </Card>
             </div>
