@@ -59,10 +59,10 @@ const TripFilters = ({ onFiltersChange, totalCount, filteredCount }: TripFilters
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
-            <Filter className="w-5 h-5 text-orange-600" />
+            <Filter className="w-5 h-5 text-blue-600" />
             <Label className="text-lg font-semibold text-gray-800">Filter Tours</Label>
             {activeFiltersCount > 0 && (
-              <Badge variant="secondary" className="bg-orange-100 text-orange-800">
+              <Badge variant="secondary" className="bg-blue-100 text-blue-800">
                 {activeFiltersCount} active
               </Badge>
             )}
@@ -72,7 +72,7 @@ const TripFilters = ({ onFiltersChange, totalCount, filteredCount }: TripFilters
               Showing {filteredCount} of {totalCount} tours
             </span>
             {activeFiltersCount > 0 && (
-              <Button variant="outline" size="sm" onClick={clearFilters} className="border-orange-200 text-orange-600 hover:bg-orange-50">
+              <Button variant="outline" size="sm" onClick={clearFilters} className="border-blue-200 text-blue-600 hover:bg-blue-50">
                 <X className="w-3 h-3 mr-1" />
                 Clear All
               </Button>
@@ -92,7 +92,7 @@ const TripFilters = ({ onFiltersChange, totalCount, filteredCount }: TripFilters
                 placeholder="Search destinations, tour names..."
                 value={filters.search}
                 onChange={(e) => handleFilterChange('search', e.target.value)}
-                className="pl-10 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                className="pl-10 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -103,19 +103,19 @@ const TripFilters = ({ onFiltersChange, totalCount, filteredCount }: TripFilters
               Destination
             </Label>
             <Select value={filters.destination} onValueChange={(value) => handleFilterChange('destination', value === 'all' ? '' : value)}>
-              <SelectTrigger className="border-gray-300 focus:border-orange-500">
+              <SelectTrigger className="border-gray-300 focus:border-blue-500">
                 <SelectValue placeholder="Any destination" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Any destination</SelectItem>
-                <SelectItem value="varanasi">Varanasi</SelectItem>
-                <SelectItem value="rishikesh">Rishikesh</SelectItem>
-                <SelectItem value="haridwar">Haridwar</SelectItem>
-                <SelectItem value="kedarnath">Kedarnath</SelectItem>
-                <SelectItem value="badrinath">Badrinath</SelectItem>
-                <SelectItem value="tirupati">Tirupati</SelectItem>
-                <SelectItem value="shirdi">Shirdi</SelectItem>
-                <SelectItem value="ajmer">Ajmer</SelectItem>
+                <SelectItem value="rajasthan">Rajasthan</SelectItem>
+                <SelectItem value="kerala">Kerala</SelectItem>
+                <SelectItem value="goa">Goa</SelectItem>
+                <SelectItem value="himachal">Himachal Pradesh</SelectItem>
+                <SelectItem value="uttarakhand">Uttarakhand</SelectItem>
+                <SelectItem value="kashmir">Kashmir</SelectItem>
+                <SelectItem value="agra">Agra</SelectItem>
+                <SelectItem value="mumbai">Mumbai</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -126,7 +126,7 @@ const TripFilters = ({ onFiltersChange, totalCount, filteredCount }: TripFilters
               Duration
             </Label>
             <Select value={filters.duration} onValueChange={(value) => handleFilterChange('duration', value === 'all' ? '' : value)}>
-              <SelectTrigger className="border-gray-300 focus:border-orange-500">
+              <SelectTrigger className="border-gray-300 focus:border-blue-500">
                 <SelectValue placeholder="Any duration" />
               </SelectTrigger>
               <SelectContent>
@@ -145,7 +145,7 @@ const TripFilters = ({ onFiltersChange, totalCount, filteredCount }: TripFilters
               Price Range
             </Label>
             <Select value={filters.priceRange} onValueChange={(value) => handleFilterChange('priceRange', value === 'all' ? '' : value)}>
-              <SelectTrigger className="border-gray-300 focus:border-orange-500">
+              <SelectTrigger className="border-gray-300 focus:border-blue-500">
                 <SelectValue placeholder="Any price" />
               </SelectTrigger>
               <SelectContent>
@@ -170,7 +170,7 @@ const TripFilters = ({ onFiltersChange, totalCount, filteredCount }: TripFilters
                 type="date"
                 value={filters.dateFrom}
                 onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
-                className="border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
             <div>
@@ -182,7 +182,7 @@ const TripFilters = ({ onFiltersChange, totalCount, filteredCount }: TripFilters
                 type="date"
                 value={filters.dateTo}
                 onChange={(e) => handleFilterChange('dateTo', e.target.value)}
-                className="border-gray-300 focus:border-orange-500 focus:ring-orange-500"
+                className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
           </div>
