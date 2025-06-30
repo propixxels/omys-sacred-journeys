@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,11 +8,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, Clock, MapPin, Users, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { TourData } from "@/types/tour";
+import BookingFilters, { BookingFilters as FilterTypes } from "@/components/BookingFilters";
 
 const TripsWithTabs = () => {
   const navigate = useNavigate();
   const [domesticTrips, setDomesticTrips] = useState<TourData[]>([]);
   const [internationalTrips, setInternationalTrips] = useState<TourData[]>([]);
+  const [filteredDomesticTrips, setFilteredDomesticTrips] = useState<TourData[]>([]);
+  const [filteredInternationalTrips, setFilteredInternationalTrips] = useState<TourData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -100,13 +104,40 @@ const TripsWithTabs = () => {
 
       if (internationalError) throw internationalError;
 
-      setDomesticTrips((domestic || []).map(transformTourData));
-      setInternationalTrips((international || []).map(transformTourData));
+      const transformedDomestic = (domestic || []).map(transformTourData);
+      const transformedInternational = (international || []).map(transformTourData);
+
+      setDomesticTrips(transformedDomestic);
+      setInternationalTrips(transformedInternational);
+      setFilteredDomesticTrips(transformedDomestic);
+      setFilteredInternationalTrips(transformedInternational);
     } catch (error) {
       console.error('Error fetching trips:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFiltersChange = (filters: FilterTypes) => {
+    const filterTrips = (trips: TourData[]) => {
+      return trips.filter(trip => {
+        const matchesSearch = !filters.search || 
+          trip.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+          trip.destinations.toLowerCase().includes(filters.search.toLowerCase()) ||
+          trip.description.toLowerCase().includes(filters.search.toLowerCase());
+
+        const matchesDateFrom = !filters.dateFrom || 
+          new Date(trip.departure_date) >= new Date(filters.dateFrom);
+
+        const matchesDateTo = !filters.dateTo || 
+          new Date(trip.departure_date) <= new Date(filters.dateTo);
+
+        return matchesSearch && matchesDateFrom && matchesDateTo;
+      });
+    };
+
+    setFilteredDomesticTrips(filterTrips(domesticTrips));
+    setFilteredInternationalTrips(filterTrips(internationalTrips));
   };
 
   const formatDate = (dateString: string) => {
@@ -118,68 +149,67 @@ const TripsWithTabs = () => {
   };
 
   const TripCard = ({ trip }: { trip: TourData }) => (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
-      <div className="relative h-48">
+    <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl overflow-hidden">
+      <div className="relative overflow-hidden">
         <img 
           src={trip.image_url || "https://images.unsplash.com/photo-1466442929976-97f336a657be?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"}
           alt={trip.name}
-          className="w-full h-full object-cover"
+          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <div className="absolute top-2 right-2">
+        <div className="absolute top-4 right-4">
+          <Badge className="bg-gradient-to-r from-orange-500 to-orange-600 text-white border-0">
+            ₹{trip.cost.toLocaleString()}
+          </Badge>
+        </div>
+        <div className="absolute top-4 left-4">
           <Badge className="bg-orange-600 text-white">
             {trip.trip_type === 'domestic' ? 'Domestic' : 'International'}
           </Badge>
         </div>
       </div>
       
-      <CardHeader>
-        <CardTitle className="text-xl font-temple text-temple-maroon line-clamp-2">
+      <CardHeader className="pb-2">
+        <CardTitle className="font-temple text-temple-maroon group-hover:text-orange-600 transition-colors line-clamp-2">
           {trip.name}
         </CardTitle>
         <div className="flex items-center space-x-4 text-sm text-gray-600">
           <div className="flex items-center">
-            <Clock className="w-4 h-4 mr-1" />
+            <Clock className="w-4 h-4 mr-1 text-orange-600" />
             <span>{trip.duration}</span>
           </div>
           <div className="flex items-center">
-            <MapPin className="w-4 h-4 mr-1" />
+            <MapPin className="w-4 h-4 mr-1 text-orange-600" />
             <span className="truncate">{trip.destinations}</span>
           </div>
         </div>
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <p className="text-gray-600 text-sm line-clamp-3">{trip.description}</p>
+        <p className="text-gray-600 text-sm line-clamp-2">{trip.description}</p>
         
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4 text-xs text-gray-500">
-            <div className="flex items-center">
-              <Users className="w-3 h-3 mr-1" />
-              <span>{trip.pilgrims_count || 0}</span>
-            </div>
-            <div className="flex items-center">
-              <Star className="w-3 h-3 mr-1 text-orange-400 fill-current" />
-              <span>{trip.rating || 0}</span>
-            </div>
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="flex items-center space-x-2">
+            <Calendar className="w-4 h-4 text-orange-600" />
+            <span>{formatDate(trip.next_departure || trip.departure_date)}</span>
           </div>
-          <div className="text-right">
-            <div className="text-lg font-bold text-orange-600">
-              ₹{trip.cost.toLocaleString()}
-            </div>
-            <div className="text-xs text-gray-500">per person</div>
+          <div className="flex items-center space-x-2">
+            <Users className="w-4 h-4 text-orange-600" />
+            <span>{trip.pilgrims_count || 0} joined</span>
           </div>
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-gray-600">
-            <Calendar className="w-4 h-4 inline mr-1" />
-            Next: {trip.next_departure ? formatDate(trip.next_departure) : formatDate(trip.departure_date)}
+        {trip.rating && trip.rating > 0 && (
+          <div className="flex items-center space-x-1">
+            {[...Array(Math.floor(trip.rating))].map((_, i) => (
+              <Star key={i} className="w-4 h-4 text-orange-400 fill-current" />
+            ))}
+            <span className="text-sm text-gray-600 ml-2">{trip.rating}/5</span>
           </div>
-        </div>
+        )}
 
         <Button 
           onClick={() => navigate(`/trip/${trip.slug}`)}
-          className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
+          className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white transition-all duration-300"
         >
           View Details
         </Button>
@@ -199,20 +229,29 @@ const TripsWithTabs = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Filters Section */}
+      <div className="mb-8">
+        <BookingFilters
+          onFiltersChange={handleFiltersChange}
+          totalCount={domesticTrips.length + internationalTrips.length}
+          filteredCount={filteredDomesticTrips.length + filteredInternationalTrips.length}
+        />
+      </div>
+
       <Tabs defaultValue="domestic" className="w-full">
         <TabsList className="grid w-full grid-cols-2 mb-8">
           <TabsTrigger value="domestic" className="text-lg">
-            Domestic Trips ({domesticTrips.length})
+            Domestic Trips ({filteredDomesticTrips.length})
           </TabsTrigger>
           <TabsTrigger value="international" className="text-lg">
-            International Trips ({internationalTrips.length})
+            International Trips ({filteredInternationalTrips.length})
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="domestic">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {domesticTrips.length > 0 ? (
-              domesticTrips.map((trip) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredDomesticTrips.length > 0 ? (
+              filteredDomesticTrips.map((trip) => (
                 <TripCard key={trip.id} trip={trip} />
               ))
             ) : (
@@ -225,9 +264,9 @@ const TripsWithTabs = () => {
         </TabsContent>
 
         <TabsContent value="international">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {internationalTrips.length > 0 ? (
-              internationalTrips.map((trip) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredInternationalTrips.length > 0 ? (
+              filteredInternationalTrips.map((trip) => (
                 <TripCard key={trip.id} trip={trip} />
               ))
             ) : (
