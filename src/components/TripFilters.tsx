@@ -102,12 +102,12 @@ const TripFilters = ({ onFiltersChange, totalCount, filteredCount }: TripFilters
               <MapPin className="w-4 h-4 inline mr-1" />
               Destination
             </Label>
-            <Select value={filters.destination} onValueChange={(value) => handleFilterChange('destination', value)}>
+            <Select value={filters.destination} onValueChange={(value) => handleFilterChange('destination', value === 'all' ? '' : value)}>
               <SelectTrigger className="border-gray-300 focus:border-orange-500">
                 <SelectValue placeholder="Any destination" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any destination</SelectItem>
+                <SelectItem value="all">Any destination</SelectItem>
                 <SelectItem value="varanasi">Varanasi</SelectItem>
                 <SelectItem value="rishikesh">Rishikesh</SelectItem>
                 <SelectItem value="haridwar">Haridwar</SelectItem>
@@ -125,12 +125,12 @@ const TripFilters = ({ onFiltersChange, totalCount, filteredCount }: TripFilters
               <Clock className="w-4 h-4 inline mr-1" />
               Duration
             </Label>
-            <Select value={filters.duration} onValueChange={(value) => handleFilterChange('duration', value)}>
+            <Select value={filters.duration} onValueChange={(value) => handleFilterChange('duration', value === 'all' ? '' : value)}>
               <SelectTrigger className="border-gray-300 focus:border-orange-500">
                 <SelectValue placeholder="Any duration" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any duration</SelectItem>
+                <SelectItem value="all">Any duration</SelectItem>
                 <SelectItem value="1-3">1-3 Days</SelectItem>
                 <SelectItem value="4-7">4-7 Days</SelectItem>
                 <SelectItem value="8-15">8-15 Days</SelectItem>
@@ -144,17 +144,17 @@ const TripFilters = ({ onFiltersChange, totalCount, filteredCount }: TripFilters
               <IndianRupee className="w-4 h-4 inline mr-1" />
               Price Range
             </Label>
-            <Select value={filters.priceRange} onValueChange={(value) => handleFilterChange('priceRange', value)}>
+            <Select value={filters.priceRange} onValueChange={(value) => handleFilterChange('priceRange', value === 'all' ? '' : value)}>
               <SelectTrigger className="border-gray-300 focus:border-orange-500">
                 <SelectValue placeholder="Any price" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any price</SelectItem>
+                <SelectItem value="all">Any price</SelectItem>
                 <SelectItem value="0-10000">Under ₹10,000</SelectItem>
                 <SelectItem value="10000-25000">₹10,000 - ₹25,000</SelectItem>
                 <SelectItem value="25000-50000">₹25,000 - ₹50,000</SelectItem>
                 <SelectItem value="50000-100000">₹50,000 - ₹1,00,000</SelectItem>
-                <SelectItem value="100000">Above ₹1,00,000</SelectItem>
+                <SelectItem value="100000+">Above ₹1,00,000</SelectItem>
               </SelectContent>
             </Select>
           </div>
