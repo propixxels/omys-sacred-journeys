@@ -96,7 +96,7 @@ const Footer = () => {
               <div className="flex items-start justify-center md:justify-start space-x-3 group">
                 <Mail className="w-5 h-5 text-yellow-200 mt-1 flex-shrink-0 group-hover:animate-gentle-bounce" />
                 <div className="text-center md:text-left">
-                  <p className="text-white font-semibold">connect@omytravels.com</p>
+                  <p className="text-white font-semibold">connect@omytravels.in</p>
                   <p className="text-xs text-gray-100">Quick Response</p>
                 </div>
               </div>

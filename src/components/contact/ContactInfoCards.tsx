@@ -16,7 +16,7 @@ const contactDetails = [
     icon: <Mail className="w-6 h-6 text-white" />,
     title: "Email",
     lines: [
-      { text: "connect@omytravels.com", className: "font-medium" },
+      { text: "connect@omytravels.in", className: "font-medium" },
       { text: "Quick Response", className: "text-sm text-gray-500" }
     ]
   },

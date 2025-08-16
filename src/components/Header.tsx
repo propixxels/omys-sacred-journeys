@@ -131,12 +131,12 @@ const Header = () => {
               <span className="font-medium">+91 73488 69099</span>
             </a>
             <a 
-              href="mailto:info@omytravels.com"
+              href="mailto:info@omytravels.in"
               onClick={closeMobileMenu}
               className="flex items-center space-x-3 py-3 px-3 text-gray-700 hover:text-temple-maroon hover:bg-saffron-50 rounded-lg transition-all duration-200"
             >
               <Mail className="w-5 h-5" />
-              <span className="font-medium">info@omytravels.com</span>
+              <span className="font-medium">info@omytravels.in</span>
             </a>
           </div>
         </nav>

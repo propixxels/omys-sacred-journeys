@@ -498,7 +498,7 @@ const TripDetail = () => {
                 </Button>
                 <Button variant="outline" className="w-full justify-start border-orange-200 text-orange-600 hover:bg-orange-50">
                   <Mail className="w-4 h-4 mr-2" />
-                  connect@omytravels.com
+                  connect@omytravels.in
                 </Button>
                 <p className="text-xs text-gray-600 text-center">
                   24/7 Yatra Support Available
