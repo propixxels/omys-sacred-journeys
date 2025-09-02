@@ -112,7 +112,7 @@ const Trips = () => {
           <TripsWithTabs />
         </section>
 
-        {/* Testimonials Section */}
+        {/* Testimonials Section 
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
@@ -149,7 +149,7 @@ const Trips = () => {
               ))}
             </div>
           </div>
-        </section>
+        </section>*/}
 
         {/* FAQ Section */}
         <section className="py-16 bg-gradient-to-br from-saffron-50 to-orange-50">
