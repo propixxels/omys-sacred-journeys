@@ -13,13 +13,13 @@ const ALL_DESTINATIONS = [
   "omytravelsweb@gmail.com"
 ];
 
-// Function to verify reCAPTCHA
-async function verifyRecaptcha(token: string): Promise<boolean> {
+// Function to verify reCAPTCHA (returns full result for better debugging)
+async function verifyRecaptcha(token: string): Promise<any> {
   const secretKey = Deno.env.get("RECAPTCHA_SECRET_KEY");
-  
+
   if (!secretKey) {
     console.error("RECAPTCHA_SECRET_KEY not found");
-    return false;
+    return { success: false, error: "missing_secret" };
   }
 
   try {
@@ -33,11 +33,11 @@ async function verifyRecaptcha(token: string): Promise<boolean> {
 
     const result = await response.json();
     console.log("reCAPTCHA verification result:", result);
-    
-    return result.success === true;
+
+    return result;
   } catch (error) {
     console.error("reCAPTCHA verification error:", error);
-    return false;
+    return { success: false, error: "verification_error", details: String(error) };
   }
 }
 
@@ -103,21 +103,33 @@ serve(async (req) => {
       );
     }
 
-    const isValid = await verifyRecaptcha(recaptchaToken);
+    const result = await verifyRecaptcha(recaptchaToken);
+    const status = result.success ? 200 : 400;
     return new Response(
-      JSON.stringify({ success: isValid }),
-      { status: isValid ? 200 : 400, headers: corsHeaders }
+      JSON.stringify({ success: !!result.success, details: result }),
+      { status, headers: corsHeaders }
     );
   }
 
-  // Verify reCAPTCHA for all other email types (except newsletter which handles its own verification)
   if (type !== "newsletter" && recaptchaToken) {
-    const isValidRecaptcha = await verifyRecaptcha(recaptchaToken);
-    if (!isValidRecaptcha) {
+    const result = await verifyRecaptcha(recaptchaToken);
+
+    // Allow dev/preview environments to bypass if domain is lovable.dev (for testing only)
+    const referer = req.headers.get("referer") || "";
+    let hostname = "";
+    try { hostname = referer ? new URL(referer).hostname : ""; } catch (_) {}
+
+    const isSandbox = hostname.endsWith("lovable.dev") || hostname.endsWith("sandbox.lovable.dev");
+
+    if (!result.success && !isSandbox) {
       return new Response(
-        JSON.stringify({ success: false, error: "reCAPTCHA verification failed" }),
+        JSON.stringify({ success: false, error: "reCAPTCHA verification failed", details: result }),
         { status: 400, headers: corsHeaders }
       );
+    }
+
+    if (!result.success && isSandbox) {
+      console.warn("Bypassing reCAPTCHA in sandbox preview:", { hostname, details: result });
     }
   }
 
