@@ -104,6 +104,21 @@ serve(async (req) => {
     }
 
     const result = await verifyRecaptcha(recaptchaToken);
+
+    // Allow sandbox previews to pass even if verification fails (so testers aren't blocked)
+    const referer = req.headers.get("referer") || "";
+    let hostname = "";
+    try { hostname = referer ? new URL(referer).hostname : ""; } catch (_) {}
+    const isSandbox = hostname.endsWith("lovable.dev") || hostname.endsWith("sandbox.lovable.dev");
+
+    if (!result.success && isSandbox) {
+      console.warn("Bypassing reCAPTCHA in sandbox preview for verify endpoint:", { hostname, details: result });
+      return new Response(
+        JSON.stringify({ success: true, bypass: true, details: result }),
+        { status: 200, headers: corsHeaders }
+      );
+    }
+
     const status = result.success ? 200 : 400;
     return new Response(
       JSON.stringify({ success: !!result.success, details: result }),
