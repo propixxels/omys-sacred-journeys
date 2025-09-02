@@ -26,7 +26,6 @@ const Index = () => {
       <WhyChooseUsSection />
       <HowItWorksSection />
       <InspirationalQuoteSection />
-      <TestimonialsSection />
       <CallToActionSection onEnquiryClick={() => setIsEnquiryFormOpen(true)} />
       <NewsletterWhatsAppSection />
       <ContactSection />
