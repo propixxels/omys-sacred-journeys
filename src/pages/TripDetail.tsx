@@ -473,16 +473,16 @@ const TripDetail = () => {
                   {remainingSeats > 0 ? 'Book Now' : 'Fully Booked'}
                 </Button>
 
-                <div className="text-center space-y-2">
-                  <p className="text-sm text-gray-600">Secure payment • 50% advance</p>
-                  <div className="flex justify-center space-x-2">
-                    {["UPI", "Cash", "Cards"].map((method) => (
-                      <Badge key={method} variant="outline" className="text-xs">
-                        {method}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
+                //<div className="text-center space-y-2">
+                //  <p className="text-sm text-gray-600">Secure payment • 50% advance</p>
+                 // <div className="flex justify-center space-x-2">
+                 //   {["UPI", "Cash", "Cards"].map((method) => (
+                   //   <Badge key={method} variant="outline" className="text-xs">
+                    //    {method}
+                    //  </Badge>
+                   // ))}
+                 // </div>
+               // </div>
               </CardContent>
             </Card>
 
