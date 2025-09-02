@@ -15,7 +15,7 @@ export interface ReCaptchaRef {
 
 const ReCaptcha = forwardRef<ReCaptchaRef, ReCaptchaProps>(
   ({ onVerify, onExpired, onError, action = "submit" }, ref) => {
-    const SITE_KEY = "6LcO-mErAAAAAGeAng-PWckhg8UfmOKGhT9Lpuh8";
+    const SITE_KEY = "6Lc8-WErAAAAAKbKR3DviHtSajORkPJXJhT1GEzG";
     const [isLoaded, setIsLoaded] = useState(false);
     const [isReady, setIsReady] = useState(false);
 
