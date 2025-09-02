@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .from('admin_users')
         .select('id')
         .eq('email', userEmail)
-        .single();
+        .maybeSingle();
       
       console.log('Admin check result:', { data, error });
       
