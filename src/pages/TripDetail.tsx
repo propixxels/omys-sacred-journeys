@@ -20,7 +20,7 @@ const TripDetail = () => {
   const isMobile = useIsMobile();
   
   const { tripDetails: trip, loading, error } = useTripDetails(slug || '');
-  const { confirmedBookingsCount } = useBookingsCount(trip?.id);
+  const { confirmedBookingsCount, loading: bookingsLoading } = useBookingsCount(trip?.id);
 
   if (loading) {
     return (
@@ -94,7 +94,10 @@ const TripDetail = () => {
     });
   };
 
-  const remainingSeats = (trip.total_capacity || 0) - confirmedBookingsCount;
+  // Ensure all values are proper numbers to avoid Safari display issues
+  const totalCapacity = Number(trip.total_capacity) || 0;
+  const confirmedCount = Number(confirmedBookingsCount) || 0;
+  const remainingSeats = totalCapacity - confirmedCount;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
@@ -165,7 +168,7 @@ const TripDetail = () => {
                 <div className="flex items-center space-x-6 text-sm text-gray-500">
                   <div className="flex items-center space-x-1">
                     <Users className="w-4 h-4" />
-                    <span>{confirmedBookingsCount} people confirmed</span>
+                    <span>{confirmedCount} people confirmed</span>
                   </div>
                   <div className="flex items-center space-x-1">
                     <Star className="w-4 h-4 text-orange-400 fill-current" />
@@ -447,7 +450,7 @@ const TripDetail = () => {
                       </Badge>
                     </div>
                     <p className="text-xs text-blue-600 mt-1">
-                      Total capacity: {trip.total_capacity || 0} | Confirmed: {confirmedBookingsCount}
+                      Total capacity: {totalCapacity} | Confirmed: {confirmedCount}
                     </p>
                   </div>
                 </div>
