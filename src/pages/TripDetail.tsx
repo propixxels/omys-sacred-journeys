@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,18 +9,68 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Calendar, Clock, MapPin, Users, Star, Check, X, Phone, Mail, Image as ImageIcon } from "lucide-react";
 import BookingForm from "@/components/BookingForm";
 import { useTripDetails } from "@/hooks/useTripDetails";
-import { useBookingsCount } from "@/hooks/useBookingsCount";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { supabase } from "@/integrations/supabase/client";
 
 const TripDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedGalleryImage, setSelectedGalleryImage] = useState<string | null>(null);
+  const [confirmedBookingsCount, setConfirmedBookingsCount] = useState<number>(0);
+  const [bookingsLoading, setBookingsLoading] = useState(false);
   const isMobile = useIsMobile();
   
   const { tripDetails: trip, loading, error } = useTripDetails(slug || '');
-  const { confirmedBookingsCount, loading: bookingsLoading } = useBookingsCount(trip?.id);
+
+  // Fetch confirmed bookings count directly with explicit type handling
+  useEffect(() => {
+    const fetchBookingsCount = async () => {
+      // Only fetch if we have a valid trip ID
+      if (!trip?.id) {
+        setConfirmedBookingsCount(0);
+        return;
+      }
+
+      try {
+        setBookingsLoading(true);
+        console.log('Fetching bookings for tour:', trip.id);
+        
+        const { data, error: queryError } = await supabase
+          .from('bookings')
+          .select('number_of_people')
+          .eq('tour_id', trip.id)
+          .eq('status', 'confirmed');
+
+        if (queryError) {
+          console.error('Error fetching bookings:', queryError);
+          setConfirmedBookingsCount(0);
+          return;
+        }
+
+        // Explicitly calculate total with type safety
+        let total = 0;
+        if (data && Array.isArray(data)) {
+          for (const booking of data) {
+            const numPeople = parseInt(String(booking.number_of_people || 0), 10);
+            if (!isNaN(numPeople)) {
+              total = total + numPeople;
+            }
+          }
+        }
+        
+        console.log('Confirmed bookings count:', total);
+        setConfirmedBookingsCount(total);
+      } catch (err) {
+        console.error('Exception fetching bookings:', err);
+        setConfirmedBookingsCount(0);
+      } finally {
+        setBookingsLoading(false);
+      }
+    };
+
+    fetchBookingsCount();
+  }, [trip?.id]);
 
   if (loading) {
     return (
@@ -94,10 +144,12 @@ const TripDetail = () => {
     });
   };
 
-  // Ensure all values are proper numbers to avoid Safari display issues
-  const totalCapacity = Number(trip.total_capacity) || 0;
-  const confirmedCount = Number(confirmedBookingsCount) || 0;
+  // Calculate availability with explicit type handling
+  const totalCapacity = parseInt(String(trip?.total_capacity || 0), 10);
+  const confirmedCount = parseInt(String(confirmedBookingsCount), 10);
   const remainingSeats = totalCapacity - confirmedCount;
+  
+  console.log('Booking stats:', { totalCapacity, confirmedCount, remainingSeats });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
