@@ -152,8 +152,8 @@ export const useTripDetails = (slug: string) => {
           gallery: safeParseArray(tour.gallery || []),
           trip_type: (tour.trip_type as 'domestic' | 'international') || 'domestic',
           total_capacity: tour.total_capacity || 50,
-          confirmed_bookings: tour.confirmed_bookings || 0,
-          available_seats: tour.available_seats || 0
+          confirmed_bookings: (tour as any).confirmed_bookings || 0,
+          available_seats: (tour as any).available_seats || tour.total_capacity || 50
         };
 
         console.log('Processed trip data:', tripData);
