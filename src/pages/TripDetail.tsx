@@ -378,9 +378,9 @@ const TripDetail = () => {
             </Card>
 
             {/* Testimonials */}
-            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
+            {/* <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm rounded-2xl">
               <CardHeader>
-                <CardTitle className="text-2xl font-temple text-temple-maroon">What Our Pilgrims Say</CardTitle>
+                <CardTitle className="text-2xl font-temple text-temple-maroon">What Our Clients Say</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -405,7 +405,7 @@ const TripDetail = () => {
                   ))}
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
 
           {/* Sidebar */}
@@ -511,7 +511,7 @@ const TripDetail = () => {
               <CardContent className="pt-6 text-center space-y-3">
                 <div className="flex items-center justify-center space-x-1">
                   <Star className="w-4 h-4 text-orange-400 fill-current" />
-                  <span className="text-sm font-medium">2,000+ Happy Pilgrims</span>
+                  <span className="text-sm font-medium">2,000+ Happy Clients</span>
                 </div>
                 <div className="flex items-center justify-center space-x-1">
                   <Check className="w-4 h-4 text-green-600" />
