@@ -10,6 +10,8 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Trips from "./pages/Trips";
 import TripDetail from "./pages/TripDetail";
+import Terms from "./pages/Terms";
+import CancellationPolicy from "./pages/CancellationPolicy";
 import AdminDashboard from "./pages/AdminDashboard";
 import AddTour from "./pages/AddTour";
 import EditTour from "./pages/EditTour";
@@ -51,6 +53,8 @@ const App = () => (
                 <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
                 <Route path="/trips" element={<PageTransition><Trips /></PageTransition>} />
                 <Route path="/trip/:slug" element={<PageTransition><TripDetail /></PageTransition>} />
+                <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
+                <Route path="/cancellation-policy" element={<PageTransition><CancellationPolicy /></PageTransition>} />
                 <Route path="/admin-login" element={<PageTransition><AdminLogin /></PageTransition>} />
                 <Route 
                   path="/admin" 
