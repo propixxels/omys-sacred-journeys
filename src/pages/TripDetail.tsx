@@ -9,7 +9,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Calendar, Clock, MapPin, Users, Star, Check, X, Phone, Mail, Image as ImageIcon } from "lucide-react";
 import BookingForm from "@/components/BookingForm";
 import { useTripDetails } from "@/hooks/useTripDetails";
-import { useBookingsCount } from "@/hooks/useBookingsCount";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const TripDetail = () => {
@@ -20,7 +19,6 @@ const TripDetail = () => {
   const isMobile = useIsMobile();
   
   const { tripDetails: trip, loading, error } = useTripDetails(slug || '');
-  const { confirmedBookingsCount, loading: bookingsLoading } = useBookingsCount(trip?.id);
 
   if (loading) {
     return (
@@ -94,10 +92,9 @@ const TripDetail = () => {
     });
   };
 
-  // Calculate availability with explicit type handling
-  const totalCapacity = Number(trip?.total_capacity) || 0;
-  const confirmedCount = Number(confirmedBookingsCount) || 0;
-  const remainingSeats = totalCapacity - confirmedCount;
+  // Get booking counts directly from trip data (updated by database triggers)
+  const confirmedCount = trip?.confirmed_bookings || 0;
+  const remainingSeats = trip?.available_seats || 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
@@ -450,7 +447,7 @@ const TripDetail = () => {
                       </Badge>
                     </div>
                     <p className="text-xs text-blue-600 mt-1">
-                      Total capacity: {totalCapacity} | Confirmed: {confirmedCount}
+                      Total capacity: {trip.total_capacity} | Confirmed: {confirmedCount}
                     </p>
                   </div>
                 </div>
