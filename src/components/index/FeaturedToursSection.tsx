@@ -107,10 +107,10 @@ const FeaturedToursSection = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-temple font-bold text-temple-maroon mb-4">
-              Featured Spiritual Journeys
+              Featured Tours
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Discover our most popular pilgrimage tours, carefully curated for spiritual seekers
+              Explore our most popular tours, thoughtfully designed for an unforgettable journey.
             </p>
           </div>
           <div className="text-center">Loading featured tours...</div>
@@ -124,10 +124,10 @@ const FeaturedToursSection = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-temple font-bold text-temple-maroon mb-4">
-            Featured Spiritual Journeys
+            Featured Tours
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Discover our most popular pilgrimage tours, carefully curated for spiritual seekers
+            Explore our most popular tours, thoughtfully designed for an unforgettable journey.
           </p>
         </div>
 
