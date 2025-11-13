@@ -52,6 +52,8 @@ interface TripDetails {
   gallery: string[];
   trip_type: 'domestic' | 'international';
   total_capacity: number;
+  confirmed_bookings: number;
+  available_seats: number;
 }
 
 export const useTripDetails = (slug: string) => {
@@ -149,7 +151,9 @@ export const useTripDetails = (slug: string) => {
           pricing: safeParseObject(tour.pricing, { doubleSharing: '', singleSupplement: null, child5to12: null, groupDiscount: null, earlyBird: null }),
           gallery: safeParseArray(tour.gallery || []),
           trip_type: (tour.trip_type as 'domestic' | 'international') || 'domestic',
-          total_capacity: tour.total_capacity || 50
+          total_capacity: tour.total_capacity || 50,
+          confirmed_bookings: tour.confirmed_bookings || 0,
+          available_seats: tour.available_seats || 0
         };
 
         console.log('Processed trip data:', tripData);
