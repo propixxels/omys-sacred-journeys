@@ -110,7 +110,6 @@ const NewsletterSignup = () => {
         recaptchaRef.current?.reset();
       }
     } catch (error: any) {
-      console.error("Newsletter subscription error:", error);
       toast({
         title: "Subscription Failed",
         description: "There was an error subscribing to the newsletter. Please try again.",

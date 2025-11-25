@@ -61,15 +61,12 @@ const BookingForm = ({ tourId, tourName, onClose }: BookingFormProps) => {
       );
 
       if (!recaptchaResponse.ok) {
-        const errorText = await recaptchaResponse.text();
-        console.error("reCAPTCHA verification failed:", recaptchaResponse.status, errorText);
         throw new Error("reCAPTCHA verification failed");
       }
 
       const recaptchaResult = await recaptchaResponse.json();
       
       if (!recaptchaResult.success) {
-        console.error("reCAPTCHA verification failed:", recaptchaResult);
         throw new Error("reCAPTCHA verification failed");
       }
 
@@ -111,7 +108,6 @@ const BookingForm = ({ tourId, tourName, onClose }: BookingFormProps) => {
 
       onClose();
     } catch (error: any) {
-      console.error("Booking submission error:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to submit booking request. Please try again.",

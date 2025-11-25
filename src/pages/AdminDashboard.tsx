@@ -50,19 +50,15 @@ const AdminDashboard = () => {
 
   const fetchTours = async () => {
     try {
-      console.log('Fetching tours...');
       const { data, error } = await supabase
         .from('tours')
         .select('*')
         .eq('isDraft', showDrafts)
         .order('departure_date', { ascending: true });
 
-      console.log('Tours response:', { data, error });
-
       if (error) throw error;
       setTours(data || []);
     } catch (error) {
-      console.error('Error fetching tours:', error);
       toast({
         title: "Error",
         description: "Failed to load tours",
@@ -73,7 +69,6 @@ const AdminDashboard = () => {
 
   const fetchBookings = async () => {
     try {
-      console.log('Fetching bookings...');
       const { data, error } = await supabase
         .from('bookings')
         .select(`
@@ -88,12 +83,9 @@ const AdminDashboard = () => {
         `)
         .order('booking_date', { ascending: false });
 
-      console.log('Bookings response:', { data, error });
-
       if (error) throw error;
       setBookings(data || []);
     } catch (error) {
-      console.error('Error fetching bookings:', error);
       toast({
         title: "Error",
         description: "Failed to load bookings",
@@ -121,7 +113,6 @@ const AdminDashboard = () => {
         description: "Tour moved to drafts!"
       });
     } catch (error) {
-      console.error('Error moving tour to draft:', error);
       toast({
         title: "Error",
         description: "Failed to move tour to drafts",
@@ -149,7 +140,6 @@ const AdminDashboard = () => {
         description: "Tour deleted successfully!"
       });
     } catch (error) {
-      console.error('Error deleting tour:', error);
       toast({
         title: "Error",
         description: "Failed to delete tour",
@@ -177,7 +167,6 @@ const AdminDashboard = () => {
         description: "Tour published successfully!"
       });
     } catch (error) {
-      console.error('Error publishing tour:', error);
       toast({
         title: "Error",
         description: "Failed to publish tour",
@@ -209,7 +198,6 @@ const AdminDashboard = () => {
         description: `Booking status updated to ${newStatus}`
       });
     } catch (error) {
-      console.error('Error updating booking status:', error);
       toast({
         title: "Error",
         description: "Failed to update booking status",
@@ -237,7 +225,6 @@ const AdminDashboard = () => {
         description: "Booking deleted successfully!"
       });
     } catch (error) {
-      console.error('Error deleting booking:', error);
       toast({
         title: "Error",
         description: "Failed to delete booking",

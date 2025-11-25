@@ -26,7 +26,6 @@ export const useBookingsCount = (tourId?: string) => {
       const totalConfirmed = data?.reduce((sum, booking) => sum + (booking.number_of_people || 0), 0) || 0;
       setConfirmedBookingsCount(totalConfirmed);
     } catch (error) {
-      console.error('Error fetching confirmed bookings:', error);
       setConfirmedBookingsCount(0);
     } finally {
       setLoading(false);
@@ -93,7 +92,6 @@ export const useBookingsCount = (tourId?: string) => {
 
       setConfirmedBookingsCount(totalConfirmed);
     } catch (error) {
-      console.error('Error fetching confirmed bookings:', error);
       setConfirmedBookingsCount(0); // Reset count on error
     } finally {
       setLoading(false);

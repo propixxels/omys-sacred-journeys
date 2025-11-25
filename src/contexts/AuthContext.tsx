@@ -22,23 +22,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const checkAdminStatus = async (userEmail: string) => {
     try {
-      console.log('Checking admin status for:', userEmail);
       const { data, error } = await supabase
         .from('admin_users')
         .select('id')
         .eq('email', userEmail)
         .maybeSingle();
       
-      console.log('Admin check result:', { data, error });
-      
       if (error) {
-        console.log('Admin check error:', error);
         return false;
       }
       
       return !!data;
     } catch (err) {
-      console.error('Error checking admin status:', err);
       return false;
     }
   };
@@ -49,11 +44,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const initializeAuth = async () => {
       try {
-        console.log('Initializing authentication...');
-        
         // Get initial session
         const { data: { session: currentSession }, error } = await supabase.auth.getSession();
-        console.log('Initial session check:', { session: currentSession, error });
         
         if (mounted) {
           setSession(currentSession);
@@ -75,7 +67,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setLoading(false);
         }
       } catch (err) {
-        console.error('Error initializing auth:', err);
         if (mounted) {
           setLoading(false);
         }
@@ -85,8 +76,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, newSession) => {
-        console.log('Auth state changed:', event, newSession?.user?.email || 'no user');
-        
         if (!mounted) return;
         
         // Update session and user immediately
@@ -101,7 +90,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               setIsAdmin(adminStatus);
             }
           }).catch(err => {
-            console.error('Error checking admin status on auth change:', err);
             if (mounted) {
               setIsAdmin(false);
             }
@@ -125,17 +113,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signIn = async (email: string, password: string) => {
     try {
-      console.log('Attempting to sign in with:', email);
-      
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
       
-      console.log('Sign in result:', { error });
       return { error };
     } catch (err) {
-      console.error('Sign in error:', err);
       return { error: err };
     }
   };
@@ -146,7 +130,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await supabase.auth.signOut();
       setIsAdmin(false);
     } catch (err) {
-      console.error('Sign out error:', err);
+      // Silent error
     } finally {
       setLoading(false);
     }
