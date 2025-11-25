@@ -220,6 +220,34 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleDeleteBooking = async (bookingId: string) => {
+    setActionLoading(`deleting-booking-${bookingId}`);
+
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .delete()
+        .eq('id', bookingId);
+
+      if (error) throw error;
+      
+      fetchBookings();
+      toast({
+        title: "Success",
+        description: "Booking deleted successfully!"
+      });
+    } catch (error) {
+      console.error('Error deleting booking:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete booking",
+        variant: "destructive"
+      });
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   const handleFiltersChange = (filters: BookingFiltersType) => {
     let filtered = [...bookings];
 
@@ -666,6 +694,39 @@ const AdminDashboard = () => {
                               >
                                 <Edit className="w-3 h-3" />
                               </Button>
+                              
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline"
+                                    className="text-red-600 hover:bg-red-50"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Delete Booking</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Are you sure you want to delete this booking for {booking.customer_name}? This action cannot be undone.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() => handleDeleteBooking(booking.id)}
+                                      className="bg-red-600 hover:bg-red-700"
+                                    >
+                                      {actionLoading === `deleting-booking-${booking.id}` ? (
+                                        <Loader className="w-3 h-3 animate-spin" />
+                                      ) : (
+                                        'Delete'
+                                      )}
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
                               
                               {booking.status === 'pending' && (
                                 <>
