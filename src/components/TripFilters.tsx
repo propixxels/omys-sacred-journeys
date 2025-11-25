@@ -58,7 +58,7 @@ const TripFilters = ({ onFiltersChange, totalCount, filteredCount }: TripFilters
 
       setDestinations(Array.from(uniqueDestinations).sort());
     } catch (error) {
-      console.error('Error fetching destinations:', error);
+      // Silent error
     }
   };
 

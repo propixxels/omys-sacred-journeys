@@ -93,7 +93,6 @@ const BookingEditor = ({ booking, isOpen, onClose, onUpdate }: BookingEditorProp
       if (error) throw error;
       setTours(data || []);
     } catch (error) {
-      console.error('Error fetching tours:', error);
       toast({
         title: "Error",
         description: "Failed to load tours",
@@ -134,7 +133,6 @@ const BookingEditor = ({ booking, isOpen, onClose, onUpdate }: BookingEditorProp
       onUpdate();
       onClose();
     } catch (error) {
-      console.error('Error updating booking:', error);
       toast({
         title: "Error",
         description: "Failed to update booking",
@@ -165,7 +163,6 @@ const BookingEditor = ({ booking, isOpen, onClose, onUpdate }: BookingEditorProp
         description: "Payment added successfully"
       });
     } catch (error) {
-      console.error('Error adding payment:', error);
       toast({
         title: "Error",
         description: "Failed to add payment",

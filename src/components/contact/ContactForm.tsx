@@ -22,7 +22,6 @@ const ContactForm = () => {
   const recaptchaRef = useRef<ReCaptchaRef>(null);
 
   const handleRecaptchaChange = (token: string | null) => {
-    console.log('reCAPTCHA token received:', token ? 'Token received' : 'No token');
     setRecaptchaToken(token);
   };
 
@@ -31,7 +30,6 @@ const ContactForm = () => {
     
     // If no token, try to execute reCAPTCHA
     if (!recaptchaToken) {
-      console.log('No reCAPTCHA token, executing...');
       recaptchaRef.current?.execute();
       toast({
         title: "Verifying Security",
@@ -42,9 +40,6 @@ const ContactForm = () => {
 
     setIsSubmitting(true);
     setSent(false);
-    
-    console.log("Submitting contact form with data:", formData);
-    console.log("reCAPTCHA token length:", recaptchaToken.length);
     
     try {
       const resp = await fetch(
@@ -65,9 +60,7 @@ const ContactForm = () => {
         }
       );
       
-      console.log("Response status:", resp.status);
       const res = await resp.json();
-      console.log("Response data:", res);
       
       if (resp.ok && res.success) {
         setSent(true);
@@ -82,7 +75,6 @@ const ContactForm = () => {
         throw new Error(res?.error || "Unable to send message.");
       }
     } catch (err: any) {
-      console.error("Contact form submission error:", err);
       toast({
         title: "Failed to send",
         description: err?.message ?? "Unknown error",
@@ -175,11 +167,9 @@ const ContactForm = () => {
               ref={recaptchaRef}
               onVerify={handleRecaptchaChange}
               onExpired={() => {
-                console.log('reCAPTCHA expired');
                 setRecaptchaToken(null);
               }}
               onError={() => {
-                console.log('reCAPTCHA error');
                 setRecaptchaToken(null);
               }}
               action="contact_form"

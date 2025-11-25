@@ -31,13 +31,11 @@ const AdminLogin = () => {
     }
 
     setLoading(true);
-    console.log('Attempting login for:', loginEmail);
 
     try {
       const { error } = await signIn(loginEmail, loginPassword);
 
       if (error) {
-        console.error('Login error:', error);
         toast({
           title: "Login Failed",
           description: error.message || "Invalid email or password",
@@ -50,7 +48,6 @@ const AdminLogin = () => {
         });
       }
     } catch (err) {
-      console.error('Unexpected login error:', err);
       toast({
         title: "Login Failed",
         description: "An unexpected error occurred",

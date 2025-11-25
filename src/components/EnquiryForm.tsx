@@ -89,7 +89,6 @@ const EnquiryForm: React.FC<EnquiryFormProps> = ({ isOpen, onClose }) => {
         throw new Error(result.error || "Failed to submit enquiry");
       }
     } catch (error: any) {
-      console.error("Enquiry submission error:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to submit enquiry. Please try again.",

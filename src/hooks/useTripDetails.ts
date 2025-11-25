@@ -70,7 +70,6 @@ export const useTripDetails = (slug: string) => {
 
     const fetchTripDetails = async () => {
       try {
-        console.log('Fetching trip details for slug:', slug);
         setLoading(true);
         setError(null);
 
@@ -81,10 +80,7 @@ export const useTripDetails = (slug: string) => {
           .eq('slug', slug)
           .single();
 
-        console.log('Supabase response:', { tour, tourError });
-
         if (tourError) {
-          console.error('Supabase error:', tourError);
           if (tourError.code === 'PGRST116') {
             setError('Tour not found');
           } else {
@@ -94,7 +90,6 @@ export const useTripDetails = (slug: string) => {
         }
 
         if (!tour) {
-          console.log('No tour found for slug:', slug);
           setError('Tour not found');
           return;
         }
@@ -156,10 +151,8 @@ export const useTripDetails = (slug: string) => {
           available_seats: (tour as any).available_seats || tour.total_capacity || 50
         };
 
-        console.log('Processed trip data:', tripData);
         setTripDetails(tripData);
       } catch (err) {
-        console.error('Error fetching trip details:', err);
         setError('Failed to load trip details');
         toast({
           title: "Error",

@@ -37,7 +37,6 @@ const ImageSection = ({ tourData, onUpdate }: ImageSectionProps) => {
         description: "Image uploaded successfully!"
       });
     } catch (error) {
-      console.error('Upload error:', error);
       toast({
         title: "Error",
         description: "Failed to upload image",

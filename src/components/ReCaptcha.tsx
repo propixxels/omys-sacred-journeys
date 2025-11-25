@@ -44,14 +44,12 @@ const ReCaptcha = forwardRef<ReCaptchaRef, ReCaptchaProps>(
         setIsLoaded(true);
         if (window.grecaptcha) {
           window.grecaptcha.ready(() => {
-            console.log('reCAPTCHA ready');
             setIsReady(true);
           });
         }
       };
 
       script.onerror = () => {
-        console.error('Failed to load reCAPTCHA script');
         if (onError) onError();
       };
 
@@ -70,22 +68,18 @@ const ReCaptcha = forwardRef<ReCaptchaRef, ReCaptchaProps>(
 
     const executeRecaptcha = async () => {
       if (!isLoaded || !isReady) {
-        console.log('reCAPTCHA not ready yet, isLoaded:', isLoaded, 'isReady:', isReady);
         if (onError) onError();
         return;
       }
 
       try {
         if (typeof window !== 'undefined' && window.grecaptcha) {
-          console.log('Executing reCAPTCHA with action:', action);
           const token = await window.grecaptcha.execute(SITE_KEY, { action });
-          console.log('reCAPTCHA token generated successfully');
           onVerify(token);
         } else {
           throw new Error('reCAPTCHA not available');
         }
       } catch (error) {
-        console.error('reCAPTCHA execution error:', error);
         if (onError) onError();
       }
     };

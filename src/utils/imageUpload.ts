@@ -21,7 +21,6 @@ export const uploadToSupabaseStorage = async (file: File): Promise<string> => {
     .upload(filePath, file);
 
   if (error) {
-    console.error('Upload error:', error);
     throw error;
   }
 

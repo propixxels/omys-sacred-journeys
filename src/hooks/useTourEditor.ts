@@ -182,7 +182,6 @@ export const useTourEditor = (tourId?: string) => {
         });
       }
     } catch (error) {
-      console.error('Error fetching tour:', error);
       toast({
         title: "Error",
         description: "Failed to fetch tour data",
@@ -265,7 +264,6 @@ export const useTourEditor = (tourId?: string) => {
 
       return true;
     } catch (error) {
-      console.error('Error saving tour:', error);
       toast({
         title: "Error",
         description: "Failed to save tour",
