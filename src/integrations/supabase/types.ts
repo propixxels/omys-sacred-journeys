@@ -218,6 +218,8 @@ export type Database = {
       tours: {
         Row: {
           accommodation: Json | null
+          available_seats: number | null
+          confirmed_bookings: number | null
           cost: number
           cost_details: string | null
           created_at: string
@@ -249,6 +251,8 @@ export type Database = {
         }
         Insert: {
           accommodation?: Json | null
+          available_seats?: number | null
+          confirmed_bookings?: number | null
           cost: number
           cost_details?: string | null
           created_at?: string
@@ -280,6 +284,8 @@ export type Database = {
         }
         Update: {
           accommodation?: Json | null
+          available_seats?: number | null
+          confirmed_bookings?: number | null
           cost?: number
           cost_details?: string | null
           created_at?: string
@@ -316,10 +322,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      is_admin_user: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      is_admin_user: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
