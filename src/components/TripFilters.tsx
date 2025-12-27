@@ -51,12 +51,12 @@ const TripFilters = ({ onFiltersChange, totalCount, filteredCount }: TripFilters
 
       const uniqueDestinations = new Set<string>();
       tours?.forEach(tour => {
-        // Split destinations by comma and add each one
-        const destList = tour.destinations.split(',').map(dest => dest.trim());
+        // Split destinations by comma, trim, and filter out empty strings
+        const destList = tour.destinations.split(',').map(dest => dest.trim()).filter(dest => dest !== '');
         destList.forEach(dest => uniqueDestinations.add(dest));
       });
 
-      setDestinations(Array.from(uniqueDestinations).sort());
+      setDestinations(Array.from(uniqueDestinations).filter(dest => dest !== '').sort());
     } catch (error) {
       // Silent error
     }
